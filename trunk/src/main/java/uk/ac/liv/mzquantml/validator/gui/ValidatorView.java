@@ -21,7 +21,7 @@ import javax.swing.JFileChooser;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import uk.ac.liv.mzquantml.validator.mzQuantMLValidator;
+import uk.ac.liv.mzquantml.validator.MzQuantMLValidator;
 
 /**
  *
@@ -172,7 +172,7 @@ public class ValidatorView extends javax.swing.JFrame {
         try {
             // TODO add your handling code here:
             String fileName = this.jtfFileName.getText();
-            String results = mzQuantMLValidator.main(fileName);
+            String results = MzQuantMLValidator.main(fileName);
             this.jtaValidationResults.setLineWrap(true);
             this.jtaValidationResults.setText(results);
         } catch (FileNotFoundException ex) {
