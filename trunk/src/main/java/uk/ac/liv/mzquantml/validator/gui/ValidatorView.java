@@ -15,6 +15,7 @@ import java.awt.Toolkit;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
@@ -22,6 +23,7 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import uk.ac.liv.mzquantml.validator.MzQuantMLValidator;
+import uk.ac.liv.mzquantml.validator.utils.Message;
 
 /**
  *
@@ -172,9 +174,9 @@ public class ValidatorView extends javax.swing.JFrame {
         try {
             // TODO add your handling code here:
             String fileName = this.jtfFileName.getText();
-            String results = MzQuantMLValidator.main(fileName);
+            List<Message> results = MzQuantMLValidator.main(fileName);
             this.jtaValidationResults.setLineWrap(true);
-            this.jtaValidationResults.setText(results);
+            this.jtaValidationResults.setText(results.toString());
         } catch (FileNotFoundException ex) {
             Logger.getLogger(ValidatorView.class.getName()).log(Level.SEVERE, null, ex);
         }

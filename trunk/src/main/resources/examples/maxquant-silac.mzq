@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<MzQuantML creationDate="2011-10-27T10:58:22.927+01:00" version="1.0.0" xmlns="http://psidev.info/psi/pi/mzQuantML/1.0.0-rc1">
+<MzQuantML creationDate="2011-10-27T10:58:22.927+01:00" version="1.0.0" xmlns="http://psidev.info/psi/pi/mzQuantML/1.0.0-rc2">
     <CvList>
         <Cv fullName="Proteomics Standards Initiative Mass Spectrometry Vocabularies" version="2.25.0" uri="http://psidev.cvs.sourceforge.net/viewvc/*checkout*/psidev/psi/psi-ms/mzML/controlledVocabulary/psi-ms.obo" id="PSI-MS"/>
     </CvList>
@@ -17,6 +17,17 @@
             <RawFile location="../msmsdata/SA_jenna_silac_d24.raw" id="raw_3" name="SA_jenna_silac_d24.raw"/>
         </RawFilesGroup>
     </InputFiles>
+    <SoftwareList>
+        <Software id="MaxQuant" version="1.2.0.18"/>
+    </SoftwareList>
+    
+    <DataProcessingList>
+        <DataProcessing id="feature_quantification" software_Ref="MaxQuant">
+            <ProcessingMethod order="1">
+                <cvParam cvRef="PSI-MS" accession="" name=""/>
+            </ProcessingMethod>
+        </DataProcessing>
+    </DataProcessingList>
     <AssayList id="AssayList_1">
         <Assay id="ass_0" name="SA_jenna_silac_a24_Light">
             <RawFilesGroup_refs>rg_0</RawFilesGroup_refs>
@@ -47044,14 +47055,5 @@
             </DataMatrix>
         </FeatureQuantLayer>
     </FeatureList>
-    <SoftwareList>
-        <Software id="MaxQuant" version="1.2.0.18"/>
-    </SoftwareList>
-    <DataProcessingList>
-        <DataProcessing id="feature_quantification" software_Ref="MaxQuant">
-            <ProcessingMethod order="1">
-                <cvParam cvRef="PSI-MS" accession="" name=""/>
-            </ProcessingMethod>
-        </DataProcessing>
-    </DataProcessingList>
+    
 </MzQuantML>

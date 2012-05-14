@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package uk.ac.liv.mzquantml.validator.rules;
+package uk.ac.liv.mzquantml.validator.rules.general;
 
 import info.psidev.psi.pi.mzquantml._1_0.RatioListType;
 import info.psidev.psi.pi.mzquantml._1_0.RatioType;
