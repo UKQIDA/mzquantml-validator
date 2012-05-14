@@ -2,12 +2,14 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package uk.ac.liv.mzquantml.validator.rules;
+package uk.ac.liv.mzquantml.validator.rules.general;
 
 import info.psidev.psi.pi.mzquantml._1_0.*;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import org.apache.log4j.Level;
+import uk.ac.liv.mzquantml.validator.utils.Message;
 
 /**
  *
@@ -17,10 +19,10 @@ import java.util.List;
  */
 public class UniqueObjectRefRule {
 
-    private static List<String> message;
+    private static List<Message> messages;
 
     public UniqueObjectRefRule() {
-        message = new ArrayList<String>();
+        messages = new ArrayList();
     }
 
     public void check(QuantLayerType quantLayer) {
@@ -29,8 +31,8 @@ public class UniqueObjectRefRule {
             HashSet objectRefSet = new HashSet();
             for (RowType row : rowList) {
                 if (!objectRefSet.add(row.getObjectRef())) {  //need adaptor
-                    String msg = "Duplicate object_ref: " + row.getObjectRef().toString();
-                    message.add(msg);
+                    Message msg = new Message(("Duplicate object_ref: " + row.getObjectRef().toString()), Level.ERROR);
+                    messages.add(msg);
                 }
             }
         }
@@ -42,20 +44,20 @@ public class UniqueObjectRefRule {
             HashSet objectRefSet = new HashSet();
             for (RowType row : rowList) {
                 if (!objectRefSet.add(row.getObjectRef())) {  //need adaptor
-                    String msg = "Duplicate object_ref: " + row.getObjectRef().toString() + "\n";
-                    message.add(msg);
+                    Message msg = new Message(("Duplicate object_ref: " + row.getObjectRef().toString() + "\n"), Level.ERROR);
+                    messages.add(msg);
                 }
             }
         }
     }
 
-    public List<String> getMessage() {
-        return message;
+    public List<Message> getMessage() {
+        return messages;
     }
-    
-    public void printMessage(){
-        for(String s: message){
-            System.out.println(s + "\n");
+
+    public void printMessage() {
+        for (Message m : messages) {
+            System.out.println(m + "\n");
         }
     }
 }
