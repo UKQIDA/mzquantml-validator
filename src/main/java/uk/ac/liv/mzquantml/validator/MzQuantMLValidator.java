@@ -4,23 +4,24 @@ import info.psidev.psi.pi.mzquantml._1_0.*;
 import info.psidev.psi.pi.mzquantml.io.MzQuantMLUnmarshaller;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import javax.xml.datatype.XMLGregorianCalendar;
 import org.apache.log4j.Level;
 import uk.ac.liv.mzquantml.validator.rules.general.*;
+import uk.ac.liv.mzquantml.validator.utils.AnalysisSummaryElement;
 import uk.ac.liv.mzquantml.validator.utils.AnalysisType;
 import uk.ac.liv.mzquantml.validator.utils.Message;
 
 /**
  *
- * @author Da Qi
- * @time 10:28:09 14-Mar-2012
- * @institution University of Liverpool
+ * @author Da Qi @time 10:28:09 14-Mar-2012 @institution University of Liverpool
  */
 public class MzQuantMLValidator {
 
     private static AnalysisType at = new AnalysisType();
+    private static HashMap<AnalysisSummaryElement, Boolean> analysisSummaryMap;
     private static List<Message> msgs = new ArrayList<Message>();
 
     /**
@@ -183,7 +184,7 @@ public class MzQuantMLValidator {
         }
 
         /*
-         *  General rule instantces
+         * General rule instantces
          */
 
         UniqueObjectRefRule uniqueObjectRefRule = new UniqueObjectRefRule();
@@ -236,6 +237,16 @@ public class MzQuantMLValidator {
      */
     static public void checkAnalysisSummary(ParamListType analysisSummary) {
         List<AbstractParamType> paramGroup = analysisSummary.getParamGroup();
+
+        analysisSummaryMap = new HashMap<AnalysisSummaryElement, Boolean>();
+        for (AbstractParamType param : paramGroup) {
+            String cvTerm = param.getName();
+            String value = param.getValue();
+            AnalysisSummaryElement key = AnalysisSummaryElement.getType(cvTerm);
+            if (key != null) {
+                analysisSummaryMap.put(key, Boolean.valueOf(value));
+            }
+        }
 
         checkParamGroup(paramGroup);
     }

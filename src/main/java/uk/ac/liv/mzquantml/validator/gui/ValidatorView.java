@@ -176,7 +176,8 @@ public class ValidatorView extends javax.swing.JFrame {
             String fileName = this.jtfFileName.getText();
             List<Message> results = MzQuantMLValidator.main(fileName);
             this.jtaValidationResults.setLineWrap(true);
-            this.jtaValidationResults.setText(results.toString());
+            String results_mod = results.toString();
+            this.jtaValidationResults.setText(results_mod.substring(2, results_mod.length()-1));
         } catch (FileNotFoundException ex) {
             Logger.getLogger(ValidatorView.class.getName()).log(Level.SEVERE, null, ex);
         }
