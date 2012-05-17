@@ -188,28 +188,20 @@ public class ValidatorView extends javax.swing.JFrame {
     }//GEN-LAST:event_jbValidateActionPerformed
 
     private void jbFileSelectorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbFileSelectorActionPerformed
-        // TODO add your handling code here:
-        try {
+        // TODO add your handling code here:            
+        JFileChooser fileChooser = new javax.swing.JFileChooser("user.home");
+        fileChooser.setDialogTitle("Select a MzQuantML file");
+        fileChooser.setCurrentDirectory(currentDirectory);
 
-            if (currentDirectory == null) {
-                currentDirectory = new File(new File(".").getCanonicalPath());
-            }
-            JFileChooser fileChooser = new javax.swing.JFileChooser();
-            fileChooser.setDialogTitle("Select a MzQuantML file");
-            fileChooser.setCurrentDirectory(currentDirectory);
+        //... Applying file extension filters ...//
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("MzQuantML (*.mzq)", "mzq");
+        fileChooser.setFileFilter(filter);
 
-            //... Applying file extension filters ...//
-            FileNameExtensionFilter filter = new FileNameExtensionFilter("MzQuantML (*.mzq)", "mzq");
-            fileChooser.setFileFilter(filter);
-
-            int returnVal = fileChooser.showOpenDialog(this);
-            if (returnVal == JFileChooser.APPROVE_OPTION) {
-                File file = fileChooser.getSelectedFile();
-                this.jtfFileName.setText(file.getAbsolutePath());
-                currentDirectory = file.getParentFile();
-            }
-        } catch (IOException ex) {
-            Logger.getLogger(ValidatorView.class.getName()).log(Level.SEVERE, null, ex);
+        int returnVal = fileChooser.showOpenDialog(this);
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+            File file = fileChooser.getSelectedFile();
+            this.jtfFileName.setText(file.getAbsolutePath());
+            currentDirectory = file.getParentFile();
         }
     }//GEN-LAST:event_jbFileSelectorActionPerformed
 

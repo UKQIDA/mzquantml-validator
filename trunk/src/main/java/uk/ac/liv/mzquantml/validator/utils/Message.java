@@ -48,6 +48,6 @@ public class Message {
 
     @Override
     public String toString() {
-        return ("\n" + this.level.toString() + ":" + this.message);
+        return ("\n" + this.level.toString() + ": " + this.message);
     }
 }
