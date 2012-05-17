@@ -307,9 +307,9 @@ public class QuantLayerRule {
     private boolean isMS2QLExist(FeatureListType featureList) {
         boolean b = false;
         if (featureList != null) {
-            if (featureList.getMS2AssayQuantLayer() != null
-                    || featureList.getMS2RatioQuantLayer() != null
-                    || featureList.getMS2StudyVariableQuantLayer() != null) {
+            if (!featureList.getMS2AssayQuantLayer().isEmpty()
+                    || !featureList.getMS2RatioQuantLayer().isEmpty()
+                    || !featureList.getMS2StudyVariableQuantLayer().isEmpty()) {
                 b = true;
             }
         }
