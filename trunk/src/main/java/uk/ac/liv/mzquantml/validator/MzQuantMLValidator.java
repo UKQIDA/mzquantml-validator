@@ -198,8 +198,17 @@ public class MzQuantMLValidator {
         listsRule.check();
         msgs.addAll(listsRule.getMsgs());
 
-        System.out.println("MzQuantML validation process is finished.");
-        msgs.add(new Message("MzQuantML validation process is finished.", Level.INFO));
+        /*
+         * QuantLayerRule start here
+         */
+        QuantLayerRule quantLayerRule = new QuantLayerRule(analysisSummaryMap, proteinGroupList, proteinList, peptideConsensusLists, featureLists);
+        quantLayerRule.check();
+        msgs.addAll(quantLayerRule.getMsgs());
+        /*
+         * final output
+         */
+        System.out.println("MzQuantML validation process is finished");
+        msgs.add(new Message("MzQuantML validation process is finished", Level.INFO));
         return msgs;
     }
 

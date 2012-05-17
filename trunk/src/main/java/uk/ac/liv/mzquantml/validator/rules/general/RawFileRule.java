@@ -14,9 +14,7 @@ import uk.ac.liv.mzquantml.validator.utils.Message;
 
 /**
  *
- * @author Da Qi
- * @time 18:44:31 12-May-2012
- * @institution University of Liverpool
+ * @author Da Qi @time 18:44:31 12-May-2012 @institution University of Liverpool
  */
 public class RawFileRule {
 
@@ -56,15 +54,15 @@ public class RawFileRule {
 
     private void checkLCMS() {
         if (infls.getRawFilesGroup() == null) {
-            msgs.add(new Message("Rule: InputFiles MUST contain raw files", Level.ERROR));
-            msgs.add(new Message("Problem: inputFiles do not contain raw files", Level.ERROR));
+            msgs.add(new Message("InputFiles MUST contain raw files", Level.INFO));
+            msgs.add(new Message("InputFiles do not contain raw files", Level.ERROR));
         }
     }
 
     private void checkMS2() {
         if (infls.getRawFilesGroup() == null) {
-            msgs.add(new Message("Rule: InputFiles MUST contain raw files", Level.ERROR));
-            msgs.add(new Message("Problem: inputFiles do not contain raw files", Level.ERROR));
+            msgs.add(new Message("InputFiles MUST contain raw files", Level.INFO));
+            msgs.add(new Message("InputFiles do not contain raw files", Level.ERROR));
         }
     }
 }
