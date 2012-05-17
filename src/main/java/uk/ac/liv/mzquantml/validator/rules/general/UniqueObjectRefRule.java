@@ -4,7 +4,9 @@
  */
 package uk.ac.liv.mzquantml.validator.rules.general;
 
-import info.psidev.psi.pi.mzquantml._1_0.*;
+import info.psidev.psi.pi.mzquantml._1_0.GlobalQuantLayerType;
+import info.psidev.psi.pi.mzquantml._1_0.QuantLayerType;
+import info.psidev.psi.pi.mzquantml._1_0.RowType;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -44,7 +46,7 @@ public class UniqueObjectRefRule {
             HashSet objectRefSet = new HashSet();
             for (RowType row : rowList) {
                 if (!objectRefSet.add(row.getObjectRef())) {  //need adaptor
-                    Message msg = new Message(("Duplicate object_ref: " + row.getObjectRef().toString() + "\n"), Level.ERROR);
+                    Message msg = new Message(("Duplicate object_ref: " + row.getObjectRef().toString()), Level.ERROR);
                     messages.add(msg);
                 }
             }

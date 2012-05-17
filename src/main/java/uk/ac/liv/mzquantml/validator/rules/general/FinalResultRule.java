@@ -12,9 +12,7 @@ import uk.ac.liv.mzquantml.validator.utils.Message;
 
 /**
  *
- * @author Da Qi
- * @time 19:08:11 12-May-2012
- * @institution University of Liverpool
+ * @author Da Qi @time 19:08:11 12-May-2012 @institution University of Liverpool
  */
 public class FinalResultRule {
 
@@ -43,9 +41,9 @@ public class FinalResultRule {
             }
         }
         if (count != 1) {
-            msgs.add(new Message("Rule: Exactly one PeptideConsensusList "
-                    + "MUST have isFinalResult=\"true\"", Level.ERROR));
-            msgs.add(new Message("Problem: " + String.valueOf(count)
+            msgs.add(new Message("Exactly one PeptideConsensusList "
+                    + "MUST have isFinalResult=\"true\"", Level.INFO));
+            msgs.add(new Message(String.valueOf(count)
                     + " PeptideConsensusList(s) have/has isFinalResult=\"true\"", Level.ERROR));
         }
     }

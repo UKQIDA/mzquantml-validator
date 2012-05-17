@@ -18,9 +18,7 @@ import uk.ac.liv.mzquantml.validator.utils.Message;
 
 /**
  *
- * @author Da Qi
- * @time 17:08:22 12-May-2012
- * @institution University of Liverpool
+ * @author Da Qi @time 17:08:22 12-May-2012 @institution University of Liverpool
  */
 public class AssayLabelRule {
 
@@ -66,18 +64,18 @@ public class AssayLabelRule {
     private void checkSC() {
         for (AssayType assay : this.assyLst.getAssay()) {
             if (assay.getLabel() != null) {
-                msgs.add(new Message("Rule: there MUST NOT be any Label in "
-                        + "AssayList (spectral counting)", Level.ERROR));
+                msgs.add(new Message("There MUST NOT be any Label in "
+                        + "AssayList (spectral counting)", Level.INFO));
                 String labelNm = assay.getLabel().getCvParam().getName();
-                msgs.add(new Message(("Problem: there is a label "
-                        + "with name (" + labelNm + ") in AssayList."), Level.ERROR));
+                msgs.add(new Message(("There is a label "
+                        + "with name (" + labelNm + ") in AssayList"), Level.ERROR));
             }
 
             if ((assay.getIdentificationFileRefs() == null) && (assay.getRawFileGroupRef() == null)) {
-                msgs.add(new Message("Rule: there MUST be at least one of rawFilesGroup_Ref or "
-                        + "identificationFile_Refs in Assay", Level.ERROR));
-                msgs.add(new Message("Problem: none of these exsits in Assay "
-                        + assay.getId() + ".", Level.ERROR));
+                msgs.add(new Message("There MUST be at least one of rawFilesGroup_Ref or "
+                        + "identificationFile_Refs in Assay", Level.INFO));
+                msgs.add(new Message("None of these exsits in Assay "
+                        + assay.getId(), Level.ERROR));
             }
         }
     }
@@ -85,11 +83,11 @@ public class AssayLabelRule {
     private void checkLCMS() {
         for (AssayType assay : this.assyLst.getAssay()) {
             if (assay.getLabel() != null) {
-                msgs.add(new Message("Rule: there MUST NOT be any Label in "
-                        + "AssayList (LC-MS label-free)", Level.ERROR));
+                msgs.add(new Message("There MUST NOT be any Label in "
+                        + "AssayList (LC-MS label-free)", Level.INFO));
                 String labelNm = assay.getLabel().getCvParam().getName();
-                msgs.add(new Message(("Problem: there is a label "
-                        + "with name (" + labelNm + ") in AssayList."), Level.ERROR));
+                msgs.add(new Message(("There is a label "
+                        + "with name (" + labelNm + ") in AssayList"), Level.ERROR));
             }
         }
     }
@@ -123,9 +121,9 @@ public class AssayLabelRule {
             RawFilesGroupType rawFileGroup = (RawFilesGroupType) ref;
             ArrayList<AssayType> assays = rawfilegrouprefAssayMap.get(ref);
             if (assays.size() < 2) {
-                msgs.add(new Message("Rule: The file MUST contain two or more "
-                        + "assays references to the same rawFileGroup", Level.ERROR));
-                msgs.add(new Message("Problem: only one assay reference to the rawFileGroup ("
+                msgs.add(new Message("The file MUST contain two or more "
+                        + "assays references to the same rawFileGroup", Level.INFO));
+                msgs.add(new Message("Only one assay reference to the rawFileGroup ("
                         + rawFileGroup.getId() + ")", Level.ERROR));
             }
         }
@@ -137,10 +135,10 @@ public class AssayLabelRule {
             ArrayList<AssayType> assays = rawfilegrouprefAssayMap.get(ref);
             if (assays.size() > 1) {
                 if (!haveAssayLabel(assays)) {
-                    msgs.add(new Message("Rule: At least one of the grouped assays that "
-                            + "reference to a common rawFileGroup MUST hae the \"Label\" element.", Level.ERROR));
-                    msgs.add(new Message("Problem: assays with a common rawFileGroupRef ("
-                            + rawFileGroup.getId() + ") do not have \"Lable\" element.", Level.ERROR));
+                    msgs.add(new Message("At least one of the grouped assays that "
+                            + "reference to a common rawFileGroup MUST hae the \"Label\" element", Level.INFO));
+                    msgs.add(new Message("Assays with a common rawFileGroupRef ("
+                            + rawFileGroup.getId() + ") do not have \"Lable\" element", Level.ERROR));
                 }
             }
         }

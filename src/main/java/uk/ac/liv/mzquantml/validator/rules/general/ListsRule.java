@@ -4,12 +4,7 @@
  */
 package uk.ac.liv.mzquantml.validator.rules.general;
 
-import info.psidev.psi.pi.mzquantml._1_0.FeatureListType;
-import info.psidev.psi.pi.mzquantml._1_0.InputFilesType;
-import info.psidev.psi.pi.mzquantml._1_0.PeptideConsensusListType;
-import info.psidev.psi.pi.mzquantml._1_0.ProteinGroupListType;
-import info.psidev.psi.pi.mzquantml._1_0.ProteinListType;
-import info.psidev.psi.pi.mzquantml._1_0.ProteinType;
+import info.psidev.psi.pi.mzquantml._1_0.*;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.log4j.Level;
@@ -19,9 +14,7 @@ import uk.ac.liv.mzquantml.validator.utils.Message;
 
 /**
  *
- * @author Da Qi
- * @time 16:27:16 12-May-2012
- * @institution University of Liverpool
+ * @author Da Qi @time 16:27:16 12-May-2012 @institution University of Liverpool
  */
 public class ListsRule {
 
@@ -55,9 +48,9 @@ public class ListsRule {
             // All proteins SHOULD have peptide_refs
             for (ProteinType protein : this.protLst.getProtein()) {
                 if (protein.getPeptideConsensusRefs() == null) {
-                    msgs.add(new Message("Rule: If there is a ProteinList and "
-                            + "a PeptideConsensusList, all protein SHOULD have peptide_refs", Level.WARN));
-                    msgs.add(new Message("Problem: protein "
+                    msgs.add(new Message("If there is a ProteinList and "
+                            + "a PeptideConsensusList, all protein SHOULD have peptide_refs", Level.INFO));
+                    msgs.add(new Message("Protein "
                             + protein.getId() + " does not have peptide_refs", Level.WARN));
                 }
             }
@@ -65,9 +58,9 @@ public class ListsRule {
 
         if ((this.protGrpLst != null) || (this.protLst != null) || (this.pepCnsLsts != null)) {
             if (this.infls.getSearchDatabase() == null) {
-                msgs.add(new Message("Rule: If there is a ProteinGroupList, ProteinList or "
-                        + "PeptideConsensusList, there SHOULD be SearchDatabase", Level.WARN));
-                msgs.add(new Message("Problem: there SHOULD be SearchDatabase", Level.WARN));
+                msgs.add(new Message("If there is a ProteinGroupList, ProteinList or "
+                        + "PeptideConsensusList, there SHOULD be SearchDatabase", Level.INFO));
+                msgs.add(new Message("There SHOULD be SearchDatabase", Level.WARN));
             }
         }
 
@@ -91,15 +84,15 @@ public class ListsRule {
      */
     private void checkSC() {
         if ((this.protGrpLst == null) && (this.protLst == null) && (this.pepCnsLsts == null)) {
-            msgs.add(new Message("One of PeptideConsensusList, ProteinList, ProteinGroupList MUST be present.", Level.ERROR));
-            msgs.add(new Message("None of them exists in this file.", Level.ERROR));
+            msgs.add(new Message("One of PeptideConsensusList, ProteinList, ProteinGroupList MUST be present", Level.INFO));
+            msgs.add(new Message("None of them exists in this file", Level.ERROR));
         }
 
         if (this.ftLsts != null) {
             for (FeatureListType featureList : ftLsts) {
                 if (featureList.getFeatureQuantLayer() != null) {
-                    msgs.add(new Message("Rule: there SHOULD NOT be a FeatureQuantLayer.", Level.WARN));
-                    msgs.add(new Message("Problem: FeatureQuantLayer found in FeatrueList "
+                    msgs.add(new Message("There SHOULD NOT be a FeatureQuantLayer", Level.INFO));
+                    msgs.add(new Message("FeatureQuantLayer found in FeatrueList "
                             + featureList.getId(), Level.WARN));
                 }
             }
@@ -108,15 +101,15 @@ public class ListsRule {
 
     private void checkLCMS() {
         if ((this.protGrpLst == null) && (this.protLst == null) && (this.pepCnsLsts == null)) {
-            msgs.add(new Message("Rule: One of PeptideConsensusList, ProteinList, ProteinGroupList SHOULD be present.", Level.WARN));
-            msgs.add(new Message("Problem: None of them exists in this file.", Level.WARN));
+            msgs.add(new Message("One of PeptideConsensusList, ProteinList, ProteinGroupList SHOULD be present", Level.INFO));
+            msgs.add(new Message("None of them exists in this file", Level.WARN));
         }
     }
 
     private void checkMS1() {
         if ((this.protGrpLst == null) && (this.protLst == null) && (this.pepCnsLsts == null)) {
-            msgs.add(new Message("Rule: One of PeptideConsensusList, ProteinList, ProteinGroupList MUST be present.", Level.ERROR));
-            msgs.add(new Message("Problem: None of them exists in this file.", Level.ERROR));
+            msgs.add(new Message("One of PeptideConsensusList, ProteinList, ProteinGroupList MUST be present", Level.INFO));
+            msgs.add(new Message("None of them exists in this file", Level.ERROR));
         }
     }
 
@@ -128,13 +121,13 @@ public class ListsRule {
 
     private void checkFtLst() {
         if (this.ftLsts == null) {
-            msgs.add(new Message(("Rule: If PeptideConsensusList is present there MUST be a FeatureList present and "
-                    + "there MUST be a MS2AssayQuantLayer present."), Level.ERROR));
-            msgs.add(new Message("Problem: there is no FeatureList.", Level.ERROR));
+            msgs.add(new Message(("If PeptideConsensusList is present there MUST be a FeatureList present and "
+                    + "there MUST be a MS2AssayQuantLayer present"), Level.INFO));
+            msgs.add(new Message("There is no FeatureList", Level.ERROR));
         } else {
             for (FeatureListType ftLst : this.ftLsts) {
                 if (ftLst.getMS2AssayQuantLayer() == null) {
-                    msgs.add(new Message("Problem: there is a FeatureList but no MS2AssayQuantLayer.", Level.ERROR));
+                    msgs.add(new Message("There is a FeatureList but no MS2AssayQuantLayer", Level.ERROR));
                 }
             }
         }

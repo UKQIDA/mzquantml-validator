@@ -13,7 +13,6 @@ import java.util.HashMap;
 import java.util.List;
 import org.apache.log4j.Level;
 import uk.ac.liv.mzquantml.validator.utils.AnalysisSummaryElement;
-import uk.ac.liv.mzquantml.validator.utils.AnalysisType;
 import uk.ac.liv.mzquantml.validator.utils.AnalysisType.AnalTp;
 import uk.ac.liv.mzquantml.validator.utils.Message;
 
@@ -52,14 +51,12 @@ public class QuantLayerRule {
      */
     public void check() {
         for (AnalysisSummaryElement ase : this.anlSumMap.keySet()) {
-            if (ase.getAnalysisType() == AnalTp.LabelFree) {
-                checkLCMS(ase, anlSumMap.get(ase));
-            } else if (ase.getAnalysisType() == AnalTp.MS1LabelBased) {
-                checkMS1(ase, anlSumMap.get(ase));
+            if (ase.getAnalysisType() == AnalTp.LabelFree
+                    || ase.getAnalysisType() == AnalTp.MS1LabelBased
+                    || ase.getAnalysisType() == AnalTp.SpectralCounting) {
+                checkNonMS2(ase, anlSumMap.get(ase));
             } else if (ase.getAnalysisType() == AnalTp.MS2TagBased) {
                 checkMS2(ase, anlSumMap.get(ase));
-            } else if (ase.getAnalysisType() == AnalTp.SpectralCounting) {
-                checkSC(ase, anlSumMap.get(ase));
             }
         }
     }
@@ -71,95 +68,250 @@ public class QuantLayerRule {
     /*
      * private methods
      */
-    private void checkLCMS(AnalysisSummaryElement ase, Boolean b) {
-        if (ase == AnalysisSummaryElement.LCMSProtG) {
-            if (isProtGQLExist(this.protGrpLst) != b.booleanValue()) {
-                if (b.booleanValue()) {
-                    msgs.add(new Message("Rule: If the cvParam values in AnalysisSummary states that a particular type of QuantLayer is present, "
-                            + "then at least one quant layer MUST be present", Level.ERROR));
-                    msgs.add(new Message("Problem: the value of \"label-free proteingroup level quantitation\" is \"true\", "
-                            + "but there is no QuantLayer in ProteinGroupList", Level.ERROR));
+    private void checkNonMS2(AnalysisSummaryElement ase, Boolean b) {
+        if (ase == AnalysisSummaryElement.LCMSProtG
+                || ase == AnalysisSummaryElement.MS1ProtG
+                || ase == AnalysisSummaryElement.SCProtG) {
+            // proteingroup level quantitation = "true"
+            if (b.booleanValue()) {
+                if (this.protGrpLst == null) {
+                    msgs.add(new Message(ase.getName() + " = \"true\", "
+                            + "there is no ProteinGroupList in the file", Level.ERROR));
                 } else {
-                    msgs.add(new Message("Rule: If the cvParam values in AnalysisSummary states that a particular type of QuantLayer is present, "
-                            + "then at least one quant layer MUST be present", Level.ERROR));
-                    msgs.add(new Message("Problem: the value of \"label-free proteingroup level quantitation\" is \"false\", "
+                    if (!isProtGQLExist(this.protGrpLst)) {
+                        msgs.add(new Message(ase.getName() + " = \"true\", "
+                                + "but there is no QuantLayer in ProteinGroupList", Level.ERROR));
+                    }
+                }
+            } else { // proteingroup level quantitation = "false"
+                if (this.protGrpLst != null && isProtGQLExist(this.protGrpLst)) {
+                    msgs.add(new Message(ase.getName() + " = \"false\", "
                             + "but there is at least one QuantLayer in ProteinGroupList", Level.ERROR));
                 }
             }
         }
 
-        if (ase == AnalysisSummaryElement.LCMSProt) {
-            if (isProtQLExist(this.protLst) != b.booleanValue()) {
-                if (b.booleanValue()) {
-                    msgs.add(new Message("Rule: If the cvParam values in AnalysisSummary states that a particular type of QuantLayer is present, "
-                            + "then at least one quant layer MUST be present", Level.ERROR));
-                    msgs.add(new Message("Problem: the value of \"label-free protein level quantitation\" is \"true\", "
-                            + "but there is no QuantLayer in ProteinGroupList", Level.ERROR));
+        if (ase == AnalysisSummaryElement.LCMSProt
+                || ase == AnalysisSummaryElement.MS1Prot
+                || ase == AnalysisSummaryElement.SCProt) {
+            // protein level quantitation = "true"
+            if (b.booleanValue()) {
+                if (this.protLst == null) {
+                    msgs.add(new Message(ase.getName() + " = \"true\", "
+                            + "there is no ProteinList in the file", Level.ERROR));
                 } else {
-                    msgs.add(new Message("Rule: If the cvParam values in AnalysisSummary states that a particular type of QuantLayer is present, "
-                            + "then at least one quant layer MUST be present", Level.ERROR));
-                    msgs.add(new Message("Problem: the value of \"label-free protein level quantitation\" is \"false\", "
+                    if (!isProtQLExist(this.protLst)) {
+                        msgs.add(new Message(ase.getName() + " = \"true\", "
+                                + "but there is no QuantLayer in ProteinList", Level.ERROR));
+                    }
+                }
+            } else { // protein level quantitation = "false"
+                if (this.protLst != null && isProtQLExist(this.protLst)) {
+                    msgs.add(new Message(ase.getName() + " = \"false\", "
                             + "but there is at least one QuantLayer in ProteinList", Level.ERROR));
                 }
             }
         }
 
-        if (ase == AnalysisSummaryElement.LCMSPep) {
+        if (ase == AnalysisSummaryElement.LCMSPep
+                || ase == AnalysisSummaryElement.MS1Pep
+                || ase == AnalysisSummaryElement.SCPep) {
+            if (this.pepCnsLsts == null && b.booleanValue()) {
+                msgs.add(new Message(ase.getName() + " = \"true\", "
+                        + "but there is no PeptideConsensusList", Level.ERROR));
+            }
+            if (this.pepCnsLsts != null) {
+                for (PeptideConsensusListType pepCnsLst : this.pepCnsLsts) {
+                    if (isPepQLExist(pepCnsLst) != b.booleanValue()) {
+                        if (b.booleanValue()) {
+                            msgs.add(new Message("If the cvParam values in AnalysisSummary states that a particular type of QuantLayer is present, "
+                                    + "then at least one quant layer MUST be present", Level.INFO));
+                            msgs.add(new Message(ase.getName() + " = \"true\", "
+                                    + "but there is no QuantLayer in PeptideConsensuList", Level.ERROR));
+                        } else {
+                            msgs.add(new Message("If the cvParam values in AnalysisSummary states that a particular type of QuantLayer is present, "
+                                    + "then at least one quant layer MUST be present", Level.INFO));
+                            msgs.add(new Message(ase.getName() + " = \"false\", "
+                                    + "but there is at least one QuantLayer in PeptideConsensusList", Level.ERROR));
+                        }
+                    }
+                }
+            }
         }
 
-        if (ase == AnalysisSummaryElement.LCMSFt) {
+        if (ase == AnalysisSummaryElement.LCMSFt || ase == AnalysisSummaryElement.MS1Ft) {
+            if (this.ftLsts == null && b.booleanValue()) {
+                msgs.add(new Message(ase.getName() + " = \"true\", "
+                        + "but there is no FeatureList", Level.ERROR));
+            }
+            if (this.ftLsts != null) {
+                for (FeatureListType ftLst : this.ftLsts) {
+                    if (b.booleanValue() && ftLst.getFeatureQuantLayer() == null) {
+                        msgs.add(new Message(ase.getName() + " = \"true\", "
+                                + "but there is no FeatureQuantLayer", Level.ERROR));
+                    }
+                    if (!b.booleanValue() && ftLst.getFeatureQuantLayer() != null) {
+                        msgs.add(new Message(ase.getName() + " = \"false\", "
+                                + "but there is a FeatureQuantLayer", Level.ERROR));
+                    }
+                    if (isMS2QLExist(ftLst)) {
+                        msgs.add(new Message("There MUST not be any MS2QuantLayers for " + ase.getAnalysisType().getName(), Level.INFO));
+                        msgs.add(new Message("There is at least one MS2QuantLayer exist", Level.ERROR));
+                    }
+                }
+            }
         }
-    }
-
-    private void checkMS1(AnalysisSummaryElement ase, Boolean b) {
     }
 
     private void checkMS2(AnalysisSummaryElement ase, Boolean b) {
-    }
+        if (ase == AnalysisSummaryElement.MS2ProtG) {
+            // proteingroup level quantitation = "true"
+            if (b.booleanValue()) {
+                if (this.protGrpLst == null) {
+                    msgs.add(new Message(ase.getName() + " = \"true\", "
+                            + "there is no ProteinGroupList in the file", Level.ERROR));
+                } else {
+                    if (!isProtGQLExist(this.protGrpLst)) {
+                        msgs.add(new Message(ase.getName() + " = \"true\", "
+                                + "but there is no QuantLayer in ProteinGroupList", Level.ERROR));
+                    }
+                }
+            } else { // proteingroup level quantitation = "false"
+                if (this.protGrpLst != null && isProtGQLExist(this.protGrpLst)) {
+                    msgs.add(new Message(ase.getName() + " = \"false\", "
+                            + "but there is at least one QuantLayer in ProteinGroupList", Level.ERROR));
+                }
+            }
+        }
 
-    private void checkSC(AnalysisSummaryElement ase, Boolean b) {
+        if (ase == AnalysisSummaryElement.MS2Prot) {
+            // protein level quantitation = "true"
+            if (b.booleanValue()) {
+                if (this.protLst == null) {
+                    msgs.add(new Message(ase.getName() + " = \"true\", "
+                            + "there is no ProteinList in the file", Level.ERROR));
+                } else {
+                    if (!isProtQLExist(this.protLst)) {
+                        msgs.add(new Message(ase.getName() + " = \"true\", "
+                                + "but there is no QuantLayer in ProteinList", Level.ERROR));
+                    }
+                }
+            } else { // protein level quantitation = "false"
+                if (this.protLst != null && isProtQLExist(this.protLst)) {
+                    msgs.add(new Message(ase.getName() + " = \"false\", "
+                            + "but there is at least one QuantLayer in ProteinList", Level.ERROR));
+                }
+            }
+        }
+
+        if (ase == AnalysisSummaryElement.MS2Pep) {
+            if (this.pepCnsLsts == null && b.booleanValue()) {
+                msgs.add(new Message(ase.getName() + " = \"true\", "
+                        + "but there is no PeptideConsensusList", Level.ERROR));
+            }
+            if (this.pepCnsLsts != null) {
+                for (PeptideConsensusListType pepCnsLst : this.pepCnsLsts) {
+                    if (isPepQLExist(pepCnsLst) != b.booleanValue()) {
+                        if (b.booleanValue()) {
+                            msgs.add(new Message("If the cvParam values in AnalysisSummary states that a particular type of QuantLayer is present, "
+                                    + "then at least one quant layer MUST be present", Level.INFO));
+                            msgs.add(new Message(ase.getName() + " = \"true\", "
+                                    + "but there is no QuantLayer in PeptideConsensuList", Level.ERROR));
+                        } else {
+                            msgs.add(new Message("If the cvParam values in AnalysisSummary states that a particular type of QuantLayer is present, "
+                                    + "then at least one quant layer MUST be present", Level.INFO));
+                            msgs.add(new Message(ase.getName() + " = \"false\", "
+                                    + "but there is at least one QuantLayer in PeptideConsensusList", Level.ERROR));
+                        }
+                    }
+                }
+            }
+        }
+
+        if (ase == AnalysisSummaryElement.MS2Ft) {
+            if (this.ftLsts == null && b.booleanValue()) {
+                msgs.add(new Message(ase.getName() + " = \"true\", "
+                        + "but there is no FeatureList", Level.ERROR));
+            }
+            if (this.ftLsts != null) {
+                for (FeatureListType ftLst : this.ftLsts) {
+                    if (b.booleanValue() && ftLst.getFeatureQuantLayer() == null) {
+                        msgs.add(new Message(ase.getName() + " = \"true\", "
+                                + "but there is no FeatureQuantLayer", Level.ERROR));
+                    }
+                    if (!b.booleanValue() && ftLst.getFeatureQuantLayer() != null) {
+                        msgs.add(new Message(ase.getName() + " = \"false\", "
+                                + "but there is a FeatureQuantLayer", Level.ERROR));
+                    }
+                    if (isMS2QLExist(ftLst)) {
+                        msgs.add(new Message("There MUST not be any MS2QuantLayers for " + ase.getAnalysisType().getName(), Level.INFO));
+                        msgs.add(new Message("There is at least one MS2QuantLayer exist", Level.ERROR));
+                    }
+                }
+            }
+        }
     }
 
     private boolean isPepQLExist(PeptideConsensusListType peptideConsensusList) {
         boolean b = false;
-        if (peptideConsensusList.getAssayQuantLayer() != null
-                || peptideConsensusList.getStudyVariableQuantLayer() != null
-                || peptideConsensusList.getRatioQuantLayer() != null
-                || peptideConsensusList.getGlobalQuantLayer() != null) {
-            b = true;
+        if (peptideConsensusList != null) {
+            if (peptideConsensusList.getAssayQuantLayer() != null
+                    || peptideConsensusList.getStudyVariableQuantLayer() != null
+                    || peptideConsensusList.getRatioQuantLayer() != null
+                    || peptideConsensusList.getGlobalQuantLayer() != null) {
+                b = true;
+            }
         }
         return b;
     }
 
     private boolean isProtGQLExist(ProteinGroupListType proteinGroupList) {
         boolean b = false;
-        if (proteinGroupList.getAssayQuantLayer() != null
-                || proteinGroupList.getStudyVariableQuantLayer() != null
-                || proteinGroupList.getRatioQuantLayer() != null
-                || proteinGroupList.getGlobalQuantLayer() != null) {
-            b = true;
+        if (proteinGroupList != null) {
+            if (proteinGroupList.getAssayQuantLayer() != null
+                    || proteinGroupList.getStudyVariableQuantLayer() != null
+                    || proteinGroupList.getRatioQuantLayer() != null
+                    || proteinGroupList.getGlobalQuantLayer() != null) {
+                b = true;
+            }
         }
         return b;
     }
 
     private boolean isProtQLExist(ProteinListType proteinList) {
         boolean b = false;
-        if (proteinList.getAssayQuantLayer() != null
-                || proteinList.getStudyVariableQuantLayer() != null
-                || proteinList.getRatioQuantLayer() != null
-                || proteinList.getGlobalQuantLayer() != null) {
-            b = true;
+        if (proteinList != null) {
+            if (proteinList.getAssayQuantLayer() != null
+                    || proteinList.getStudyVariableQuantLayer() != null
+                    || proteinList.getRatioQuantLayer() != null
+                    || proteinList.getGlobalQuantLayer() != null) {
+                b = true;
+            }
         }
         return b;
     }
 
     private boolean isFtQLExist(FeatureListType featureList) {
         boolean b = false;
-        if (featureList.getMS2AssayQuantLayer() != null
-                || featureList.getMS2StudyVariableQuantLayer() != null
-                || featureList.getMS2RatioQuantLayer() != null
-                || featureList.getFeatureQuantLayer() != null) {
-            b = true;
+        if (featureList != null) {
+            if (featureList.getMS2AssayQuantLayer() != null
+                    || featureList.getMS2StudyVariableQuantLayer() != null
+                    || featureList.getMS2RatioQuantLayer() != null
+                    || featureList.getFeatureQuantLayer() != null) {
+                b = true;
+            }
+        }
+        return b;
+    }
+
+    private boolean isMS2QLExist(FeatureListType featureList) {
+        boolean b = false;
+        if (featureList != null) {
+            if (featureList.getMS2AssayQuantLayer() != null
+                    || featureList.getMS2RatioQuantLayer() != null
+                    || featureList.getMS2StudyVariableQuantLayer() != null) {
+                b = true;
+            }
         }
         return b;
     }
