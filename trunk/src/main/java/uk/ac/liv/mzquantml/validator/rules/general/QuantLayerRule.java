@@ -146,11 +146,11 @@ public class QuantLayerRule {
             }
             if (this.ftLsts != null) {
                 for (FeatureListType ftLst : this.ftLsts) {
-                    if (b.booleanValue() && ftLst.getFeatureQuantLayer() == null) {
+                    if (b.booleanValue() && ftLst.getFeatureQuantLayer().isEmpty()) {
                         msgs.add(new Message(ase.getName() + " = \"true\", "
                                 + "but there is no FeatureQuantLayer in FeatureList " + "\"" + ftLst.getId() + "\"", Level.ERROR));
                     }
-                    if (!b.booleanValue() && ftLst.getFeatureQuantLayer() != null) {
+                    if (!b.booleanValue() && !ftLst.getFeatureQuantLayer().isEmpty()) {
                         msgs.add(new Message(ase.getName() + " = \"false\", "
                                 + "but there is a FeatureQuantLayer in FeatureList " + "\"" + ftLst.getId() + "\"", Level.ERROR));
                     }
@@ -255,10 +255,10 @@ public class QuantLayerRule {
     private boolean isPepQLExist(PeptideConsensusListType peptideConsensusList) {
         boolean b = false;
         if (peptideConsensusList != null) {
-            if (peptideConsensusList.getAssayQuantLayer() != null
-                    || peptideConsensusList.getStudyVariableQuantLayer() != null
-                    || peptideConsensusList.getRatioQuantLayer() != null
-                    || peptideConsensusList.getGlobalQuantLayer() != null) {
+            if (!peptideConsensusList.getAssayQuantLayer().isEmpty()
+                    || !peptideConsensusList.getStudyVariableQuantLayer().isEmpty()
+                    || !peptideConsensusList.getRatioQuantLayer().isEmpty()
+                    || !peptideConsensusList.getGlobalQuantLayer().isEmpty()) {
                 b = true;
             }
         }
@@ -268,10 +268,10 @@ public class QuantLayerRule {
     private boolean isProtGQLExist(ProteinGroupListType proteinGroupList) {
         boolean b = false;
         if (proteinGroupList != null) {
-            if (proteinGroupList.getAssayQuantLayer() != null
-                    || proteinGroupList.getStudyVariableQuantLayer() != null
-                    || proteinGroupList.getRatioQuantLayer() != null
-                    || proteinGroupList.getGlobalQuantLayer() != null) {
+            if (!proteinGroupList.getAssayQuantLayer().isEmpty()
+                    || !proteinGroupList.getStudyVariableQuantLayer().isEmpty()
+                    || !proteinGroupList.getRatioQuantLayer().isEmpty()
+                    || !proteinGroupList.getGlobalQuantLayer().isEmpty()) {
                 b = true;
             }
         }
@@ -281,10 +281,10 @@ public class QuantLayerRule {
     private boolean isProtQLExist(ProteinListType proteinList) {
         boolean b = false;
         if (proteinList != null) {
-            if (proteinList.getAssayQuantLayer() != null
-                    || proteinList.getStudyVariableQuantLayer() != null
-                    || proteinList.getRatioQuantLayer() != null
-                    || proteinList.getGlobalQuantLayer() != null) {
+            if (!proteinList.getAssayQuantLayer().isEmpty()
+                    || !proteinList.getStudyVariableQuantLayer().isEmpty()
+                    || !proteinList.getRatioQuantLayer().isEmpty()
+                    || !proteinList.getGlobalQuantLayer().isEmpty()) {
                 b = true;
             }
         }
@@ -294,10 +294,10 @@ public class QuantLayerRule {
     private boolean isFtQLExist(FeatureListType featureList) {
         boolean b = false;
         if (featureList != null) {
-            if (featureList.getMS2AssayQuantLayer() != null
-                    || featureList.getMS2StudyVariableQuantLayer() != null
-                    || featureList.getMS2RatioQuantLayer() != null
-                    || featureList.getFeatureQuantLayer() != null) {
+            if (!featureList.getMS2AssayQuantLayer().isEmpty()
+                    || !featureList.getMS2StudyVariableQuantLayer().isEmpty()
+                    || !featureList.getMS2RatioQuantLayer().isEmpty()
+                    || !featureList.getFeatureQuantLayer().isEmpty()) {
                 b = true;
             }
         }

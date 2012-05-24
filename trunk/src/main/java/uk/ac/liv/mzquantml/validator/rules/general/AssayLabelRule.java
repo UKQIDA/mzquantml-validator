@@ -68,12 +68,15 @@ public class AssayLabelRule {
                 List<ModParamType> modParamList = assay.getLabel().getModification();
 
                 if (modParamList != null) {
-                    msgs.add(new Message("There MUST NOT be any Label in "
-                            + "AssayList or only \"Unmodified\" label (spectral counting)", Level.INFO));
+
                     if (modParamList.size() == 1 && !modParamList.get(0).getCvParam().getName().toLowerCase().equals("unmodified")) {
+                        msgs.add(new Message("There MUST NOT be any Label in "
+                                + "AssayList or only \"Unmodified\" label (spectral counting)", Level.INFO));
                         msgs.add(new Message("The label is not \"Unmodified\"", Level.ERROR));
                     }
                     if (modParamList.size() > 1) {
+                        msgs.add(new Message("There MUST NOT be any Label in "
+                                + "AssayList or only \"Unmodified\" label (spectral counting)", Level.INFO));
                         msgs.add(new Message("There MUST NOT be any modification label (excepte Unmodified Label) in AssayList", Level.ERROR));
                     }
                 }
@@ -94,12 +97,15 @@ public class AssayLabelRule {
                 List<ModParamType> modParamList = assay.getLabel().getModification();
 
                 if (modParamList != null) {
-                    msgs.add(new Message("There MUST NOT be any Label in "
-                            + "AssayList or only \"Unmodified\" label (LC-MS label-free)", Level.INFO));
+
                     if (modParamList.size() == 1 && !modParamList.get(0).getCvParam().getName().toLowerCase().equals("unmodified")) {
+                        msgs.add(new Message("There MUST NOT be any Label in "
+                                + "AssayList or only \"Unmodified\" label (LC-MS label-free)", Level.INFO));
                         msgs.add(new Message("The label is not \"Unmodified\"", Level.ERROR));
                     }
                     if (modParamList.size() > 1) {
+                        msgs.add(new Message("There MUST NOT be any Label in "
+                                + "AssayList or only \"Unmodified\" label (LC-MS label-free)", Level.INFO));
                         msgs.add(new Message("There MUST NOT be any modification label (excepte Unmodified Label) in AssayList", Level.ERROR));
                     }
                 }

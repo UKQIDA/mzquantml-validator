@@ -35,16 +35,18 @@ public class FinalResultRule {
      */
     public void check() {
         int count = 0;
-        for (PeptideConsensusListType peptideConsensusList : this.pepCnsLsts) {
-            if (peptideConsensusList.isFinalResult()) {
-                count++;
+        if (!this.pepCnsLsts.isEmpty()) {
+            for (PeptideConsensusListType peptideConsensusList : this.pepCnsLsts) {
+                if (peptideConsensusList.isFinalResult()) {
+                    count++;
+                }
             }
-        }
-        if (count != 1) {
-            msgs.add(new Message("Exactly one PeptideConsensusList "
-                    + "MUST have isFinalResult=\"true\"", Level.INFO));
-            msgs.add(new Message(String.valueOf(count)
-                    + " PeptideConsensusList(s) have/has isFinalResult=\"true\"", Level.ERROR));
+            if (count != 1) {
+                msgs.add(new Message("Exactly one PeptideConsensusList "
+                        + "MUST have isFinalResult=\"true\"", Level.INFO));
+                msgs.add(new Message(String.valueOf(count)
+                        + " PeptideConsensusList(s) have/has isFinalResult=\"true\"", Level.ERROR));
+            }
         }
     }
 
