@@ -264,10 +264,10 @@ public class MzQuantMLValidator {
         List<AssayType> assays = assayList.getAssay();
         String id = assayList.getId();
 
-        Object rawFilesGroupRef = assayList.getRawFileGroupRef();
-        if (rawFilesGroupRef != null) {
-            msgs.addAll(checkObjectRef(rawFilesGroupRef, info.psidev.psi.pi.mzquantml._1_0.RawFilesGroupType.class));
-        }
+//        Object rawFilesGroupRef = assayList.getRawFileGroupRef();
+//        if (rawFilesGroupRef != null) {
+//            msgs.addAll(checkObjectRef(rawFilesGroupRef, info.psidev.psi.pi.mzquantml._1_0.RawFilesGroupType.class));
+//        }
 
         checkAssay(assays);
 
@@ -327,7 +327,7 @@ public class MzQuantMLValidator {
             List<AbstractParamType> paramGroups = featureList.getParamGroup();
             checkParamGroup(paramGroups);
 
-            Object rawFileGroupRef = featureList.getRawFileGroupRef();
+            Object rawFileGroupRef = featureList.getRawFilesGroupRef();
             msgs.addAll(checkObjectRef(rawFileGroupRef, info.psidev.psi.pi.mzquantml._1_0.RawFilesGroupType.class));
 
         }
@@ -399,7 +399,7 @@ public class MzQuantMLValidator {
     static public void checkInputFiles(InputFilesType inputFiles) {
         IdentificationFilesType identificationFiles = inputFiles.getIdentificationFiles();
 
-        List<MethodFilesType> methodFiles = inputFiles.getMethodFiles();
+        MethodFilesType methodFiles = inputFiles.getMethodFiles();
 
         List<RawFilesGroupType> rawFilesGroups = inputFiles.getRawFilesGroup();
         checkRawFilesGroup(rawFilesGroups);
@@ -643,7 +643,7 @@ public class MzQuantMLValidator {
                 checkCvParam(cvParam);
             }
 
-            Object rawFilesGroupRef = assay.getRawFileGroupRef();
+            Object rawFilesGroupRef = assay.getRawFilesGroupRef();
             if (rawFilesGroupRef != null) {
                 msgs.addAll(checkObjectRef(rawFilesGroupRef,
                         info.psidev.psi.pi.mzquantml._1_0.RawFilesGroupType.class));
