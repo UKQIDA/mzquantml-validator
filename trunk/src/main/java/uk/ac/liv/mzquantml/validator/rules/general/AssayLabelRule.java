@@ -6,6 +6,7 @@ package uk.ac.liv.mzquantml.validator.rules.general;
 
 import info.psidev.psi.pi.mzquantml._1_0.AssayListType;
 import info.psidev.psi.pi.mzquantml._1_0.AssayType;
+import info.psidev.psi.pi.mzquantml._1_0.ModParamType;
 import info.psidev.psi.pi.mzquantml._1_0.RawFilesGroupType;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -64,14 +65,21 @@ public class AssayLabelRule {
     private void checkSC() {
         for (AssayType assay : this.assyLst.getAssay()) {
             if (assay.getLabel() != null) {
-                msgs.add(new Message("There MUST NOT be any Label in "
-                        + "AssayList (spectral counting)", Level.INFO));
-                String labelNm = assay.getLabel().getCvParam().getName();
-                msgs.add(new Message(("There is a label "
-                        + "with name (" + labelNm + ") in AssayList"), Level.ERROR));
+                List<ModParamType> modParamList = assay.getLabel().getModification();
+
+                if (modParamList != null) {
+                    msgs.add(new Message("There MUST NOT be any Label in "
+                            + "AssayList or only \"Unmodified\" label (spectral counting)", Level.INFO));
+                    if (modParamList.size() == 1 && !modParamList.get(0).getCvParam().getName().toLowerCase().equals("unmodified")) {
+                        msgs.add(new Message("The label is not \"Unmodified\"", Level.ERROR));
+                    }
+                    if (modParamList.size() > 1) {
+                        msgs.add(new Message("There MUST NOT be any modification label (excepte Unmodified Label) in AssayList", Level.ERROR));
+                    }
+                }
             }
 
-            if ((assay.getIdentificationFileRefs() == null) && (assay.getRawFileGroupRef() == null)) {
+            if ((assay.getIdentificationFileRefs() == null) && (assay.getRawFilesGroupRef() == null)) {
                 msgs.add(new Message("There MUST be at least one of rawFilesGroup_Ref or "
                         + "identificationFile_Refs in Assay", Level.INFO));
                 msgs.add(new Message("None of these exsits in Assay "
@@ -83,11 +91,18 @@ public class AssayLabelRule {
     private void checkLCMS() {
         for (AssayType assay : this.assyLst.getAssay()) {
             if (assay.getLabel() != null) {
-                msgs.add(new Message("There MUST NOT be any Label in "
-                        + "AssayList (LC-MS label-free)", Level.INFO));
-                String labelNm = assay.getLabel().getCvParam().getName();
-                msgs.add(new Message(("There is a label "
-                        + "with name (" + labelNm + ") in AssayList"), Level.ERROR));
+                List<ModParamType> modParamList = assay.getLabel().getModification();
+
+                if (modParamList != null) {
+                    msgs.add(new Message("There MUST NOT be any Label in "
+                            + "AssayList or only \"Unmodified\" label (LC-MS label-free)", Level.INFO));
+                    if (modParamList.size() == 1 && !modParamList.get(0).getCvParam().getName().toLowerCase().equals("unmodified")) {
+                        msgs.add(new Message("The label is not \"Unmodified\"", Level.ERROR));
+                    }
+                    if (modParamList.size() > 1) {
+                        msgs.add(new Message("There MUST NOT be any modification label (excepte Unmodified Label) in AssayList", Level.ERROR));
+                    }
+                }
             }
         }
     }
@@ -102,7 +117,7 @@ public class AssayLabelRule {
         HashMap<Object, ArrayList<AssayType>> rawfilegrouprefAssayMap =
                 new HashMap<Object, ArrayList<AssayType>>();
         for (AssayType assay : assays) {
-            Object rawfilegroupRef = assay.getRawFileGroupRef();
+            Object rawfilegroupRef = assay.getRawFilesGroupRef();
             ArrayList<AssayType> manyAssay = rawfilegrouprefAssayMap.get(rawfilegroupRef);
             if (manyAssay == null) {
                 manyAssay = new ArrayList<AssayType>();
