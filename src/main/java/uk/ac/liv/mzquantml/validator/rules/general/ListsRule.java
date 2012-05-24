@@ -90,7 +90,7 @@ public class ListsRule {
 
         if (this.ftLsts != null) {
             for (FeatureListType featureList : ftLsts) {
-                if (featureList.getFeatureQuantLayer() != null) {
+                if (!featureList.getFeatureQuantLayer().isEmpty()) {
                     msgs.add(new Message("There SHOULD NOT be a FeatureQuantLayer", Level.INFO));
                     msgs.add(new Message("FeatureQuantLayer found in FeatrueList "
                             + featureList.getId(), Level.WARN));
