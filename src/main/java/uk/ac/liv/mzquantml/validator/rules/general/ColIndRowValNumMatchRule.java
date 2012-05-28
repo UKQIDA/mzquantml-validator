@@ -4,7 +4,10 @@
  */
 package uk.ac.liv.mzquantml.validator.rules.general;
 
-import info.psidev.psi.pi.mzquantml._1_0.*;
+import info.psidev.psi.pi.mzquantml._1_0.DataMatrixType;
+import info.psidev.psi.pi.mzquantml._1_0.GlobalQuantLayerType;
+import info.psidev.psi.pi.mzquantml._1_0.QuantLayerType;
+import info.psidev.psi.pi.mzquantml._1_0.RowType;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.log4j.Level;
@@ -12,9 +15,7 @@ import uk.ac.liv.mzquantml.validator.utils.Message;
 
 /**
  *
- * @author Da Qi
- * @institute University of Liverpool
- * @time May 3, 2012 2:08:35 PM
+ * @author Da Qi @institute University of Liverpool @time May 3, 2012 2:08:35 PM
  */
 public class ColIndRowValNumMatchRule {
 
@@ -31,9 +32,10 @@ public class ColIndRowValNumMatchRule {
         for (RowType row : rows) {
             int colNum = row.getValue().size();
             if (colNum != indexNum) {
-                Message msg = new Message(("Row \"" + row.getObjectRef().toString()
-                        + "\" has difference numbers of value from column indices.\n"), Level.ERROR);
-                msgs.add(msg);
+                msgs.add(new Message("The number of data values in every Row of a QuantLayer "
+                        + "MUST be equal to number of items in <ColumnIndex>", Level.INFO));
+                msgs.add(new Message(("Row \"" + row.getObjectRef().toString()
+                        + "\" has different numbers of value from column indices\n"), Level.ERROR));
             }
         }
     }
@@ -45,9 +47,10 @@ public class ColIndRowValNumMatchRule {
         for (RowType row : rows) {
             int colNum = row.getValue().size();
             if (colNum != indexNum) {
-                Message msg = new Message(("Row \"" + row.getObjectRef().toString()
-                        + "\" has difference numbers of value from column indices.\n"), Level.ERROR);
-                msgs.add(msg);
+                msgs.add(new Message("The number of data values in every Row of a QuantLayer "
+                        + "MUST be equal to number of items in <ColumnIndex>", Level.INFO));
+                msgs.add(new Message(("Row \"" + row.getObjectRef().toString()
+                        + "\" has different numbers of value from column indices\n"), Level.ERROR));
             }
         }
     }

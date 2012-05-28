@@ -72,12 +72,13 @@ public class AssayLabelRule {
                     if (modParamList.size() == 1 && !modParamList.get(0).getCvParam().getName().toLowerCase().equals("unmodified")) {
                         msgs.add(new Message("There MUST NOT be any Label in "
                                 + "AssayList or only \"Unmodified\" label (spectral counting)", Level.INFO));
-                        msgs.add(new Message("The label is not \"Unmodified\"", Level.ERROR));
+                        msgs.add(new Message("The label is not \"Unmodified\"\n", Level.ERROR));
                     }
                     if (modParamList.size() > 1) {
                         msgs.add(new Message("There MUST NOT be any Label in "
                                 + "AssayList or only \"Unmodified\" label (spectral counting)", Level.INFO));
-                        msgs.add(new Message("There MUST NOT be any modification label (excepte Unmodified Label) in AssayList", Level.ERROR));
+                        msgs.add(new Message("There MUST NOT be any modification label "
+                                + "(excepte Unmodified Label) in AssayList\n", Level.ERROR));
                     }
                 }
             }
@@ -86,7 +87,7 @@ public class AssayLabelRule {
                 msgs.add(new Message("There MUST be at least one of rawFilesGroup_Ref or "
                         + "identificationFile_Refs in Assay", Level.INFO));
                 msgs.add(new Message("None of these exsits in Assay "
-                        + assay.getId(), Level.ERROR));
+                        + assay.getId() + "\n", Level.ERROR));
             }
         }
     }
@@ -101,12 +102,13 @@ public class AssayLabelRule {
                     if (modParamList.size() == 1 && !modParamList.get(0).getCvParam().getName().toLowerCase().equals("unmodified")) {
                         msgs.add(new Message("There MUST NOT be any Label in "
                                 + "AssayList or only \"Unmodified\" label (LC-MS label-free)", Level.INFO));
-                        msgs.add(new Message("The label is not \"Unmodified\"", Level.ERROR));
+                        msgs.add(new Message("The label is not \"Unmodified\"\n", Level.ERROR));
                     }
                     if (modParamList.size() > 1) {
                         msgs.add(new Message("There MUST NOT be any Label in "
                                 + "AssayList or only \"Unmodified\" label (LC-MS label-free)", Level.INFO));
-                        msgs.add(new Message("There MUST NOT be any modification label (excepte Unmodified Label) in AssayList", Level.ERROR));
+                        msgs.add(new Message("There MUST NOT be any modification label "
+                                + "(excepte Unmodified Label) in AssayList\n", Level.ERROR));
                     }
                 }
             }
@@ -145,7 +147,7 @@ public class AssayLabelRule {
                 msgs.add(new Message("The file MUST contain two or more "
                         + "assays references to the same rawFileGroup", Level.INFO));
                 msgs.add(new Message("Only one assay reference to the rawFileGroup ("
-                        + rawFileGroup.getId() + ")", Level.ERROR));
+                        + rawFileGroup.getId() + ")\n", Level.ERROR));
             }
         }
 
@@ -159,7 +161,7 @@ public class AssayLabelRule {
                     msgs.add(new Message("At least one of the grouped assays that "
                             + "reference to a common rawFileGroup MUST hae the \"Label\" element", Level.INFO));
                     msgs.add(new Message("Assays with a common rawFileGroupRef ("
-                            + rawFileGroup.getId() + ") do not have \"Lable\" element", Level.ERROR));
+                            + rawFileGroup.getId() + ") do not have \"Lable\" element\n", Level.ERROR));
                 }
             }
         }

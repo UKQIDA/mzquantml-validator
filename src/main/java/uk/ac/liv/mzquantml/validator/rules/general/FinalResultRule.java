@@ -45,7 +45,7 @@ public class FinalResultRule {
                 msgs.add(new Message("Exactly one PeptideConsensusList "
                         + "MUST have isFinalResult=\"true\"", Level.INFO));
                 msgs.add(new Message(String.valueOf(count)
-                        + " PeptideConsensusList(s) have/has isFinalResult=\"true\"", Level.ERROR));
+                        + " PeptideConsensusList(s) have/has isFinalResult=\"true\"\n", Level.ERROR));
             }
         }
     }
