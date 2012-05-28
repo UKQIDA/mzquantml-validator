@@ -15,9 +15,7 @@ import uk.ac.liv.mzquantml.validator.utils.Message;
 
 /**
  *
- * @author Da Qi
- * @time 00:58:46 26-Apr-2012
- * @institution University of Liverpool
+ * @author Da Qi @time 00:58:46 26-Apr-2012 @institution University of Liverpool
  */
 public class UniqueObjectRefRule {
 
@@ -33,7 +31,8 @@ public class UniqueObjectRefRule {
             HashSet objectRefSet = new HashSet();
             for (RowType row : rowList) {
                 if (!objectRefSet.add(row.getObjectRef())) {  //need adaptor
-                    Message msg = new Message(("Duplicate object_ref: " + row.getObjectRef().toString()), Level.ERROR);
+                    Message msg = new Message(("Duplicate object_ref: " + row.getObjectRef().toString())
+                            + "\n", Level.ERROR);
                     messages.add(msg);
                 }
             }
@@ -46,7 +45,8 @@ public class UniqueObjectRefRule {
             HashSet objectRefSet = new HashSet();
             for (RowType row : rowList) {
                 if (!objectRefSet.add(row.getObjectRef())) {  //need adaptor
-                    Message msg = new Message(("Duplicate object_ref: " + row.getObjectRef().toString()), Level.ERROR);
+                    Message msg = new Message(("Duplicate object_ref: " + row.getObjectRef().toString()
+                            + "\n"), Level.ERROR);
                     messages.add(msg);
                 }
             }
