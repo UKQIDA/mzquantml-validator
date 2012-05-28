@@ -4,6 +4,7 @@
  */
 package uk.ac.liv.mzquantml.validator.rules.general;
 
+import info.psidev.psi.pi.mzquantml._1_0.*;
 import java.util.ArrayList;
 import org.apache.log4j.Level;
 import uk.ac.liv.mzquantml.validator.utils.Message;
@@ -14,31 +15,82 @@ import uk.ac.liv.mzquantml.validator.utils.Message;
  */
 public class ObjectRefTypeMatchRule {
 
-    private static ArrayList<Message> msgs = new ArrayList<Message>();
-    String targetClassName;
+    ArrayList<Message> msgs = new ArrayList<Message>();
     String targetClassId;
     Object refObj;
     Class cls;
 
     public ObjectRefTypeMatchRule() {
-        msgs = new ArrayList<Message>();
     }
 
-    public ObjectRefTypeMatchRule(String tarClsN, String tarClsId, Object obj, Class cls) {
-        this.targetClassName = tarClsN;
+    public ObjectRefTypeMatchRule(String tarClsId, Object obj, Class cls) {
         this.targetClassId = tarClsId;
         this.cls = cls;
         this.refObj = obj;
     }
 
-    public <T> void check() {
+    public void check() {
         if (this.refObj != null) {
             if (!(this.refObj.getClass().equals(this.cls))) {
+                String id = new String();
+                if (refObj.getClass().equals(info.psidev.psi.pi.mzquantml._1_0.AssayType.class)) {
+                    AssayType obj = (AssayType) refObj;
+                    id = obj.getId();
+                }
+                if (refObj.getClass().equals(info.psidev.psi.pi.mzquantml._1_0.DataProcessingType.class)) {
+                    DataProcessingType obj = (DataProcessingType) refObj;
+                    id = obj.getId();
+                }
+                if (refObj.getClass().equals(info.psidev.psi.pi.mzquantml._1_0.CvType.class)) {
+                    CvType obj = (CvType) refObj;
+                    id = obj.getId();
+                }
+                if (refObj.getClass().equals(info.psidev.psi.pi.mzquantml._1_0.FeatureType.class)) {
+                    FeatureType obj = (FeatureType) refObj;
+                    id = obj.getId();
+                }
+                if (refObj.getClass().equals(info.psidev.psi.pi.mzquantml._1_0.IdentificationFileType.class)) {
+                    IdentificationFileType obj = (IdentificationFileType) refObj;
+                    id = obj.getId();
+                }
+                if (refObj.getClass().equals(info.psidev.psi.pi.mzquantml._1_0.MethodFileType.class)) {
+                    MethodFileType obj = (MethodFileType) refObj;
+                    id = obj.getId();
+                }
+                if (refObj.getClass().equals(info.psidev.psi.pi.mzquantml._1_0.SearchDatabaseType.class)) {
+                    SearchDatabaseType obj = (SearchDatabaseType) refObj;
+                    id = obj.getId();
+                }
+                if (refObj.getClass().equals(info.psidev.psi.pi.mzquantml._1_0.ProteinType.class)) {
+                    ProteinType obj = (ProteinType) refObj;
+                    id = obj.getId();
+                }
+                if (refObj.getClass().equals(info.psidev.psi.pi.mzquantml._1_0.PeptideConsensusType.class)) {
+                    PeptideConsensusType obj = (PeptideConsensusType) refObj;
+                    id = obj.getId();
+                }
+                if (refObj.getClass().equals(info.psidev.psi.pi.mzquantml._1_0.RawFilesGroupType.class)) {
+                    RawFilesGroupType obj = (RawFilesGroupType) refObj;
+                    id = obj.getId();
+                }
+                if (refObj.getClass().equals(info.psidev.psi.pi.mzquantml._1_0.StudyVariableType.class)) {
+                    StudyVariableType obj = (StudyVariableType) refObj;
+                    id = obj.getId();
+                }
+                if (refObj.getClass().equals(info.psidev.psi.pi.mzquantml._1_0.SoftwareType.class)) {
+                    SoftwareType obj = (SoftwareType) refObj;
+                    id = obj.getId();
+                }
+                if (refObj.getClass().equals(info.psidev.psi.pi.mzquantml._1_0.OrganizationType.class)) {
+                    OrganizationType obj = (OrganizationType) refObj;
+                    id = obj.getId();
+                }
+
+
                 msgs.add(new Message("All object reference of type IDREFS or IDREF MUST match the correct object type", Level.INFO));
                 msgs.add(new Message("The object reference \""
-                        + this.refObj.toString() + "\" in \"" + this.targetClassName
-                        + "\" with id(\"" + this.targetClassId + "\")"
-                        + "does not match the correct object type " + cls.getName() + "\n", Level.ERROR));
+                        + id + "\" in \"" + this.targetClassId + "does not match the correct object type "
+                        + cls.getName() + "\n", Level.ERROR));
             }
         }
     }
