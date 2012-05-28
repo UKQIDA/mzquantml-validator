@@ -328,64 +328,27 @@ public class MzQuantMLValidator {
             checkParamGroup(paramGroups);
 
             Object rawFileGroupRef = featureList.getRawFilesGroupRef();
-            String targetClassName = featureList.getClass().getName();
             String targetClassId = featureList.getId();
-            msgs.addAll(checkObjectRef(targetClassName, targetClassId, rawFileGroupRef, info.psidev.psi.pi.mzquantml._1_0.RawFilesGroupType.class));
+            msgs.addAll(checkObjectRef(targetClassId, rawFileGroupRef, info.psidev.psi.pi.mzquantml._1_0.RawFilesGroupType.class));
 
         }
 
-        if (featureLists != null) {
-            System.out.println("\nValidating FeatureLists......");
-
-            Iterator i_featureLists = featureLists.iterator();
-            while (i_featureLists.hasNext()) {
-                FeatureListType feature_list = (FeatureListType) i_featureLists.next();
-                String feature_list_id = feature_list.getId();
-
-                // get AssaayQuantLayer
-//                List<QuantLayerType> feature_assay_QL_list = feature_list.getMS2AssayQuantLayer();
-//                Iterator i_feature_assay_QL_list = feature_assay_QL_list.iterator();
-//                while (i_feature_assay_QL_list.hasNext()) {
-//                    QuantLayerType QL = (QuantLayerType) (i_feature_assay_QL_list.next());
+//        if (featureLists != null) {
+//            System.out.println("\nValidating FeatureLists......");
 //
-//                    //System.out.println(QL.getColumnIndex().toString());
-//                    String output_checkRefNumConsistency = checkRefNumConsistency(QL);
-//                    if (!output_checkRefNumConsistency.isEmpty()) {
-//                        String ql_id = QL.getId();
-//                        System.out.println("MS2AssayQuantLayer in FeatureList \""
-//                                + feature_list_id + "\" is not validated in \"" + ql_id + "\"");
-//                        System.out.println(checkRefNumConsistency(QL));
+//            Iterator i_featureLists = featureLists.iterator();
+//            while (i_featureLists.hasNext()) {
+//                FeatureListType feature_list = (FeatureListType) i_featureLists.next();
+//                String feature_list_id = feature_list.getId();
 //
-//                        results = results + "MS2AssayQuantLayer in FeatureList \""
-//                                + feature_list_id + "\" is not validated in \"" + ql_id + "\"\n";
-//                        results = results + checkRefNumConsistency(QL) + "\n";
-//                    }
-//                }
-
-                // get StudyVariableQuantLayer
-//                List<QuantLayerType> feature_sv_QL_list = feature_list.getMS2StudyVariableQuantLayer();
-//                Iterator i_feature_sv_QL_list = feature_sv_QL_list.iterator();
-//                while (i_feature_sv_QL_list.hasNext()) {
-//                    QuantLayerType QL = (QuantLayerType) (i_feature_sv_QL_list.next());
 //
-//                    //System.out.println(QL.getColumnIndex().toString());
-//                    String output_checkRefNumConsistency = checkRefNumConsistency(QL);
-//                    if (!output_checkRefNumConsistency.isEmpty()) {
-//                        String ql_id = QL.getId();
-//                        System.out.println("MS2StudyVariableQuantLayer in FeatureList \""
-//                                + feature_list_id + "\" is not validated in \"" + ql_id + "\"");
-//                        System.out.println(checkRefNumConsistency(QL));
 //
-//                        results = results + "MS2StudyVariableQuantLayer in FeatureList \""
-//                                + feature_list_id + "\" is not validated in \"" + ql_id + "\"\n";
-//                        results = results + checkRefNumConsistency(QL) + "\n";
-//                    }
-//                }
-
-                // get FeatureQuantLayer
-                feature_list.getFeatureQuantLayer();
-            }
-        }
+// 
+//
+//                // get FeatureQuantLayer
+//                feature_list.getFeatureQuantLayer();
+//            }
+//        }
     }
 
     static public void checkFeature(List<FeatureType> features) {
@@ -398,16 +361,69 @@ public class MzQuantMLValidator {
 
     static public void checkInputFiles(InputFilesType inputFiles) {
         IdentificationFilesType identificationFiles = inputFiles.getIdentificationFiles();
+        if (identificationFiles != null) {
+            List<IdentificationFileType> identifications = identificationFiles.getIdentificationFile();
+            if (!identifications.isEmpty()) {
+                for (IdentificationFileType identificationFile : identifications) {
+                    checkIdentificationFile(identificationFile);
+                }
+            }
+        }
 
         MethodFilesType methodFiles = inputFiles.getMethodFiles();
+        if (methodFiles != null) {
+            List<MethodFileType> methods = methodFiles.getMethodFile();
+            if (!methods.isEmpty()) {
+                for (MethodFileType methodFile : methods) {
+                    methodFile.getFileFormat();
+                }
+            }
+        }
 
         List<RawFilesGroupType> rawFilesGroups = inputFiles.getRawFilesGroup();
         checkRawFilesGroup(rawFilesGroups);
 
         List<SearchDatabaseType> searchDatabases = inputFiles.getSearchDatabase();
-
+        checkSearchDatabases(searchDatabases);
 
         List<SourceFileType> sourceFiles = inputFiles.getSourceFile();
+        checkSourceFiles(sourceFiles);
+    }
+
+    static public void checkIdentificationFile(IdentificationFileType identificationFile) {
+        Object searchDatabaseRef = identificationFile.getSearchDatabaseRef();
+        String targetClassId = identificationFile.getId();
+        checkObjectRef(targetClassId, searchDatabaseRef, info.psidev.psi.pi.mzquantml._1_0.SearchDatabaseType.class);
+    }
+
+    static public void checkSourceFiles(List<SourceFileType> sourceFiles) {
+        if (!sourceFiles.isEmpty()) {
+            for (SourceFileType sourceFile : sourceFiles) {
+                sourceFile.getFileFormat();
+            }
+        }
+    }
+
+    static public void checkSearchDatabases(List<SearchDatabaseType> searchDatabases) {
+        if (!searchDatabases.isEmpty()) {
+            for (SearchDatabaseType searchDatabase : searchDatabases) {
+                List<CVParamType> cvParams = searchDatabase.getCvParam();
+                String targetClassId = searchDatabase.getId();
+                if (!cvParams.isEmpty()) {
+                    for (CVParamType cvParam : cvParams) {
+                        checkCvParam(targetClassId, cvParam);
+                    }
+                }
+
+                ParamType databaseName = searchDatabase.getDatabaseName();
+                if (databaseName.getCvParam() != null) {
+                    checkCvParam(targetClassId, databaseName.getCvParam());
+                }
+
+                searchDatabase.getFileFormat();
+
+            }
+        }
     }
 
     /*
@@ -420,77 +436,28 @@ public class MzQuantMLValidator {
             }
         }
 
-        if (peptideConsensusLists != null) {
-            System.out.println("\nValidating PeptideConsensusLists......");
-
-            Iterator i_peptideConsensusLists = peptideConsensusLists.iterator();
-            while (i_peptideConsensusLists.hasNext()) {
-                PeptideConsensusListType pep_con_list = (PeptideConsensusListType) i_peptideConsensusLists.next();
-                String pep_con_list_id = pep_con_list.getId();
-
-                List<PeptideConsensusType> pep_cons = pep_con_list.getPeptideConsensus();
-                Iterator i_pep_cons = pep_cons.iterator();
-                while (i_pep_cons.hasNext()) {
-                    PeptideConsensusType peptideConsensus = (PeptideConsensusType) i_pep_cons.next();
-
-//                    String out_checkPeptideConsensusAssayRefFeatureRef =
-//                            checkPeptideConsensusAssayRefFeatureRef(peptideConsensus);
-//                    if (!out_checkPeptideConsensusAssayRefFeatureRef.isEmpty()) {
-//                        System.out.println(checkPeptideConsensusAssayRefFeatureRef(peptideConsensus));
-//                        results = results + checkPeptideConsensusAssayRefFeatureRef(peptideConsensus) + "\n";
-//                    }
-                }
-
-                // get AssaayQuantLayer
-//                List<QuantLayerType> pep_assay_QL_list = pep_con_list.getAssayQuantLayer();
-//                Iterator i_pep_assay_QL_list = pep_assay_QL_list.iterator();
-//                while (i_pep_assay_QL_list.hasNext()) {
-//                    QuantLayerType QL = (QuantLayerType) (i_pep_assay_QL_list.next());
-//                    UniqueObjectRefRule uniqueObjectRefRule = new UniqueObjectRefRule();
-//                    String ql_id = QL.getId();
-//                    uniqueObjectRefRule.check(QL);
-//                    results = results + "AssayQuantLayer in PeptideConsensusList \""
-//                            + pep_con_list_id + "\" has the following duplicated object_ref:\n";
-//                    results = results + uniqueObjectRefRule.getMessage().toString() + "\n";
+//        if (peptideConsensusLists != null) {
+//            System.out.println("\nValidating PeptideConsensusLists......");
 //
-//                    //System.out.println(QL.getColumnIndex().toString());
-//                    String output_checkRefNumConsistency = checkRefNumConsistency(QL);
-//                    if (!output_checkRefNumConsistency.isEmpty()) {
+//            Iterator i_peptideConsensusLists = peptideConsensusLists.iterator();
+//            while (i_peptideConsensusLists.hasNext()) {
+//                PeptideConsensusListType pep_con_list = (PeptideConsensusListType) i_peptideConsensusLists.next();
+//                String pep_con_list_id = pep_con_list.getId();
 //
-//                        System.out.println("AssayQuantLayer in PeptideConsensusList \""
-//                                + pep_con_list_id + "\" is not validated in \"" + ql_id + "\"");
-//                        System.out.println(checkRefNumConsistency(QL));
+//                List<PeptideConsensusType> pep_cons = pep_con_list.getPeptideConsensus();
+//                Iterator i_pep_cons = pep_cons.iterator();
+//                while (i_pep_cons.hasNext()) {
+//                    PeptideConsensusType peptideConsensus = (PeptideConsensusType) i_pep_cons.next();
 //
-//                        results = results + "AssayQuantLayer in PeptideConsensusList \""
-//                                + pep_con_list_id + "\" is not validated in \"" + ql_id + "\"\n";
-//                        results = results + checkRefNumConsistency(QL) + "\n";
-//                    }
 //                }
-
-                // get GlobalQuantLayer
-                pep_con_list.getGlobalQuantLayer();
-
-                // get StudyVariableQuantLayer
-//                List<QuantLayerType> pep_sv_QL_list = pep_con_list.getStudyVariableQuantLayer();
-//                Iterator i_pep_sv_QL_list = pep_sv_QL_list.iterator();
-//                while (i_pep_sv_QL_list.hasNext()) {
-//                    QuantLayerType QL = (QuantLayerType) (i_pep_sv_QL_list.next());
 //
-//                    //System.out.println(QL.getColumnIndex().toString());
-//                    String output_checkRefNumConsistency = checkRefNumConsistency(QL);
-//                    if (!output_checkRefNumConsistency.isEmpty()) {
-//                        String ql_id = QL.getId();
-//                        System.out.println("StudyVariableQuantLayer in PeptideConsensusList \""
-//                                + pep_con_list_id + "\" is not validated in \"" + ql_id + "\"");
-//                        System.out.println(checkRefNumConsistency(QL));
 //
-//                        results = results + "StudyVariableQuantLayer in PeptideConsensusList \""
-//                                + pep_con_list_id + "\" is not validated in \"" + ql_id + "\"\n";
-//                        results = results + checkRefNumConsistency(QL) + "\n";
-//                    }
-//                }
-            }
-        }
+//                // get GlobalQuantLayer
+//                pep_con_list.getGlobalQuantLayer();
+//
+//
+//            }
+//        }
     }
 
     static public void checkPeptideConsensusList(PeptideConsensusListType peptideConsensusList) {
@@ -528,42 +495,38 @@ public class MzQuantMLValidator {
         String sequence = peptideConsensus.getPeptideSequence();
         Object searchDBRef = peptideConsensus.getSearchDatabaseRef();
 
-        String targetClassName = peptideConsensus.getClass().getName();
         String targetClassId = peptideConsensus.getId();
         if (!featureRefs.isEmpty()) {
             for (FeatureRefType featureRef : featureRefs) {
-                checkFeatureRef(targetClassName, targetClassId, featureRef);
+                checkFeatureRef(targetClassId, featureRef);
             }
         }
 
         if (!identificationRefs.isEmpty()) {
             for (IdentificationRefType identificationRef : identificationRefs) {
-                checkIdentificationRef(targetClassName, targetClassId, identificationRef);
+                checkIdentificationRef(targetClassId, identificationRef);
             }
         }
     }
 
-    static public void checkFeatureRef(String tarClsN, String tarClsId, FeatureRefType featureRef) {
+    static public void checkFeatureRef(String tarClsId, FeatureRefType featureRef) {
         List<Object> assayRefs = featureRef.getAssayRefs();
         if (!assayRefs.isEmpty()) {
             for (Object assayRef : assayRefs) {
-                String targetClassName = tarClsN;
                 String targetClassId = tarClsId;
-                msgs.addAll(checkObjectRef(targetClassName, targetClassId, assayRef, info.psidev.psi.pi.mzquantml._1_0.AssayType.class));
+                msgs.addAll(checkObjectRef(targetClassId, assayRef, info.psidev.psi.pi.mzquantml._1_0.AssayType.class));
             }
         }
 
         Object ref = featureRef.getFeatureRef();
-        String targetClassName = tarClsN;
         String targetClassId = tarClsId;
-        msgs.addAll(checkObjectRef(targetClassName, targetClassId, ref, info.psidev.psi.pi.mzquantml._1_0.FeatureType.class));
+        msgs.addAll(checkObjectRef(targetClassId, ref, info.psidev.psi.pi.mzquantml._1_0.FeatureType.class));
     }
 
-    static public void checkIdentificationRef(String tarClsN, String tarClsId, IdentificationRefType identificationRef) {
+    static public void checkIdentificationRef(String tarClsId, IdentificationRefType identificationRef) {
         Object ref = identificationRef.getIdentificationFileRef();
-        String targetClassName = tarClsN;
         String targetClassId = tarClsId;
-        msgs.addAll(checkObjectRef(targetClassName, targetClassId, ref, info.psidev.psi.pi.mzquantml._1_0.PeptideIdentificationRefType.class));
+        msgs.addAll(checkObjectRef(targetClassId, ref, info.psidev.psi.pi.mzquantml._1_0.PeptideIdentificationRefType.class));
     }
 
     static public void checkProteinGroupList(ProteinGroupListType proteinGroupList) {
@@ -648,9 +611,8 @@ public class MzQuantMLValidator {
 
     static public void checkProvider(ProviderType provider) {
         Object analysisSoftwareRef = provider.getAnalysisSoftwareRef();
-        String targetClassName = provider.getClass().getName();
         String targetClassId = provider.getId();
-        msgs.addAll(checkObjectRef(targetClassName, targetClassId, analysisSoftwareRef, info.psidev.psi.pi.mzquantml._1_0.SoftwareType.class));
+        msgs.addAll(checkObjectRef(targetClassId, analysisSoftwareRef, info.psidev.psi.pi.mzquantml._1_0.SoftwareType.class));
 
         ContactRoleType contactRole = provider.getContactRole();
 
@@ -710,18 +672,17 @@ public class MzQuantMLValidator {
 
     static public void checkAssay(List<AssayType> assays) {
         for (AssayType assay : assays) {
-            String targetClassName = assay.getClass().getName();
             String targetClassId = assay.getId();
 
             CVParamType cvParam = assay.getCvParam();
             if (cvParam != null) {
-                checkCvParam(targetClassName, targetClassId, cvParam);
+                checkCvParam(targetClassId, cvParam);
             }
 
             Object rawFilesGroupRef = assay.getRawFilesGroupRef();
 
             if (rawFilesGroupRef != null) {
-                msgs.addAll(checkObjectRef(targetClassName, targetClassId, rawFilesGroupRef,
+                msgs.addAll(checkObjectRef(targetClassId, rawFilesGroupRef,
                         info.psidev.psi.pi.mzquantml._1_0.RawFilesGroupType.class));
             }
 
@@ -729,10 +690,10 @@ public class MzQuantMLValidator {
 
     }
 
-    static public void checkCvParam(String tarClsN, String tarClsId, CVParamType cvParam) {
+    static public void checkCvParam(String tarClsId, CVParamType cvParam) {
         Object cvRef = cvParam.getCvRef();
         if (cvRef != null) {
-            msgs.addAll(checkObjectRef(tarClsN, tarClsId, cvRef, info.psidev.psi.pi.mzquantml._1_0.CvType.class));
+            msgs.addAll(checkObjectRef(tarClsId, cvRef, info.psidev.psi.pi.mzquantml._1_0.CvType.class));
         }
     }
 
@@ -756,11 +717,9 @@ public class MzQuantMLValidator {
         for (DataProcessingType dataProcessing : dataProcessings) {
             List<Object> inputObjectRefs = dataProcessing.getInputObjectRefs();
             List<Object> outputObjectRefs = dataProcessing.getOutputObjectRefs();
-
-            String targetClassName = dataProcessing.getClass().getName();
             String targetClassId = dataProcessing.getId();
             Object softwareRef = dataProcessing.getSoftwareRef();
-            msgs.addAll(checkObjectRef(targetClassName, targetClassId, softwareRef, info.psidev.psi.pi.mzquantml._1_0.SoftwareType.class));
+            msgs.addAll(checkObjectRef(targetClassId, softwareRef, info.psidev.psi.pi.mzquantml._1_0.SoftwareType.class));
 
             dataProcessing.getId();
 
@@ -773,21 +732,20 @@ public class MzQuantMLValidator {
 
     static public void checkRawFilesGroup(List<RawFilesGroupType> rawFilesGroups) {
         for (RawFilesGroupType rawFilesGroup : rawFilesGroups) {
-            String targetClassName = rawFilesGroup.getClass().getName();
             String targetClassId = rawFilesGroup.getId();
             List<AbstractParamType> paramGroups = rawFilesGroup.getParamGroup();
             checkParamGroup(paramGroups);
 
             List<RawFileType> rawFiles = rawFilesGroup.getRawFile();
-            checkRawFile(targetClassName, targetClassId, rawFiles);
+            checkRawFile(targetClassId, rawFiles);
         }
     }
 
-    static public void checkRawFile(String tarClsN, String tarClsId, List<RawFileType> rawFiles) {
+    static public void checkRawFile(String tarClsId, List<RawFileType> rawFiles) {
         for (RawFileType rawFile : rawFiles) {
 
             Object methodFileRef = rawFile.getMethodFileRef();
-            msgs.addAll(checkObjectRef(tarClsN, tarClsId, methodFileRef, info.psidev.psi.pi.mzquantml._1_0.MethodFileType.class));
+            msgs.addAll(checkObjectRef(tarClsId, methodFileRef, info.psidev.psi.pi.mzquantml._1_0.MethodFileType.class));
 
             List<AbstractParamType> paramGroups = rawFile.getParamGroup();
             checkParamGroup(paramGroups);
@@ -849,8 +807,8 @@ public class MzQuantMLValidator {
         studyVariables.iterator();
     }
 
-    static public <T> ArrayList<Message> checkObjectRef(String tarClsN, String tarClsId, Object objRef, Class<T> cls) {
-        ObjectRefTypeMatchRule objectRefTypeMatchRule = new ObjectRefTypeMatchRule(tarClsN, tarClsId, objRef, cls);
+    static public <T> ArrayList<Message> checkObjectRef(String tarClsId, Object objRef, Class<T> cls) {
+        ObjectRefTypeMatchRule objectRefTypeMatchRule = new ObjectRefTypeMatchRule(tarClsId, objRef, cls);
         objectRefTypeMatchRule.check();
         return objectRefTypeMatchRule.getMessage();
     }
