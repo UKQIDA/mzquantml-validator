@@ -14,7 +14,6 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -79,7 +78,6 @@ public class ValidatorView extends javax.swing.JFrame {
         jtfFileName = new javax.swing.JTextField();
         jbFileSelector = new javax.swing.JButton();
         jbValidate = new javax.swing.JButton();
-        jtfSummary = new javax.swing.JTextField();
         jPanel2 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jtaValidationResults = new javax.swing.JTextArea();
@@ -105,8 +103,6 @@ public class ValidatorView extends javax.swing.JFrame {
             }
         });
 
-        jtfSummary.setBorder(null);
-
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -120,8 +116,7 @@ public class ValidatorView extends javax.swing.JFrame {
                         .addComponent(jbFileSelector))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jbValidate)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 212, Short.MAX_VALUE)
-                        .addComponent(jtfSummary, javax.swing.GroupLayout.PREFERRED_SIZE, 370, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -132,9 +127,7 @@ public class ValidatorView extends javax.swing.JFrame {
                     .addComponent(jtfFileName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jbFileSelector))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 26, Short.MAX_VALUE)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jbValidate)
-                    .addComponent(jtfSummary, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(jbValidate)
                 .addGap(20, 20, 20))
         );
 
@@ -152,7 +145,7 @@ public class ValidatorView extends javax.swing.JFrame {
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 308, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 312, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -254,6 +247,5 @@ public class ValidatorView extends javax.swing.JFrame {
     private javax.swing.JButton jbValidate;
     private javax.swing.JTextArea jtaValidationResults;
     private javax.swing.JTextField jtfFileName;
-    private javax.swing.JTextField jtfSummary;
     // End of variables declaration//GEN-END:variables
 }
