@@ -9,7 +9,7 @@ import info.psidev.psi.pi.mzquantml._1_0.PeptideConsensusListType;
 import info.psidev.psi.pi.mzquantml._1_0.ProteinGroupListType;
 import info.psidev.psi.pi.mzquantml._1_0.ProteinListType;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.List;
 import org.apache.log4j.Level;
 import uk.ac.liv.mzquantml.validator.utils.AnalysisSummaryElement;
@@ -22,7 +22,7 @@ import uk.ac.liv.mzquantml.validator.utils.Message;
  */
 public class QuantLayerRule {
 
-    HashMap<AnalysisSummaryElement, Boolean> anlSumMap;
+    EnumMap<AnalysisSummaryElement, Boolean> anlSumMap;
     List<PeptideConsensusListType> pepCnsLsts;
     ProteinGroupListType protGrpLst;
     ProteinListType protLst;
@@ -37,7 +37,7 @@ public class QuantLayerRule {
         this.anlSumMap = null;
     }
 
-    public QuantLayerRule(HashMap<AnalysisSummaryElement, Boolean> summaryMap, ProteinGroupListType proteinGroupList, ProteinListType proteinList,
+    public QuantLayerRule(EnumMap<AnalysisSummaryElement, Boolean> summaryMap, ProteinGroupListType proteinGroupList, ProteinListType proteinList,
             List<PeptideConsensusListType> peptideConsensusLists, List<FeatureListType> featureLists) {
         this.anlSumMap = summaryMap;
         this.protGrpLst = proteinGroupList;

@@ -4,7 +4,7 @@ import info.psidev.psi.pi.mzquantml._1_0.*;
 import info.psidev.psi.pi.mzquantml.io.MzQuantMLUnmarshaller;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.List;
 import javax.xml.datatype.XMLGregorianCalendar;
 import org.apache.log4j.Level;
@@ -20,7 +20,7 @@ import uk.ac.liv.mzquantml.validator.utils.Message;
 public class MzQuantMLValidator {
 
     private static AnalysisType at = new AnalysisType();
-    private static HashMap<AnalysisSummaryElement, Boolean> analysisSummaryMap;
+    private static EnumMap<AnalysisSummaryElement, Boolean> analysisSummaryMap;
     private static List<Message> msgs = new ArrayList<Message>();
 
     /**
@@ -112,24 +112,12 @@ public class MzQuantMLValidator {
 
         if (inputFiles != null) {
             checkInputFiles(inputFiles);
-            /*
-             * RawFileRule start here
-             */
-            RawFileRule rfl = new RawFileRule(at, inputFiles);
-            rfl.check();
-            msgs.addAll(rfl.getMsgs());
         } else {
             // message there is no inputFiles which is not acceptable
         }
 
         if (peptideConsensusLists != null) {
             checkPeptideConsensusLists(peptideConsensusLists);
-            /*
-             * FinalResultRule start here
-             */
-            FinalResultRule frr = new FinalResultRule(peptideConsensusLists);
-            frr.check();
-            msgs.addAll(frr.getMsgs());
         } else {
             // some message
         }
@@ -207,22 +195,36 @@ public class MzQuantMLValidator {
 
 
     /*
-     * All the check*** functions start here organized alphabetically
+     * All the check*** functions start here. Organized alphabetically
      */
     static public void checkAnalysisSummary(ParamListType analysisSummary) {
-        List<AbstractParamType> paramGroup = analysisSummary.getParamGroup();
+        analysisSummaryMap = new EnumMap<AnalysisSummaryElement, Boolean>(AnalysisSummaryElement.class);
 
-        analysisSummaryMap = new HashMap<AnalysisSummaryElement, Boolean>();
-        for (AbstractParamType param : paramGroup) {
-            String cvTerm = param.getName();
-            String value = param.getValue();
-            AnalysisSummaryElement key = AnalysisSummaryElement.getType(cvTerm);
-            if (key != null) {
-                analysisSummaryMap.put(key, Boolean.valueOf(value));
+        List<AbstractParamType> paramGroups = analysisSummary.getParamGroup();
+        for (AbstractParamType param : paramGroups) {
+            if (param.getClass().isInstance(info.psidev.psi.pi.mzquantml._1_0.CVParamType.class)) {
+                CVParamType cv = (CVParamType) param;
+                String name = cv.getName();
+                String value = cv.getValue();
+                String accession = cv.getAccession();
+
+                String targetClassId = "AnalysisSummary";
+                Object cvRef = cv.getCvRef();
+                msgs.addAll(checkObjectRef(targetClassId, cvRef,
+                        info.psidev.psi.pi.mzquantml._1_0.CvType.class));
+
+                String unitAccession = cv.getUnitAccession();
+                String unitCvRef = cv.getUnitCvRef();
+                String unitName = cv.getUnitName();
+
+                AnalysisSummaryElement key = AnalysisSummaryElement.getType(name);
+                if (key != null) {
+                    analysisSummaryMap.put(key, Boolean.valueOf(value));
+                }
             }
         }
 
-        checkParamGroups(paramGroup);
+        checkParamGroups(paramGroups);
     }
 
     static public void checkAssayList(AssayListType assayList) {
@@ -238,19 +240,29 @@ public class MzQuantMLValidator {
     }
 
     static public void checkAssays(List<AssayType> assays) {
-        for (AssayType assay : assays) {
-            String targetClassId = assay.getId();
+        if (!assays.isEmpty()) {
+            for (AssayType assay : assays) {
+                String targetClassId = assay.getId();
+                
+                List<Object> identificationFileRefs = assay.getIdentificationFileRefs();
+                if (!identificationFileRefs.isEmpty()) {
+                    for (Object ref : identificationFileRefs) {
+                        msgs.addAll(checkObjectRef(targetClassId, ref,
+                                info.psidev.psi.pi.mzquantml._1_0.IdentificationFileType.class));
+                    }
+                }
 
-            List<AbstractParamType> paramGroups = assay.getParamGroup();
-            checkParamGroups(paramGroups);
+                List<AbstractParamType> paramGroups = assay.getParamGroup();
+                checkParamGroups(paramGroups);
 
-            Object rawFilesGroupRef = assay.getRawFilesGroupRef();
+                Object rawFilesGroupRef = assay.getRawFilesGroupRef();
 
-            if (rawFilesGroupRef != null) {
-                msgs.addAll(checkObjectRef(targetClassId, rawFilesGroupRef,
-                        info.psidev.psi.pi.mzquantml._1_0.RawFilesGroupType.class));
+                if (rawFilesGroupRef != null) {
+                    msgs.addAll(checkObjectRef(targetClassId, rawFilesGroupRef,
+                            info.psidev.psi.pi.mzquantml._1_0.RawFilesGroupType.class));
+                }
+                
             }
-
         }
     }
 
@@ -389,6 +401,13 @@ public class MzQuantMLValidator {
     }
 
     static public void checkInputFiles(InputFilesType inputFiles) {
+        /*
+         * RawFileRule start here
+         */
+        RawFileRule rfl = new RawFileRule(at, inputFiles);
+        rfl.check();
+        msgs.addAll(rfl.getMsgs());
+
         IdentificationFilesType identificationFiles = inputFiles.getIdentificationFiles();
         if (identificationFiles != null) {
             List<IdentificationFileType> identifications = identificationFiles.getIdentificationFile();
@@ -479,6 +498,13 @@ public class MzQuantMLValidator {
      */
     static public void checkPeptideConsensusLists(List<PeptideConsensusListType> peptideConsensusLists) {
         if (!peptideConsensusLists.isEmpty()) {
+            /*
+             * FinalResultRule start here
+             */
+            FinalResultRule frr = new FinalResultRule(peptideConsensusLists);
+            frr.check();
+            msgs.addAll(frr.getMsgs());
+
             for (PeptideConsensusListType peptideConsensusList : peptideConsensusLists) {
                 checkPeptideConsensusList(peptideConsensusList);
             }
