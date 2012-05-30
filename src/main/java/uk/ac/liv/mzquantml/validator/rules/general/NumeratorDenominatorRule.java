@@ -42,6 +42,10 @@ public class NumeratorDenominatorRule {
                             + "the denominator MUST reference an Assay", Level.INFO));
                     msgs.add(new Message("Numerator and denominator are not referred to the same type in "
                             + "Ratio \"" + ratio.getId() + "\"\n", Level.ERROR));
+                } else if (!numCls.equals(info.psidev.psi.pi.mzquantml._1_0.AssayType.class)
+                        && !numCls.equals(info.psidev.psi.pi.mzquantml._1_0.StudyVariableType.class)) {
+                    msgs.add(new Message("Numerator and demoninator in Ratio \""
+                            + ratio.getId() + "\" are not either StudyVariable or Assay\n", Level.ERROR));
                 }
             }
         }

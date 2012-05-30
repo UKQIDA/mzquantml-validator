@@ -48,7 +48,7 @@ public class ColIndRowValNumMatchRule {
             int colNum = row.getValue().size();
             if (colNum != indexNum) {
                 msgs.add(new Message("The number of data values in every Row of a QuantLayer "
-                        + "MUST be equal to number of items in <ColumnIndex>", Level.INFO));
+                        + "MUST be equal to number of items in <ColumnDefinition>", Level.INFO));
                 msgs.add(new Message(("Row \"" + row.getObjectRef().toString()
                         + "\" has different numbers of value from column indices\n"), Level.ERROR));
             }

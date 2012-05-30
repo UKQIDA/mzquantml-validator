@@ -223,8 +223,8 @@ public class MzQuantMLValidator {
                 }
             }
         }
-
-        checkParamGroups(paramGroups);
+        String targetClassId = "AnalysisSummary";
+        checkParamGroups(targetClassId, paramGroups);
     }
 
     static public void checkAssayList(AssayListType assayList) {
@@ -243,7 +243,7 @@ public class MzQuantMLValidator {
         if (!assays.isEmpty()) {
             for (AssayType assay : assays) {
                 String targetClassId = assay.getId();
-                
+
                 List<Object> identificationFileRefs = assay.getIdentificationFileRefs();
                 if (!identificationFileRefs.isEmpty()) {
                     for (Object ref : identificationFileRefs) {
@@ -253,7 +253,7 @@ public class MzQuantMLValidator {
                 }
 
                 List<AbstractParamType> paramGroups = assay.getParamGroup();
-                checkParamGroups(paramGroups);
+                checkParamGroups(targetClassId, paramGroups);
 
                 Object rawFilesGroupRef = assay.getRawFilesGroupRef();
 
@@ -261,37 +261,61 @@ public class MzQuantMLValidator {
                     msgs.addAll(checkObjectRef(targetClassId, rawFilesGroupRef,
                             info.psidev.psi.pi.mzquantml._1_0.RawFilesGroupType.class));
                 }
-                
+
             }
         }
     }
 
     static public void checkAuditCollection(AuditCollectionType auditCollection) {
-        List<AbstractContactType> personOrOrganization = auditCollection.getPersonOrOrganization();
+        List<AbstractContactType> personOrOrganizations = auditCollection.getPersonOrOrganization();
 
-        checkPersonOrOrganization(personOrOrganization);
+        checkPersonOrOrganizations(personOrOrganizations);
     }
 
     static public void checkBibliographicReference(List<BibliographicReferenceType> bibliographicReferences) {
-        bibliographicReferences.iterator();
+        if (!bibliographicReferences.isEmpty()) {
+            for (BibliographicReferenceType bibRef : bibliographicReferences) {
+                bibRef.getAuthors();
+                bibRef.getDoi();
+                bibRef.getEditor();
+                bibRef.getIssue();
+                bibRef.getPages();
+                bibRef.getPublication();
+                bibRef.getPublisher();
+                bibRef.getTitle();
+                bibRef.getVolume();
+                bibRef.getYear();
+            }
+        }
+    }
+
+    static public void checkColumnDefinition(String targetClassId, ColumnDefinitionType columnDefinition) {
+        List<ColumnType> columns = columnDefinition.getColumn();
+        if (!columns.isEmpty()) {
+            for (ColumnType column : columns) {
+                CvParamRefType cvParamRef = column.getDataType();
+                CVParamType cvParam = cvParamRef.getCvParam();
+                checkCvParam(targetClassId, cvParam);
+            }
+        }
+    }
+
+    static public void checkContactRole(String tarClsId, ContactRoleType contactRole) {
+        Object ref = contactRole.getContactRef();
+        msgs.addAll(checkObjectRef(tarClsId, ref, info.psidev.psi.pi.mzquantml._1_0.AbstractContactType.class));
+
+        RoleType role = contactRole.getRole();
+        CVParamType cvParam = role.getCvParam();
+        checkCvParam(tarClsId, cvParam);
     }
 
     static public void checkCreationDate(XMLGregorianCalendar creationDate) {
     }
 
-    static public void checkCv(List<CvType> cvs) {
-        for (CvType cv : cvs) {
-            cv.getFullName();
-            cv.getId();
-            cv.getUri();
-            cv.getVersion();
-        }
-    }
-
     static public void checkCvList(CvListType cvList) {
         List<CvType> cvs = cvList.getCv();
 
-        checkCv(cvs);
+        checkCvs(cvs);
     }
 
     static public void checkCvParam(String tarClsId, CVParamType cvParam) {
@@ -299,29 +323,63 @@ public class MzQuantMLValidator {
         if (cvRef != null) {
             msgs.addAll(checkObjectRef(tarClsId, cvRef, info.psidev.psi.pi.mzquantml._1_0.CvType.class));
         }
+
+        String accession = cvParam.getAccession();
     }
 
-    static public void checkDataProcessing(List<DataProcessingType> dataProcessings) {
-        for (DataProcessingType dataProcessing : dataProcessings) {
-            List<Object> inputObjectRefs = dataProcessing.getInputObjectRefs();
-            List<Object> outputObjectRefs = dataProcessing.getOutputObjectRefs();
-            String targetClassId = dataProcessing.getId();
-            Object softwareRef = dataProcessing.getSoftwareRef();
-            msgs.addAll(checkObjectRef(targetClassId, softwareRef, info.psidev.psi.pi.mzquantml._1_0.SoftwareType.class));
+    static public void checkCvs(List<CvType> cvs) {
+        if (!cvs.isEmpty()) {
+            for (CvType cv : cvs) {
+                cv.getFullName();
+                cv.getId();
+                cv.getUri();
+                cv.getVersion();
+            }
+        }
+    }
 
-            dataProcessing.getId();
-
-            dataProcessing.getOrder();
-
-            dataProcessing.getProcessingMethod();
-
+    static public void checkDataMatrix(DataMatrixType dataMatrix) {
+        List<RowType> rows = dataMatrix.getRow();
+        if (!rows.isEmpty()) {
+            for (RowType row : rows) {
+                checkRow(row);
+            }
         }
     }
 
     static public void checkDataProcessingList(DataProcessingListType dataProcessingList) {
         List<DataProcessingType> dataProcessings = dataProcessingList.getDataProcessing();
 
-        checkDataProcessing(dataProcessings);
+        checkDataProcessings(dataProcessings);
+    }
+
+    static public void checkDataProcessings(List<DataProcessingType> dataProcessings) {
+        if (!dataProcessings.isEmpty()) {
+            for (DataProcessingType dataProcessing : dataProcessings) {
+                List<Object> inputObjectRefs = dataProcessing.getInputObjectRefs();
+                List<Object> outputObjectRefs = dataProcessing.getOutputObjectRefs();
+
+//                if (!inputObjectRefs.isEmpty()) {
+//                    for (Object ref : inputObjectRefs) {
+//                    }
+//                }
+
+                String targetClassId = dataProcessing.getId();
+                Object softwareRef = dataProcessing.getSoftwareRef();
+                msgs.addAll(checkObjectRef(targetClassId, softwareRef, info.psidev.psi.pi.mzquantml._1_0.SoftwareType.class));
+
+                dataProcessing.getOrder();
+
+                List<ProcessingMethodType> processingMethods = dataProcessing.getProcessingMethod();
+                checkProcessingMethods(targetClassId, processingMethods);
+
+            }
+        }
+    }
+
+    static public void checkDBIdentificationRef(String tarClsId, DBIdentificationRefType dBidRef) {
+        Object ref = dBidRef.getSearchDatabaseRef();
+        checkObjectRef(tarClsId, ref, info.psidev.psi.pi.mzquantml._1_0.SearchDatabaseType.class);
     }
 
     static public void checkEvidenceRef(String tarClsId, EvidenceRefType evidenceRef) {
@@ -339,65 +397,98 @@ public class MzQuantMLValidator {
 
         Object idFileRef = evidenceRef.getIdentificationFileRef();
         msgs.addAll(checkObjectRef(targetClassId, idFileRef, info.psidev.psi.pi.mzquantml._1_0.IdentificationFileType.class));
-    }
 
-    static public void checkFeature(List<FeatureType> features) {
-        for (FeatureType feature : features) {
-            feature.getChromatogramRefs();
-            feature.getSpectrumRefs();
-            feature.getParamGroup();
-        }
+        evidenceRef.getIdRefs();
     }
 
     /*
      * validate FeatureList
      */
     static public void checkFeatureLists(List<FeatureListType> featureLists) {
-        for (FeatureListType featureList : featureLists) {
-            List<FeatureType> features = featureList.getFeature();
-            checkFeature(features);
+        if (!featureLists.isEmpty()) {
+            for (FeatureListType featureList : featureLists) {
+                List<FeatureType> features = featureList.getFeature();
+                checkFeatures(features);
 
-            List<GlobalQuantLayerType> featureQuantLayers = featureList.getFeatureQuantLayer();
-            checkGlobalQuantLayer(featureQuantLayers);
+                List<GlobalQuantLayerType> featureQuantLayers = featureList.getFeatureQuantLayer();
+                checkGlobalQuantLayers(featureQuantLayers);
 
-            String id = featureList.getId();
+                String id = featureList.getId();
 
-            List<QuantLayerType> ms2AssayQuantLayers = featureList.getMS2AssayQuantLayer();
-            checkQuantLayer(ms2AssayQuantLayers);
+                List<QuantLayerType> ms2AssayQuantLayers = featureList.getMS2AssayQuantLayer();
+                checkQuantLayers(ms2AssayQuantLayers);
 
-            List<QuantLayerType> ms2RatioQuantLayers = featureList.getMS2RatioQuantLayer();
-            checkQuantLayer(ms2RatioQuantLayers);
+                List<QuantLayerType> ms2RatioQuantLayers = featureList.getMS2RatioQuantLayer();
+                checkQuantLayers(ms2RatioQuantLayers);
 
-            List<QuantLayerType> ms2StudyVariableQuantLayers = featureList.getMS2StudyVariableQuantLayer();
-            checkQuantLayer(ms2StudyVariableQuantLayers);
+                List<QuantLayerType> ms2StudyVariableQuantLayers = featureList.getMS2StudyVariableQuantLayer();
+                checkQuantLayers(ms2StudyVariableQuantLayers);
 
-            List<AbstractParamType> paramGroups = featureList.getParamGroup();
-            checkParamGroups(paramGroups);
+                String targetClassId = id;
 
-            Object rawFileGroupRef = featureList.getRawFilesGroupRef();
-            String targetClassId = featureList.getId();
-            msgs.addAll(checkObjectRef(targetClassId, rawFileGroupRef, info.psidev.psi.pi.mzquantml._1_0.RawFilesGroupType.class));
+                List<AbstractParamType> paramGroups = featureList.getParamGroup();
+                checkParamGroups(targetClassId, paramGroups);
+
+                Object rawFileGroupRef = featureList.getRawFilesGroupRef();
+                msgs.addAll(checkObjectRef(targetClassId, rawFileGroupRef, info.psidev.psi.pi.mzquantml._1_0.RawFilesGroupType.class));
+            }
         }
     }
 
-    static public void checkGlobalQuantLayer(List<GlobalQuantLayerType> globalQuantLayers) {
-        for (GlobalQuantLayerType globalQuantLayer : globalQuantLayers) {
-            globalQuantLayer.getColumnDefinition();
+    static public void checkFeatures(List<FeatureType> features) {
+        if (!features.isEmpty()) {
+            for (FeatureType feature : features) {
+                feature.getChromatogramRefs();
+                feature.getSpectrumRefs();
 
-            globalQuantLayer.getDataMatrix();
+                String targetClassId = feature.getId();
+                List<AbstractParamType> paramGroups = feature.getParamGroup();
+                checkParamGroups(targetClassId, paramGroups);
+            }
+        }
+    }
 
-            globalQuantLayer.getId();
+    static public void checkFileFormat(String tarClsId, FileFormatType fileFormat) {
+        if (fileFormat != null) {
+            CVParamType cvParam = fileFormat.getCvParam();
+            checkCvParam(tarClsId, cvParam);
+        }
+    }
 
-            ColIndRowValNumMatchRule colIndRowValNumMatchRule = new ColIndRowValNumMatchRule();
-            colIndRowValNumMatchRule.check(globalQuantLayer);
-            msgs.addAll(colIndRowValNumMatchRule.getMessage());
+    static public void checkGlobalQuantLayers(List<GlobalQuantLayerType> globalQuantLayers) {
+        if (!globalQuantLayers.isEmpty()) {
+            for (GlobalQuantLayerType globalQuantLayer : globalQuantLayers) {
+                String id = globalQuantLayer.getId();
+
+                ColumnDefinitionType columnDefinition = globalQuantLayer.getColumnDefinition();
+                checkColumnDefinition(id, columnDefinition);
+
+                DataMatrixType dataMatrix = globalQuantLayer.getDataMatrix();
+                checkDataMatrix(dataMatrix);
+
+                ColIndRowValNumMatchRule colIndRowValNumMatchRule = new ColIndRowValNumMatchRule();
+                colIndRowValNumMatchRule.check(globalQuantLayer);
+                msgs.addAll(colIndRowValNumMatchRule.getMessage());
+            }
         }
     }
 
     static public void checkIdentificationFile(IdentificationFileType identificationFile) {
-        Object searchDatabaseRef = identificationFile.getSearchDatabaseRef();
+        List<AbstractParamType> paramGroups = identificationFile.getParamGroup();
         String targetClassId = identificationFile.getId();
+        checkParamGroups(targetClassId, paramGroups);
+
+        Object searchDatabaseRef = identificationFile.getSearchDatabaseRef();
         checkObjectRef(targetClassId, searchDatabaseRef, info.psidev.psi.pi.mzquantml._1_0.SearchDatabaseType.class);
+    }
+
+    static public void checkIdentificationRefs(String tarClsId, List<IdentificationRefType> identificationRefs) {
+        if (!identificationRefs.isEmpty()) {
+            for (IdentificationRefType idRef : identificationRefs) {
+                Object idFileRef = idRef.getIdentificationFileRef();
+                msgs.addAll(checkObjectRef(tarClsId, idFileRef, info.psidev.psi.pi.mzquantml._1_0.IdentificationFileType.class));
+            }
+        }
     }
 
     static public void checkInputFiles(InputFilesType inputFiles) {
@@ -423,13 +514,15 @@ public class MzQuantMLValidator {
             List<MethodFileType> methods = methodFiles.getMethodFile();
             if (!methods.isEmpty()) {
                 for (MethodFileType methodFile : methods) {
-                    methodFile.getFileFormat();
+                    FileFormatType format = methodFile.getFileFormat();
+                    String targetClassId = methodFile.getId();
+                    checkFileFormat(targetClassId, format);
                 }
             }
         }
 
         List<RawFilesGroupType> rawFilesGroups = inputFiles.getRawFilesGroup();
-        checkRawFilesGroup(rawFilesGroups);
+        checkRawFilesGroups(rawFilesGroups);
 
         List<SearchDatabaseType> searchDatabases = inputFiles.getSearchDatabase();
         checkSearchDatabases(searchDatabases);
@@ -438,51 +531,98 @@ public class MzQuantMLValidator {
         checkSourceFiles(sourceFiles);
     }
 
+    static public void checkModification(String tarClsId, ModificationType modification) {
+        List<CVParamType> cvParams = modification.getCvParam();
+        if (!cvParams.isEmpty()) {
+            for (CVParamType cvParam : cvParams) {
+                checkCvParam(tarClsId, cvParam);
+            }
+        }
+
+        List<Object> ftRefs = modification.getFeatureRefs();
+        if (!ftRefs.isEmpty()) {
+            for (Object ref : ftRefs) {
+                msgs.addAll(checkObjectRef(tarClsId, ref, info.psidev.psi.pi.mzquantml._1_0.FeatureType.class));
+            }
+        }
+    }
+
     static public <T> ArrayList<Message> checkObjectRef(String tarClsId, Object objRef, Class<T> cls) {
         ObjectRefTypeMatchRule objectRefTypeMatchRule = new ObjectRefTypeMatchRule(tarClsId, objRef, cls);
         objectRefTypeMatchRule.check();
         return objectRefTypeMatchRule.getMessage();
     }
 
-    static public void checkParamGroups(List<AbstractParamType> paramGroups) {
+    static public void checkOrganization(OrganizationType organization) {
+        ParentOrganizationType parentOrg = organization.getParentOrganization();
+        String targetClassId = organization.getId();
+        Object parentOrgRef = parentOrg.getOrganizationRef();
+        msgs.addAll(checkObjectRef(targetClassId, parentOrgRef, info.psidev.psi.pi.mzquantml._1_0.ParentOrganizationType.class));
+    }
+
+    static public void checkParamGroups(String tarClsId, List<AbstractParamType> paramGroups) {
         for (AbstractParamType param : paramGroups) {
-            param.getUnitCvRef(); //String
+            if (param.getClass().isInstance(info.psidev.psi.pi.mzquantml._1_0.CVParamType.class)) {
+                CVParamType cv = (CVParamType) param;
+                cv.getAccession();
+                Object cvRef = cv.getCvRef();
+                msgs.addAll(checkObjectRef(tarClsId, cvRef, info.psidev.psi.pi.mzquantml._1_0.CvType.class));
+            } else if (param.getClass().isInstance(info.psidev.psi.pi.mzquantml._1_0.UserParamType.class)) {
+                UserParamType userParam = (UserParamType) param;
+                userParam.getType();
+            }
+
         }
     }
 
     static public void checkPeptideConsensusList(PeptideConsensusListType peptideConsensusList) {
-        List<QuantLayerType> assayQuantLayers = peptideConsensusList.getAssayQuantLayer();
-        List<GlobalQuantLayerType> globalQuantLayers = peptideConsensusList.getGlobalQuantLayer();
-        String id = peptideConsensusList.getId();
-        List<AbstractParamType> paramGroups = peptideConsensusList.getParamGroup();
-        List<PeptideConsensusType> peptideConsensuses = peptideConsensusList.getPeptideConsensus();
-        List<QuantLayerType> ratioQuantLayers = peptideConsensusList.getRatioQuantLayer();
-        List<QuantLayerType> studyVariableQuantLayers = peptideConsensusList.getStudyVariableQuantLayer();
+        if (peptideConsensusList != null) {
+            List<QuantLayerType> assayQuantLayers = peptideConsensusList.getAssayQuantLayer();
+            List<GlobalQuantLayerType> globalQuantLayers = peptideConsensusList.getGlobalQuantLayer();
+            String id = peptideConsensusList.getId();
+            List<AbstractParamType> paramGroups = peptideConsensusList.getParamGroup();
+            List<PeptideConsensusType> peptideConsensuses = peptideConsensusList.getPeptideConsensus();
+            List<QuantLayerType> ratioQuantLayers = peptideConsensusList.getRatioQuantLayer();
+            List<QuantLayerType> studyVariableQuantLayers = peptideConsensusList.getStudyVariableQuantLayer();
 
-        checkQuantLayer(assayQuantLayers);
-        checkGlobalQuantLayer(globalQuantLayers);
-        checkParamGroups(paramGroups);
-        checkPeptideConsensuses(peptideConsensuses);
-        checkQuantLayer(ratioQuantLayers);
-        checkQuantLayer(studyVariableQuantLayers);
+            checkQuantLayers(assayQuantLayers);
+            checkGlobalQuantLayers(globalQuantLayers);
+            String targetClassId = id;
+            checkParamGroups(targetClassId, paramGroups);
+            checkPeptideConsensuses(peptideConsensuses);
+            checkQuantLayers(ratioQuantLayers);
+            checkQuantLayers(studyVariableQuantLayers);
+        }
     }
 
     static public void checkPeptideConsensus(PeptideConsensusType peptideConsensus) {
-        List<String> charges = peptideConsensus.getCharge();
-        List<EvidenceRefType> evidenceRefs = peptideConsensus.getEvidenceRef();
-        String id = peptideConsensus.getId();
-        List<ModificationType> modifications = peptideConsensus.getModification();
-        List<AbstractParamType> paramGroups = peptideConsensus.getParamGroup();
-        String sequence = peptideConsensus.getPeptideSequence();
-        Object searchDBRef = peptideConsensus.getSearchDatabaseRef();
+        if (peptideConsensus != null) {
+            List<String> charges = peptideConsensus.getCharge();
 
-        String targetClassId = peptideConsensus.getId();
-        if (!evidenceRefs.isEmpty()) {
-            for (EvidenceRefType evidenceRef : evidenceRefs) {
-                checkEvidenceRef(targetClassId, evidenceRef);
+            String id = peptideConsensus.getId();
+            String targetClassId = id;
+            List<ModificationType> modifications = peptideConsensus.getModification();
+            if (!modifications.isEmpty()) {
+                for (ModificationType modification : modifications) {
+                    checkModification(targetClassId, modification);
+                }
+            }
+
+            List<AbstractParamType> paramGroups = peptideConsensus.getParamGroup();
+            checkParamGroups(targetClassId, paramGroups);
+
+            String sequence = peptideConsensus.getPeptideSequence();
+
+            Object searchDBRef = peptideConsensus.getSearchDatabaseRef();
+            msgs.addAll(checkObjectRef(targetClassId, searchDBRef, info.psidev.psi.pi.mzquantml._1_0.SearchDatabaseType.class));
+
+            List<EvidenceRefType> evidenceRefs = peptideConsensus.getEvidenceRef();
+            if (!evidenceRefs.isEmpty()) {
+                for (EvidenceRefType evidenceRef : evidenceRefs) {
+                    checkEvidenceRef(targetClassId, evidenceRef);
+                }
             }
         }
-        checkParamGroups(paramGroups);
     }
 
     static public void checkPeptideConsensuses(List<PeptideConsensusType> peptideConsensuses) {
@@ -512,63 +652,147 @@ public class MzQuantMLValidator {
 
     }
 
-    static public void checkPersonOrOrganization(List<AbstractContactType> personOrOrganizations) {
-        for (AbstractContactType personOrOrganization : personOrOrganizations) {
-            List<AbstractParamType> paramGroups = personOrOrganization.getParamGroup();
-            checkParamGroups(paramGroups);
+    static public void checkPerson(PersonType person) {
+        List<AffiliationType> affiliations = person.getAffiliation();
+        String id = person.getId();
+        String targetClassId = id;
+        if (!affiliations.isEmpty()) {
+            for (AffiliationType affiliation : affiliations) {
+                Object orgRef = affiliation.getOrganizationRef();
+                msgs.addAll(checkObjectRef(targetClassId, orgRef, info.psidev.psi.pi.mzquantml._1_0.OrganizationType.class));
+            }
         }
     }
 
-    static public void checkProtein(List<ProteinType> proteins) {
-        proteins.iterator();
+    static public void checkPersonOrOrganizations(List<AbstractContactType> personOrOrganizations) {
+        if (!personOrOrganizations.isEmpty()) {
+            for (AbstractContactType personOrOrganization : personOrOrganizations) {
+                String targetClassId = personOrOrganization.getId();
+                List<AbstractParamType> paramGroups = personOrOrganization.getParamGroup();
+                checkParamGroups(targetClassId, paramGroups);
+
+                if (personOrOrganization.getClass().isInstance(info.psidev.psi.pi.mzquantml._1_0.PersonType.class)) {
+                    PersonType person = (PersonType) personOrOrganization;
+                    checkPerson(person);
+                }
+
+                if (personOrOrganization.getClass().isInstance(info.psidev.psi.pi.mzquantml._1_0.OrganizationType.class)) {
+                    OrganizationType org = (OrganizationType) personOrOrganization;
+                    checkOrganization(org);
+                }
+
+            }
+        }
+    }
+
+    static public void checkProcessingMethods(String tarClsId, List<ProcessingMethodType> processingMethods) {
+        if (!processingMethods.isEmpty()) {
+            for (ProcessingMethodType processingMethod : processingMethods) {
+                processingMethod.getOrder();
+
+                List<AbstractParamType> paramGroups = processingMethod.getParamGroup();
+                checkParamGroups(tarClsId, paramGroups);
+            }
+        }
+    }
+
+    static public void checkProtein(ProteinType protein) {
+        String id = protein.getId();
+        String targetClassId = id;
+        List<IdentificationRefType> identificationRefs = protein.getIdentificationRef();
+        checkIdentificationRefs(targetClassId, identificationRefs);
+
+        List<AbstractParamType> paramGroups = protein.getParamGroup();
+        checkParamGroups(targetClassId, paramGroups);
+
+        List<Object> pepRefs = protein.getPeptideConsensusRefs();
+        if (!pepRefs.isEmpty()) {
+            for (Object ref : pepRefs) {
+                msgs.addAll(checkObjectRef(targetClassId, ref, info.psidev.psi.pi.mzquantml._1_0.PeptideConsensusType.class));
+            }
+        }
+
+        Object searchDBRef = protein.getSearchDatabaseRef();
+        msgs.addAll(checkObjectRef(targetClassId, searchDBRef, info.psidev.psi.pi.mzquantml._1_0.SearchDatabaseType.class));
+    }
+
+    static public void checkProteinGroup(ProteinGroupType proteinGroup) {
+        String id = proteinGroup.getId();
+        String targetClassId = id;
+
+        List<IdentificationRefType> identificationRefs = proteinGroup.getIdentificationRef();
+        checkIdentificationRefs(targetClassId, identificationRefs);
+
+        List<AbstractParamType> paramGroups = proteinGroup.getParamGroup();
+        checkParamGroups(targetClassId, paramGroups);
+
+        List<Object> protRefs = proteinGroup.getProteinRefs();
+        if (!protRefs.isEmpty()) {
+            for (Object ref : protRefs) {
+                msgs.addAll(checkObjectRef(targetClassId, ref, info.psidev.psi.pi.mzquantml._1_0.ProteinType.class));
+            }
+        }
+
+        Object searchDBRef = proteinGroup.getSearchDatabaseRef();
+        msgs.addAll(checkObjectRef(targetClassId, searchDBRef, info.psidev.psi.pi.mzquantml._1_0.SearchDatabaseType.class));
     }
 
     static public void checkProteinGroupList(ProteinGroupListType proteinGroupList) {
-        List<QuantLayerType> assayQuantLayers = proteinGroupList.getAssayQuantLayer();
-        List<GlobalQuantLayerType> globalQuantLayers = proteinGroupList.getGlobalQuantLayer();
-        String id = proteinGroupList.getId();
-        List<AbstractParamType> paramGroups = proteinGroupList.getParamGroup();
-        List<ProteinGroupType> proteinGroups = proteinGroupList.getProteinGroup();
-        List<QuantLayerType> ratioQuantLayers = proteinGroupList.getRatioQuantLayer();
-        List<QuantLayerType> studyVariableQuantLayers = proteinGroupList.getStudyVariableQuantLayer();
+        if (proteinGroupList != null) {
+            List<QuantLayerType> assayQuantLayers = proteinGroupList.getAssayQuantLayer();
+            List<GlobalQuantLayerType> globalQuantLayers = proteinGroupList.getGlobalQuantLayer();
+            String id = proteinGroupList.getId();
+            List<AbstractParamType> paramGroups = proteinGroupList.getParamGroup();
+            List<ProteinGroupType> proteinGroups = proteinGroupList.getProteinGroup();
+            List<QuantLayerType> ratioQuantLayers = proteinGroupList.getRatioQuantLayer();
+            List<QuantLayerType> studyVariableQuantLayers = proteinGroupList.getStudyVariableQuantLayer();
 
-        checkQuantLayer(assayQuantLayers);
-        checkGlobalQuantLayer(globalQuantLayers);
-        checkParamGroups(paramGroups);
-        checkProteinGroups(proteinGroups);
-        checkQuantLayer(ratioQuantLayers);
-        checkQuantLayer(studyVariableQuantLayers);
+            checkQuantLayers(assayQuantLayers);
+            checkGlobalQuantLayers(globalQuantLayers);
+            String targetClassId = id;
+            checkParamGroups(targetClassId, paramGroups);
+            checkProteinGroups(proteinGroups);
+            checkQuantLayers(ratioQuantLayers);
+            checkQuantLayers(studyVariableQuantLayers);
+        }
     }
 
     static public void checkProteinGroups(List<ProteinGroupType> proteinGroups) {
-        proteinGroups.iterator();
+        if (!proteinGroups.isEmpty()) {
+            for (ProteinGroupType proteinGroup : proteinGroups) {
+                checkProteinGroup(proteinGroup);
+            }
+        }
     }
 
     /*
      * validate ProteinList
      */
     static public void checkProteinList(ProteinListType proteinList) {
-        List<QuantLayerType> assayQuantLayers = proteinList.getAssayQuantLayer();
-        List<GlobalQuantLayerType> globalQuantLayers = proteinList.getGlobalQuantLayer();
-        String id = proteinList.getId();
-        List<AbstractParamType> paramGroups = proteinList.getParamGroup();
-        List<ProteinType> proteins = proteinList.getProtein();
-        List<QuantLayerType> ratioQuantLayers = proteinList.getRatioQuantLayer();
-        List<QuantLayerType> studyVariableQuantLayers = proteinList.getStudyVariableQuantLayer();
-
-        checkQuantLayer(assayQuantLayers);
-        checkGlobalQuantLayer(globalQuantLayers);
-        checkParamGroups(paramGroups);
-        checkProtein(proteins);
-        checkQuantLayer(ratioQuantLayers);
-        checkQuantLayer(studyVariableQuantLayers);
-
         if (proteinList != null) {
-            System.out.println("\nValidating ProteinList......");
+            List<QuantLayerType> assayQuantLayers = proteinList.getAssayQuantLayer();
+            List<GlobalQuantLayerType> globalQuantLayers = proteinList.getGlobalQuantLayer();
+            String id = proteinList.getId();
+            List<AbstractParamType> paramGroups = proteinList.getParamGroup();
+            List<ProteinType> proteins = proteinList.getProtein();
+            List<QuantLayerType> ratioQuantLayers = proteinList.getRatioQuantLayer();
+            List<QuantLayerType> studyVariableQuantLayers = proteinList.getStudyVariableQuantLayer();
 
+            checkQuantLayers(assayQuantLayers);
+            checkGlobalQuantLayers(globalQuantLayers);
+            String targetClassId = id;
+            checkParamGroups(targetClassId, paramGroups);
+            checkProteins(proteins);
+            checkQuantLayers(ratioQuantLayers);
+            checkQuantLayers(studyVariableQuantLayers);
+        }
+    }
 
-            // get GlobalQuantLayer
-            proteinList.getGlobalQuantLayer();
+    static public void checkProteins(List<ProteinType> proteins) {
+        if (!proteins.isEmpty()) {
+            for (ProteinType protein : proteins) {
+                checkProtein(protein);
+            }
         }
     }
 
@@ -578,65 +802,100 @@ public class MzQuantMLValidator {
         msgs.addAll(checkObjectRef(targetClassId, analysisSoftwareRef, info.psidev.psi.pi.mzquantml._1_0.SoftwareType.class));
 
         ContactRoleType contactRole = provider.getContactRole();
-
-        String id = provider.getId();
+        checkContactRole(targetClassId, contactRole);
 
         String name = provider.getName();
     }
 
-    static public void checkQuantLayer(List<QuantLayerType> quantLayers) {
-        for (QuantLayerType quantLayer : quantLayers) {
-            quantLayer.getColumnIndex();
+    static public void checkQuantLayers(List<QuantLayerType> quantLayers) {
+        if (!quantLayers.isEmpty()) {
+            for (QuantLayerType quantLayer : quantLayers) {
 
-            quantLayer.getDataMatrix();
+                //TODO: need to figure out what type does columnIndex refer to 
+                List<Object> columnIndex = quantLayer.getColumnIndex();
 
-            quantLayer.getDataType();
+                String id = quantLayer.getId();
+                String targetClassId = id;
 
-            quantLayer.getId();
+                DataMatrixType dataMatrix = quantLayer.getDataMatrix();
+                checkDataMatrix(dataMatrix);
 
-            ColIndRowValNumMatchRule colIndRowValNumMatchRule = new ColIndRowValNumMatchRule();
-            colIndRowValNumMatchRule.check(quantLayer);
-            msgs.addAll(colIndRowValNumMatchRule.getMessage());
+                CvParamRefType dataType = quantLayer.getDataType();
+                CVParamType cvParam = dataType.getCvParam();
+                checkCvParam(targetClassId, cvParam);
+
+                ColIndRowValNumMatchRule colIndRowValNumMatchRule = new ColIndRowValNumMatchRule();
+                colIndRowValNumMatchRule.check(quantLayer);
+                msgs.addAll(colIndRowValNumMatchRule.getMessage());
+            }
         }
-    }
-
-    static public void checkRatio(List<RatioType> ratios) {
-        ratios.iterator();
     }
 
     /*
      * Validate RatioList
      */
+    static public void checkRatio(RatioType ratio) {
+        String id = ratio.getId();
+        String targetClassId = id;
+        ParamListType ratioCalParamList = ratio.getRatioCalculation();
+        if (ratioCalParamList != null) {
+            List<AbstractParamType> paramGroups = ratioCalParamList.getParamGroup();
+            checkParamGroups(targetClassId, paramGroups);
+        }
+    }
+
     static public void checkRatioList(RatioListType ratioList) {
+        if (ratioList != null) {
+            List<RatioType> ratios = ratioList.getRatio();
+            checkRatios(ratios);
 
-        List<RatioType> ratios = ratioList.getRatio();
-        checkRatio(ratios);
-
-        NumeratorDenominatorRule numeratorDenominatorRule = new NumeratorDenominatorRule(ratioList);
-        numeratorDenominatorRule.check();
-        msgs.addAll(numeratorDenominatorRule.getMsgs());
-    }
-
-    static public void checkRawFile(String tarClsId, List<RawFileType> rawFiles) {
-        for (RawFileType rawFile : rawFiles) {
-
-            Object methodFileRef = rawFile.getMethodFileRef();
-            msgs.addAll(checkObjectRef(tarClsId, methodFileRef, info.psidev.psi.pi.mzquantml._1_0.MethodFileType.class));
-
-            List<AbstractParamType> paramGroups = rawFile.getParamGroup();
-            checkParamGroups(paramGroups);
+            NumeratorDenominatorRule numeratorDenominatorRule = new NumeratorDenominatorRule(ratioList);
+            numeratorDenominatorRule.check();
+            msgs.addAll(numeratorDenominatorRule.getMsgs());
         }
     }
 
-    static public void checkRawFilesGroup(List<RawFilesGroupType> rawFilesGroups) {
-        for (RawFilesGroupType rawFilesGroup : rawFilesGroups) {
-            String targetClassId = rawFilesGroup.getId();
-            List<AbstractParamType> paramGroups = rawFilesGroup.getParamGroup();
-            checkParamGroups(paramGroups);
-
-            List<RawFileType> rawFiles = rawFilesGroup.getRawFile();
-            checkRawFile(targetClassId, rawFiles);
+    static public void checkRatios(List<RatioType> ratios) {
+        if (!ratios.isEmpty()) {
+            for (RatioType ratio : ratios) {
+                checkRatio(ratio);
+            }
         }
+    }
+
+    static public void checkRawFiles(List<RawFileType> rawFiles) {
+        if (!rawFiles.isEmpty()) {
+            for (RawFileType rawFile : rawFiles) {
+                String id = rawFile.getId();
+                String targetClassId = id;
+
+                Object methodFileRef = rawFile.getMethodFileRef();
+                msgs.addAll(checkObjectRef(targetClassId, methodFileRef, info.psidev.psi.pi.mzquantml._1_0.MethodFileType.class));
+
+                List<AbstractParamType> paramGroups = rawFile.getParamGroup();
+                checkParamGroups(targetClassId, paramGroups);
+
+                FileFormatType format = rawFile.getFileFormat();
+                checkFileFormat(targetClassId, format);
+            }
+        }
+    }
+
+    static public void checkRawFilesGroups(List<RawFilesGroupType> rawFilesGroups) {
+        if (!rawFilesGroups.isEmpty()) {
+            for (RawFilesGroupType rawFilesGroup : rawFilesGroups) {
+                String targetClassId = rawFilesGroup.getId();
+                List<AbstractParamType> paramGroups = rawFilesGroup.getParamGroup();
+                checkParamGroups(targetClassId, paramGroups);
+
+                List<RawFileType> rawFiles = rawFilesGroup.getRawFile();
+                checkRawFiles(rawFiles);
+            }
+        }
+    }
+
+    static public void checkRow(RowType row) {
+        row.getObjectRef();
     }
 
     static public void checkSearchDatabases(List<SearchDatabaseType> searchDatabases) {
@@ -655,14 +914,58 @@ public class MzQuantMLValidator {
                     checkCvParam(targetClassId, databaseName.getCvParam());
                 }
 
-                searchDatabase.getFileFormat();
+                FileFormatType format = searchDatabase.getFileFormat();
+                checkFileFormat(targetClassId, format);
 
             }
         }
     }
 
-    static public void checkSmallMolecule(List<SmallMoleculeType> smallMolecules) {
-        smallMolecules.iterator();
+    static public void checkSmallMolecule(SmallMoleculeType smallMolecule) {
+        String id = smallMolecule.getId();
+        String targetClassId = id;
+
+        List<DBIdentificationRefType> dBidentificationRefs = smallMolecule.getDBIdentificationRef();
+        if (!dBidentificationRefs.isEmpty()) {
+            for (DBIdentificationRefType dBidRef : dBidentificationRefs) {
+                checkDBIdentificationRef(targetClassId, dBidRef);
+            }
+        }
+
+        List<Object> ftRefs = smallMolecule.getFeatureRefs();
+        if (!ftRefs.isEmpty()) {
+            for (Object ref : ftRefs) {
+                msgs.addAll(checkObjectRef(targetClassId, ref, info.psidev.psi.pi.mzquantml._1_0.FeatureType.class));
+            }
+        }
+
+        List<AbstractParamType> paramGroups = smallMolecule.getParamGroup();
+        checkParamGroups(targetClassId, paramGroups);
+
+        List<SmallMolModificationType> smallMolModifications = smallMolecule.getModification();
+        checkSmallMolModifications(targetClassId, smallMolModifications);
+
+    }
+
+    static public void checkSmallMolModifications(String tarClsId, List<SmallMolModificationType> smallMolModifications) {
+        if (!smallMolModifications.isEmpty()) {
+            for (SmallMolModificationType smallMolMod : smallMolModifications) {
+                List<CVParamType> cvParams = smallMolMod.getCvParam();
+                if (!cvParams.isEmpty()) {
+                    for (CVParamType cvParam : cvParams) {
+                        checkCvParam(tarClsId, cvParam);
+                    }
+                }
+            }
+        }
+    }
+
+    static public void checkSmallMolecules(List<SmallMoleculeType> smallMolecules) {
+        if (!smallMolecules.isEmpty()) {
+            for (SmallMoleculeType smallMol : smallMolecules) {
+                checkSmallMolecule(smallMol);
+            }
+        }
     }
 
     static public void checkSmallMoleculeList(SmallMoleculeListType smallMoleculeList) {
@@ -674,38 +977,68 @@ public class MzQuantMLValidator {
         List<SmallMoleculeType> smallMolecules = smallMoleculeList.getSmallMolecule();
         List<QuantLayerType> studyVariableQuantLayers = smallMoleculeList.getStudyVariableQuantLayer();
 
-        checkQuantLayer(assayQuantLayers);
-        checkGlobalQuantLayer(globalQuantLayers);
-        checkParamGroups(paramGroups);
-        checkSmallMolecule(smallMolecules);
-        checkQuantLayer(ratioQuantLayers);
-        checkQuantLayer(studyVariableQuantLayers);
+        checkQuantLayers(assayQuantLayers);
+        checkGlobalQuantLayers(globalQuantLayers);
+        String targetClassId = id;
+        checkParamGroups(targetClassId, paramGroups);
+        checkSmallMolecules(smallMolecules);
+        checkQuantLayers(ratioQuantLayers);
+        checkQuantLayers(studyVariableQuantLayers);
     }
 
-    static public void checkSoftware(List<SoftwareType> softwares) {
-        softwares.iterator();
+    static public void checkSoftwares(List<SoftwareType> softwares) {
+        if (!softwares.isEmpty()) {
+            for (SoftwareType software : softwares) {
+                String id = software.getId();
+                String targetClassId = id;
+
+                List<AbstractParamType> paramGroups = software.getParamGroup();
+                checkParamGroups(targetClassId, paramGroups);
+            }
+        }
     }
 
     static public void checkSoftwareList(SoftwareListType softwareList) {
-        List<SoftwareType> softwares = softwareList.getSoftware();
-        checkSoftware(softwares);
+        if (softwareList != null) {
+            List<SoftwareType> softwares = softwareList.getSoftware();
+            checkSoftwares(softwares);
+        }
     }
 
     static public void checkSourceFiles(List<SourceFileType> sourceFiles) {
         if (!sourceFiles.isEmpty()) {
             for (SourceFileType sourceFile : sourceFiles) {
-                sourceFile.getFileFormat();
+                String targetClassId = sourceFile.getId();
+                FileFormatType format = sourceFile.getFileFormat();
+                checkFileFormat(targetClassId, format);
             }
         }
     }
 
-    static public void checkStudyVariable(List<StudyVariableType> studyVariables) {
-        studyVariables.iterator();
+    static public void checkStudyVariableList(StudyVariableListType studyVariableList) {
+        if (studyVariableList != null) {
+            List<StudyVariableType> studyVariables = studyVariableList.getStudyVariable();
+            checkStudyVariables(studyVariables);
+        }
     }
 
-    static public void checkStudyVariableList(StudyVariableListType studyVariableList) {
-        List<StudyVariableType> studyVariables = studyVariableList.getStudyVariable();
-        checkStudyVariable(studyVariables);
+    static public void checkStudyVariables(List<StudyVariableType> studyVariables) {
+        if (!studyVariables.isEmpty()) {
+            for (StudyVariableType studyVariable : studyVariables) {
+                String id = studyVariable.getId();
+                String targetClassId = id;
+
+                List<Object> assayRefs = studyVariable.getAssayRefs();
+                if (!assayRefs.isEmpty()) {
+                    for (Object assayRef : assayRefs) {
+                        msgs.addAll(checkObjectRef(targetClassId, assayRef, info.psidev.psi.pi.mzquantml._1_0.AssayType.class));
+                    }
+                }
+
+                List<AbstractParamType> paramGroups = studyVariable.getParamGroup();
+                checkParamGroups(targetClassId, paramGroups);
+            }
+        }
     }
 
     static public void checkVersion(String version) {

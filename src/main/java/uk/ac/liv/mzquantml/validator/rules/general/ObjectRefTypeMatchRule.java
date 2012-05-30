@@ -31,7 +31,7 @@ public class ObjectRefTypeMatchRule {
 
     public void check() {
         if (this.refObj != null) {
-            if (!(this.refObj.getClass().equals(this.cls))) {
+            if (!(this.refObj.getClass().equals(this.cls)) && !(this.cls.isAssignableFrom(this.refObj.getClass()))) {
                 String id = new String();
                 if (refObj.getClass().equals(info.psidev.psi.pi.mzquantml._1_0.AssayType.class)) {
                     AssayType obj = (AssayType) refObj;
@@ -89,7 +89,7 @@ public class ObjectRefTypeMatchRule {
 
                 msgs.add(new Message("All object reference of type IDREFS or IDREF MUST match the correct object type", Level.INFO));
                 msgs.add(new Message("The object reference \""
-                        + id + "\" in \"" + this.targetClassId + "does not match the correct object type "
+                        + id + "\" in \"" + this.targetClassId + "\" does not match the correct object type "
                         + cls.getName() + "\n", Level.ERROR));
             }
         }

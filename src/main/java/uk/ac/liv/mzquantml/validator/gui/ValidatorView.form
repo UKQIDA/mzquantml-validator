@@ -67,8 +67,7 @@
                       </Group>
                       <Group type="102" alignment="0" attributes="0">
                           <Component id="jbValidate" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace pref="212" max="32767" attributes="0"/>
-                          <Component id="jtfSummary" min="-2" pref="370" max="-2" attributes="0"/>
+                          <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
@@ -84,10 +83,7 @@
                       <Component id="jbFileSelector" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace pref="26" max="32767" attributes="0"/>
-                  <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="jbValidate" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="jtfSummary" alignment="3" min="-2" max="-2" attributes="0"/>
-                  </Group>
+                  <Component id="jbValidate" min="-2" max="-2" attributes="0"/>
                   <EmptySpace min="-2" pref="20" max="-2" attributes="0"/>
               </Group>
           </Group>
@@ -111,13 +107,6 @@
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jbValidateActionPerformed"/>
           </Events>
-        </Component>
-        <Component class="javax.swing.JTextField" name="jtfSummary">
-          <Properties>
-            <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
-              <Border info="null"/>
-            </Property>
-          </Properties>
         </Component>
       </SubComponents>
     </Container>
