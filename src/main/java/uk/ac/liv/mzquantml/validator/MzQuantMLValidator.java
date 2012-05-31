@@ -2,7 +2,11 @@ package uk.ac.liv.mzquantml.validator;
 
 import info.psidev.psi.pi.mzquantml._1_0.*;
 import info.psidev.psi.pi.mzquantml.io.MzQuantMLUnmarshaller;
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
@@ -26,170 +30,175 @@ public class MzQuantMLValidator {
     /**
      * @param args the command line arguments
      */
-    public static List<Message> main(String fileName) throws FileNotFoundException {
+    public static List<Message> main(String fileName, boolean schemaValidating, String schemaFn) throws FileNotFoundException {
         // TODO code application logic here
         msgs.clear();
         msgs.add(new Message("Starting validation process......", Level.INFO));
         msgs.add(new Message("Loading MzQuantML file......", Level.INFO));
 
-        MzQuantMLUnmarshaller unmarshaller = new MzQuantMLUnmarshaller(fileName);
+        MzQuantMLUnmarshaller unmarshaller = new MzQuantMLUnmarshaller(fileName, schemaValidating, schemaFn);
         MzQuantMLType mzq = (MzQuantMLType) unmarshaller.unmarshall();
 
-        /*
-         * get all mzQuantML elements
-         */
-        ParamListType analysisSummary = mzq.getAnalysisSummary();
-        AssayListType assayList = mzq.getAssayList();
-        AuditCollectionType auditCollection = mzq.getAuditCollection();
-        List<BibliographicReferenceType> bibliographicReferences = mzq.getBibliographicReference();
-        XMLGregorianCalendar creationDate = mzq.getCreationDate();
-        CvListType cvList = mzq.getCvList();
-        DataProcessingListType dataProcessingList = mzq.getDataProcessingList();
-        List<FeatureListType> featureLists = mzq.getFeatureList();
-        InputFilesType inputFiles = mzq.getInputFiles();
-        List<PeptideConsensusListType> peptideConsensusLists = mzq.getPeptideConsensusList();
-        ProteinGroupListType proteinGroupList = mzq.getProteinGroupList();
-        ProteinListType proteinList = mzq.getProteinList();
-        ProviderType provider = mzq.getProvider();
-        RatioListType ratioList = mzq.getRatioList();
-        SmallMoleculeListType smallMoleculeList = mzq.getSmallMoleculeList();
-        SoftwareListType softwareList = mzq.getSoftwareList();
-        StudyVariableListType studyVariableList = mzq.getStudyVariableList();
-        String version = mzq.getVersion();
-
-        /*
-         * check all mzQuantML elements one by one
-         */
-        if (analysisSummary != null) {
-            at = new AnalysisType(analysisSummary);
-            checkAnalysisSummary(analysisSummary);
+        if (!unmarshaller.getExceptionalMessages().isEmpty()) {
+            msgs.add(new Message(unmarshaller.getExceptionalMessages()));
+            msgs.add(new Message("Semantic validation processing will not perform as this file is not schema valid!", Level.ERROR));
         } else {
-            // message there is no AnalysisSummary which is not acceptable
+            /*
+             * get all mzQuantML elements
+             */
+            ParamListType analysisSummary = mzq.getAnalysisSummary();
+            AssayListType assayList = mzq.getAssayList();
+            AuditCollectionType auditCollection = mzq.getAuditCollection();
+            List<BibliographicReferenceType> bibliographicReferences = mzq.getBibliographicReference();
+            XMLGregorianCalendar creationDate = mzq.getCreationDate();
+            CvListType cvList = mzq.getCvList();
+            DataProcessingListType dataProcessingList = mzq.getDataProcessingList();
+            List<FeatureListType> featureLists = mzq.getFeatureList();
+            InputFilesType inputFiles = mzq.getInputFiles();
+            List<PeptideConsensusListType> peptideConsensusLists = mzq.getPeptideConsensusList();
+            ProteinGroupListType proteinGroupList = mzq.getProteinGroupList();
+            ProteinListType proteinList = mzq.getProteinList();
+            ProviderType provider = mzq.getProvider();
+            RatioListType ratioList = mzq.getRatioList();
+            SmallMoleculeListType smallMoleculeList = mzq.getSmallMoleculeList();
+            SoftwareListType softwareList = mzq.getSoftwareList();
+            StudyVariableListType studyVariableList = mzq.getStudyVariableList();
+            String version = mzq.getVersion();
+
+            /*
+             * check all mzQuantML elements one by one
+             */
+            if (analysisSummary != null) {
+                at = new AnalysisType(analysisSummary);
+                checkAnalysisSummary(analysisSummary);
+            } else {
+                // message there is no AnalysisSummary which is not acceptable
+            }
+
+            if (assayList != null) {
+                checkAssayList(assayList);
+            } else {
+                // message there is no AssayList which is not acceptable
+            }
+
+
+            if (auditCollection != null) {
+                checkAuditCollection(auditCollection);
+            } else {
+                // message
+            }
+
+            if (bibliographicReferences != null) {
+                checkBibliographicReference(bibliographicReferences);
+            } else {
+                // message
+            }
+
+            if (creationDate != null) {
+                checkCreationDate(creationDate);
+            } else {
+                // message
+            }
+
+            if (cvList != null) {
+                checkCvList(cvList);
+            } else {
+                // message
+            }
+
+            if (dataProcessingList != null) {
+                checkDataProcessingList(dataProcessingList);
+            } else {
+                // message
+            }
+
+            if (featureLists != null) {
+                checkFeatureLists(featureLists);
+            } else {
+                // messages
+            }
+
+            if (inputFiles != null) {
+                checkInputFiles(inputFiles);
+            } else {
+                // message there is no inputFiles which is not acceptable
+            }
+
+            if (peptideConsensusLists != null) {
+                checkPeptideConsensusLists(peptideConsensusLists);
+            } else {
+                // some message
+            }
+
+            if (proteinGroupList != null) {
+                checkProteinGroupList(proteinGroupList);
+            } else {
+                // message
+            }
+
+            if (proteinList != null) {
+                checkProteinList(proteinList);
+            } else {
+                // message
+            }
+
+            if (provider != null) {
+                checkProvider(provider);
+            } else {
+                // message
+            }
+
+            if (ratioList != null) {
+                checkRatioList(ratioList);
+            } else {
+                // message
+            }
+
+            if (smallMoleculeList != null) {
+                checkSmallMoleculeList(smallMoleculeList);
+            } else {
+                // message
+            }
+
+            if (softwareList != null) {
+                checkSoftwareList(softwareList);
+            } else {
+                // message
+            }
+
+            if (studyVariableList != null) {
+                checkStudyVariableList(studyVariableList);
+            } else {
+                // message
+            }
+
+            if (version != null) {
+                checkVersion(version);
+            } else {
+                // message
+            }
+
+            /*
+             * ListsRule start here
+             */
+            ListsRule listsRule = new ListsRule(at, inputFiles, proteinGroupList, proteinList,
+                    peptideConsensusLists, featureLists);
+            listsRule.check();
+            msgs.addAll(listsRule.getMsgs());
+
+            /*
+             * QuantLayerRule start here
+             */
+            QuantLayerRule quantLayerRule = new QuantLayerRule(analysisSummaryMap, proteinGroupList, proteinList, peptideConsensusLists, featureLists);
+            quantLayerRule.check();
+            msgs.addAll(quantLayerRule.getMsgs());
+
+            /*
+             * final output
+             */
+            System.out.println("MzQuantML validation process is finished");
+            msgs.add(new Message("MzQuantML validation process is finished", Level.INFO));
         }
-
-        if (assayList != null) {
-            checkAssayList(assayList);
-        } else {
-            // message there is no AssayList which is not acceptable
-        }
-
-
-        if (auditCollection != null) {
-            checkAuditCollection(auditCollection);
-        } else {
-            // message
-        }
-
-        if (bibliographicReferences != null) {
-            checkBibliographicReference(bibliographicReferences);
-        } else {
-            // message
-        }
-
-        if (creationDate != null) {
-            checkCreationDate(creationDate);
-        } else {
-            // message
-        }
-
-        if (cvList != null) {
-            checkCvList(cvList);
-        } else {
-            // message
-        }
-
-        if (dataProcessingList != null) {
-            checkDataProcessingList(dataProcessingList);
-        } else {
-            // message
-        }
-
-        if (featureLists != null) {
-            checkFeatureLists(featureLists);
-        } else {
-            // messages
-        }
-
-        if (inputFiles != null) {
-            checkInputFiles(inputFiles);
-        } else {
-            // message there is no inputFiles which is not acceptable
-        }
-
-        if (peptideConsensusLists != null) {
-            checkPeptideConsensusLists(peptideConsensusLists);
-        } else {
-            // some message
-        }
-
-        if (proteinGroupList != null) {
-            checkProteinGroupList(proteinGroupList);
-        } else {
-            // message
-        }
-
-        if (proteinList != null) {
-            checkProteinList(proteinList);
-        } else {
-            // message
-        }
-
-        if (provider != null) {
-            checkProvider(provider);
-        } else {
-            // message
-        }
-
-        if (ratioList != null) {
-            checkRatioList(ratioList);
-        } else {
-            // message
-        }
-
-        if (smallMoleculeList != null) {
-            checkSmallMoleculeList(smallMoleculeList);
-        } else {
-            // message
-        }
-
-        if (softwareList != null) {
-            checkSoftwareList(softwareList);
-        } else {
-            // message
-        }
-
-        if (studyVariableList != null) {
-            checkStudyVariableList(studyVariableList);
-        } else {
-            // message
-        }
-
-        if (version != null) {
-            checkVersion(version);
-        } else {
-            // message
-        }
-
-        /*
-         * ListsRule start here
-         */
-        ListsRule listsRule = new ListsRule(at, inputFiles, proteinGroupList, proteinList,
-                peptideConsensusLists, featureLists);
-        listsRule.check();
-        msgs.addAll(listsRule.getMsgs());
-
-        /*
-         * QuantLayerRule start here
-         */
-        QuantLayerRule quantLayerRule = new QuantLayerRule(analysisSummaryMap, proteinGroupList, proteinList, peptideConsensusLists, featureLists);
-        quantLayerRule.check();
-        msgs.addAll(quantLayerRule.getMsgs());
-
-        /*
-         * final output
-         */
-        System.out.println("MzQuantML validation process is finished");
-        msgs.add(new Message("MzQuantML validation process is finished", Level.INFO));
         return msgs;
     }
 
@@ -356,15 +365,19 @@ public class MzQuantMLValidator {
     static public void checkDataProcessings(List<DataProcessingType> dataProcessings) {
         if (!dataProcessings.isEmpty()) {
             for (DataProcessingType dataProcessing : dataProcessings) {
+                String targetClassId = dataProcessing.getId();
+
                 List<Object> inputObjectRefs = dataProcessing.getInputObjectRefs();
                 List<Object> outputObjectRefs = dataProcessing.getOutputObjectRefs();
 
-//                if (!inputObjectRefs.isEmpty()) {
-//                    for (Object ref : inputObjectRefs) {
-//                    }
-//                }
+                InOutputObjectRefsRule inputRule = new InOutputObjectRefsRule(inputObjectRefs, targetClassId);
+                inputRule.check();
+                msgs.addAll(inputRule.getMsgs());
 
-                String targetClassId = dataProcessing.getId();
+                InOutputObjectRefsRule outputRule = new InOutputObjectRefsRule(outputObjectRefs, targetClassId);
+                outputRule.check();
+                msgs.addAll(outputRule.getMsgs());
+
                 Object softwareRef = dataProcessing.getSoftwareRef();
                 msgs.addAll(checkObjectRef(targetClassId, softwareRef, info.psidev.psi.pi.mzquantml._1_0.SoftwareType.class));
 
