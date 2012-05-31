@@ -4,13 +4,12 @@
  */
 package uk.ac.liv.mzquantml.validator.utils;
 
+import java.util.ArrayList;
 import org.apache.log4j.Level;
 
 /**
  *
- * @author Da Qi
- * @institute University of Liverpool
- * @time May 2, 2012 3:52:41 PM
+ * @author Da Qi @institute University of Liverpool @time May 2, 2012 3:52:41 PM
  */
 public class Message {
 
@@ -28,6 +27,14 @@ public class Message {
     public Message(String msg, Level l) {
         this.message = msg;
         this.level = l;
+    }
+
+    public Message(ArrayList<String> msgs) {
+        this.message = "";
+        for (String s : msgs) {
+            this.message = this.message + "\n" + s;
+        }
+        this.level = Level.ALL;
     }
 
     public void setMessage(String msg) {

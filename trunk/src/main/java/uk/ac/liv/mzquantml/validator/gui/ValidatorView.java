@@ -14,6 +14,7 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.net.URISyntaxException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -78,12 +79,15 @@ public class ValidatorView extends javax.swing.JFrame {
         jtfFileName = new javax.swing.JTextField();
         jbFileSelector = new javax.swing.JButton();
         jbValidate = new javax.swing.JButton();
+        jcb_schemaValidating = new javax.swing.JCheckBox();
+        jtfSchema = new javax.swing.JTextField();
+        jbSchema = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jtaValidationResults = new javax.swing.JTextArea();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("MzQuantML file validator --- Beta Version");
+        setTitle("MzQuantML file semantic validator --- Beta Version");
         setMinimumSize(new java.awt.Dimension(661, 416));
         setResizable(false);
 
@@ -103,6 +107,24 @@ public class ValidatorView extends javax.swing.JFrame {
             }
         });
 
+        jcb_schemaValidating.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        jcb_schemaValidating.setText("Schema validation.");
+        jcb_schemaValidating.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                jcb_schemaValidatingStateChanged(evt);
+            }
+        });
+
+        jtfSchema.setEnabled(false);
+
+        jbSchema.setText("Schema");
+        jbSchema.setEnabled(false);
+        jbSchema.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jbSchemaActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -110,13 +132,18 @@ public class ValidatorView extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                    .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jtfFileName, javax.swing.GroupLayout.DEFAULT_SIZE, 630, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jbFileSelector))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jbValidate)
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                        .addComponent(jcb_schemaValidating)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jbValidate))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jtfSchema, javax.swing.GroupLayout.DEFAULT_SIZE, 606, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jbSchema)))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -126,9 +153,15 @@ public class ValidatorView extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jtfFileName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jbFileSelector))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 26, Short.MAX_VALUE)
-                .addComponent(jbValidate)
-                .addGap(20, 20, 20))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 7, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jtfSchema, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jbSchema))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jbValidate)
+                    .addComponent(jcb_schemaValidating))
+                .addContainerGap())
         );
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Validation Results"));
@@ -145,7 +178,7 @@ public class ValidatorView extends javax.swing.JFrame {
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 312, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 311, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -171,7 +204,7 @@ public class ValidatorView extends javax.swing.JFrame {
         try {
             // TODO add your handling code here:
             String fileName = this.jtfFileName.getText();
-            List<Message> results = MzQuantMLValidator.main(fileName);
+            List<Message> results = MzQuantMLValidator.main(fileName, this.jcb_schemaValidating.isSelected(), this.jtfSchema.getText());
             this.jtaValidationResults.setLineWrap(true);
             String results_mod = results.toString();
             this.jtaValidationResults.setText(results_mod.substring(2, results_mod.length() - 1));
@@ -197,6 +230,37 @@ public class ValidatorView extends javax.swing.JFrame {
             currentDirectory = file.getParentFile();
         }
     }//GEN-LAST:event_jbFileSelectorActionPerformed
+
+    private void jcb_schemaValidatingStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jcb_schemaValidatingStateChanged
+        // TODO add your handling code here:
+        if (this.jcb_schemaValidating.isSelected()) {
+            jcb_schemaValidating.setText("Schema validation. For larger files, selecting this option could result in long waiting!");
+            jtfSchema.setEnabled(true);
+            jbSchema.setEnabled(true);
+        } else {
+            jcb_schemaValidating.setText("Schema validation.");
+            jtfSchema.setEnabled(false);
+            jbSchema.setEnabled(false);
+        }
+    }//GEN-LAST:event_jcb_schemaValidatingStateChanged
+
+    private void jbSchemaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbSchemaActionPerformed
+        // TODO add your handling code here:
+        JFileChooser fileChooser = new javax.swing.JFileChooser("user.home");
+        fileChooser.setDialogTitle("Select a MzQuantML schema file");
+        fileChooser.setCurrentDirectory(currentDirectory);
+
+        //... Applying file extension filters ...//
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("XML Schema (*.xsd)", "xsd");
+        fileChooser.setFileFilter(filter);
+
+        int returnVal = fileChooser.showOpenDialog(this);
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+            File file = fileChooser.getSelectedFile();
+            this.jtfSchema.setText(file.getAbsolutePath());
+            currentDirectory = file.getParentFile();
+        }
+    }//GEN-LAST:event_jbSchemaActionPerformed
 
     /**
      * @param args the command line arguments
@@ -244,8 +308,11 @@ public class ValidatorView extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JButton jbFileSelector;
+    private javax.swing.JButton jbSchema;
     private javax.swing.JButton jbValidate;
+    private javax.swing.JCheckBox jcb_schemaValidating;
     private javax.swing.JTextArea jtaValidationResults;
     private javax.swing.JTextField jtfFileName;
+    private javax.swing.JTextField jtfSchema;
     // End of variables declaration//GEN-END:variables
 }
