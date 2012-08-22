@@ -1,0 +1,164 @@
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>uk.ac.liv</groupId>
+    <artifactId>mzQuantML-validator</artifactId>
+    <version>0.9.0</version>
+    <packaging>jar</packaging>
+
+    <name>mzQuantML-validator</name>
+    <url>http://code.google.com/p/mzquantml-validator/</url>
+    
+    <developers>
+        <developer>
+            <name>Da Qi</name>
+            <id>ddq</id>
+            <email>d.qi@liverpool.ac.uk</email>
+            <organization>University of Liverpool, UK</organization>
+        </developer>
+    </developers>
+    <scm>
+        <developerConnection>scm:svn:https://mzquantml-validator.googlecode.com/svn/tags/mzQuantML-validator-0.9.0</developerConnection>
+    </scm>
+  
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-release-plugin</artifactId>
+                    <version>2.3.2</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>2.2.2</version>
+                <executions>
+                    <execution>
+                        <id>create-executable-jar</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                        <configuration>
+                            <descriptorRefs>
+                                <descriptorRef>
+                                    jar-with-dependencies
+                                </descriptorRef>
+                            </descriptorRefs>
+                            <archive>
+                                <manifest>
+                                    <mainClass>uk.ac.liv.mzquantml.validator.gui.ValidatorView</mainClass>
+                                </manifest>
+                            </archive>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>             
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>2.3.1</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                            <classpathPrefix>lib/</classpathPrefix>
+                            <mainClass>uk.ac.liv.mzquantml.validator.gui.ValidatorView</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>  
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.5.1</version>
+                <configuration>
+                    <source>1.6</source>
+                    <target>1.6</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>2.3.2</version>  
+            </plugin> 
+        </plugins>
+        <extensions>
+            <extension>
+                <groupId>org.jvnet.wagon-svn</groupId>
+                <artifactId>wagon-svn</artifactId>
+                <version>1.12</version>
+            </extension>
+        </extensions>
+         
+        <resources>
+            <resource>
+                <directory> src/main/resources/ </directory>
+                <excludes>
+                    <exclude> **/*.* </exclude>
+                </excludes>
+            </resource>
+        </resources>
+    </build>
+    
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>3.8.1</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>1.2.16</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>jmzquantml</artifactId>
+            <version>1.0.0-rc2-1.0.0</version>
+        </dependency>
+    </dependencies>
+    <pluginRepositories>
+        <pluginRepository>
+            <id>maven2-repository.dev.java.net</id>
+            <name>Java.net Repository for Maven</name>
+            <url>http://download.java.net/maven/2/</url>
+        </pluginRepository>
+    </pluginRepositories>
+    <repositories>
+        <repository>
+            <id>jmzquantml-maven-repo</id>
+            <name>Maven Repository for jmzquantml release</name>
+            <url>http://jmzquantml.googlecode.com/svn/maven/repo</url>
+        </repository>
+    </repositories>
+    
+    <distributionManagement>
+        <repository>
+            <id>mzquantml-validator-maven-repo</id>
+            <name>Maven Repository for mzQuantML-validator release</name>
+            <url>svn:https://mzquantml-validator.googlecode.com/svn/maven/repo</url>
+        </repository>
+        <snapshotRepository>
+            <id>mzquantml-validator-maven-snapshot-repo</id>
+            <name>Maven Repository for mzQuantML-validator (snapshot)</name>
+            <url>svn:https://mzquantml-validator.googlecode.com/svn/maven/snapshot-repo</url>
+            <uniqueVersion>false</uniqueVersion>
+        </snapshotRepository>
+    </distributionManagement>
+    <description>
+        mzquantml-validator is a simple interface for validating
+        MzQuantML (*.mzq) file against a set of semantic rules 
+        under different quantitative proteomic methods.
+    </description>
+</project>
