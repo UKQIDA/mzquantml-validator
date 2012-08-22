@@ -4,35 +4,36 @@
  */
 package uk.ac.liv.mzquantml.validator.rules.general;
 
-import info.psidev.psi.pi.mzquantml._1_0.RatioListType;
-import info.psidev.psi.pi.mzquantml._1_0.RatioType;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.log4j.Level;
+import uk.ac.liv.jmzqml.model.mzqml.Ratio;
+import uk.ac.liv.jmzqml.model.mzqml.RatioList;
 import uk.ac.liv.mzquantml.validator.utils.Message;
 
 /**
  *
- * @author Da Qi @institute University of Liverpool @time Apr 26, 2012 3:03:40
- * PM
+ * @author Da Qi
+ * @institute University of Liverpool
+ * @time Apr 26, 2012 3:03:40 PM
  */
 public class NumeratorDenominatorRule {
 
     ArrayList<Message> msgs = new ArrayList<Message>();
-    RatioListType ratioList;
+    RatioList ratioList;
 
     public NumeratorDenominatorRule() {
         this.ratioList = null;
     }
 
-    public NumeratorDenominatorRule(RatioListType ratioList) {
+    public NumeratorDenominatorRule(RatioList ratioList) {
         this.ratioList = ratioList;
     }
 
     public void check() {
-        List<RatioType> ratioes = this.ratioList.getRatio();
+        List<Ratio> ratioes = this.ratioList.getRatio();
         if (!ratioes.isEmpty()) {
-            for (RatioType ratio : ratioes) {
+            for (Ratio ratio : ratioes) {
                 Class numCls = ratio.getNumeratorRef().getClass();
                 Class denCls = ratio.getDenominatorRef().getClass();
                 if (!numCls.equals(denCls)) {
@@ -42,8 +43,8 @@ public class NumeratorDenominatorRule {
                             + "the denominator MUST reference an Assay", Level.INFO));
                     msgs.add(new Message("Numerator and denominator are not referred to the same type in "
                             + "Ratio \"" + ratio.getId() + "\"\n", Level.ERROR));
-                } else if (!numCls.equals(info.psidev.psi.pi.mzquantml._1_0.AssayType.class)
-                        && !numCls.equals(info.psidev.psi.pi.mzquantml._1_0.StudyVariableType.class)) {
+                } else if (!numCls.equals(uk.ac.liv.jmzqml.model.mzqml.Assay.class)
+                        && !numCls.equals(uk.ac.liv.jmzqml.model.mzqml.StudyVariable.class)) {
                     msgs.add(new Message("Numerator and demoninator in Ratio \""
                             + ratio.getId() + "\" are not either StudyVariable or Assay\n", Level.ERROR));
                 }

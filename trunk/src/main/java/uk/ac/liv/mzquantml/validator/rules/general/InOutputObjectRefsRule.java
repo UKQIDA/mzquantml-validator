@@ -33,13 +33,13 @@ public class InOutputObjectRefsRule {
     public void check() {
         if (!this.objRefs.isEmpty()) {
             for (Object ref : objRefs) {
-                if (!ref.getClass().equals(info.psidev.psi.pi.mzquantml._1_0.RawFilesGroupType.class)
-                        && !ref.getClass().equals(info.psidev.psi.pi.mzquantml._1_0.ProteinGroupListType.class)
-                        && !ref.getClass().equals(info.psidev.psi.pi.mzquantml._1_0.ProteinListType.class)
-                        && !ref.getClass().equals(info.psidev.psi.pi.mzquantml._1_0.PeptideConsensusListType.class)
-                        && !ref.getClass().equals(info.psidev.psi.pi.mzquantml._1_0.FeatureListType.class)
-                        && !ref.getClass().equals(info.psidev.psi.pi.mzquantml._1_0.GlobalQuantLayerType.class)
-                        && !ref.getClass().equals(info.psidev.psi.pi.mzquantml._1_0.QuantLayerType.class)) {
+                if (!ref.getClass().equals(uk.ac.liv.jmzqml.model.mzqml.RawFilesGroup.class)
+                        && !ref.getClass().equals(uk.ac.liv.jmzqml.model.mzqml.ProteinGroupList.class)
+                        && !ref.getClass().equals(uk.ac.liv.jmzqml.model.mzqml.ProteinList.class)
+                        && !ref.getClass().equals(uk.ac.liv.jmzqml.model.mzqml.PeptideConsensusList.class)
+                        && !ref.getClass().equals(uk.ac.liv.jmzqml.model.mzqml.FeatureList.class)
+                        && !ref.getClass().equals(uk.ac.liv.jmzqml.model.mzqml.GlobalQuantLayer.class)
+                        && !ref.getClass().equals(uk.ac.liv.jmzqml.model.mzqml.QuantLayer.class)) {
                     msgs.add(new Message("InputObject_refs and OutputOjbect_refs in DataProcessing MUST "
                             + "reference RawFilesGroup, FeatureList, PeptideConsensusList, ProteinList, ProteinGroupList or QuantLayers.", Level.INFO));
                     msgs.add(new Message("The objectRef in " + this.targetClassId + " is referencing " + ref.getClass().getSimpleName() + "\n", Level.ERROR));

@@ -4,14 +4,16 @@
  */
 package uk.ac.liv.mzquantml.validator.rules.general;
 
-import info.psidev.psi.pi.mzquantml._1_0.*;
 import java.util.ArrayList;
 import org.apache.log4j.Level;
+import uk.ac.liv.jmzqml.model.mzqml.*;
 import uk.ac.liv.mzquantml.validator.utils.Message;
 
 /**
  *
- * @author Da Qi @institute University of Liverpool @time May 2, 2012 3:23:05 PM
+ * @author Da Qi
+ * @institute University of Liverpool
+ * @time May 2, 2012 3:23:05 PM
  */
 public class ObjectRefTypeMatchRule {
 
@@ -33,56 +35,56 @@ public class ObjectRefTypeMatchRule {
         if (this.refObj != null) {
             if (!(this.refObj.getClass().equals(this.cls)) && !(this.cls.isAssignableFrom(this.refObj.getClass()))) {
                 String id = new String();
-                if (refObj.getClass().equals(info.psidev.psi.pi.mzquantml._1_0.AssayType.class)) {
-                    AssayType obj = (AssayType) refObj;
+                if (refObj.getClass().equals(uk.ac.liv.jmzqml.model.mzqml.Assay.class)) {
+                    Assay obj = (Assay) refObj;
                     id = obj.getId();
                 }
-                if (refObj.getClass().equals(info.psidev.psi.pi.mzquantml._1_0.DataProcessingType.class)) {
-                    DataProcessingType obj = (DataProcessingType) refObj;
+                if (refObj.getClass().equals(uk.ac.liv.jmzqml.model.mzqml.DataProcessing.class)) {
+                    DataProcessing obj = (DataProcessing) refObj;
                     id = obj.getId();
                 }
-                if (refObj.getClass().equals(info.psidev.psi.pi.mzquantml._1_0.CvType.class)) {
-                    CvType obj = (CvType) refObj;
+                if (refObj.getClass().equals(uk.ac.liv.jmzqml.model.mzqml.Cv.class)) {
+                    Cv obj = (Cv) refObj;
                     id = obj.getId();
                 }
-                if (refObj.getClass().equals(info.psidev.psi.pi.mzquantml._1_0.FeatureType.class)) {
-                    FeatureType obj = (FeatureType) refObj;
+                if (refObj.getClass().equals(uk.ac.liv.jmzqml.model.mzqml.Feature.class)) {
+                    Feature obj = (Feature) refObj;
                     id = obj.getId();
                 }
-                if (refObj.getClass().equals(info.psidev.psi.pi.mzquantml._1_0.IdentificationFileType.class)) {
-                    IdentificationFileType obj = (IdentificationFileType) refObj;
+                if (refObj.getClass().equals(uk.ac.liv.jmzqml.model.mzqml.IdentificationFile.class)) {
+                    IdentificationFile obj = (IdentificationFile) refObj;
                     id = obj.getId();
                 }
-                if (refObj.getClass().equals(info.psidev.psi.pi.mzquantml._1_0.MethodFileType.class)) {
-                    MethodFileType obj = (MethodFileType) refObj;
+                if (refObj.getClass().equals(uk.ac.liv.jmzqml.model.mzqml.MethodFile.class)) {
+                    MethodFile obj = (MethodFile) refObj;
                     id = obj.getId();
                 }
-                if (refObj.getClass().equals(info.psidev.psi.pi.mzquantml._1_0.SearchDatabaseType.class)) {
-                    SearchDatabaseType obj = (SearchDatabaseType) refObj;
+                if (refObj.getClass().equals(uk.ac.liv.jmzqml.model.mzqml.SearchDatabase.class)) {
+                    SearchDatabase obj = (SearchDatabase) refObj;
                     id = obj.getId();
                 }
-                if (refObj.getClass().equals(info.psidev.psi.pi.mzquantml._1_0.ProteinType.class)) {
-                    ProteinType obj = (ProteinType) refObj;
+                if (refObj.getClass().equals(uk.ac.liv.jmzqml.model.mzqml.Protein.class)) {
+                    Protein obj = (Protein) refObj;
                     id = obj.getId();
                 }
-                if (refObj.getClass().equals(info.psidev.psi.pi.mzquantml._1_0.PeptideConsensusType.class)) {
-                    PeptideConsensusType obj = (PeptideConsensusType) refObj;
+                if (refObj.getClass().equals(uk.ac.liv.jmzqml.model.mzqml.PeptideConsensus.class)) {
+                    PeptideConsensus obj = (PeptideConsensus) refObj;
                     id = obj.getId();
                 }
-                if (refObj.getClass().equals(info.psidev.psi.pi.mzquantml._1_0.RawFilesGroupType.class)) {
-                    RawFilesGroupType obj = (RawFilesGroupType) refObj;
+                if (refObj.getClass().equals(uk.ac.liv.jmzqml.model.mzqml.RawFilesGroup.class)) {
+                    RawFilesGroup obj = (RawFilesGroup) refObj;
                     id = obj.getId();
                 }
-                if (refObj.getClass().equals(info.psidev.psi.pi.mzquantml._1_0.StudyVariableType.class)) {
-                    StudyVariableType obj = (StudyVariableType) refObj;
+                if (refObj.getClass().equals(uk.ac.liv.jmzqml.model.mzqml.StudyVariable.class)) {
+                    StudyVariable obj = (StudyVariable) refObj;
                     id = obj.getId();
                 }
-                if (refObj.getClass().equals(info.psidev.psi.pi.mzquantml._1_0.SoftwareType.class)) {
-                    SoftwareType obj = (SoftwareType) refObj;
+                if (refObj.getClass().equals(uk.ac.liv.jmzqml.model.mzqml.Software.class)) {
+                    Software obj = (Software) refObj;
                     id = obj.getId();
                 }
-                if (refObj.getClass().equals(info.psidev.psi.pi.mzquantml._1_0.OrganizationType.class)) {
-                    OrganizationType obj = (OrganizationType) refObj;
+                if (refObj.getClass().equals(uk.ac.liv.jmzqml.model.mzqml.Organization.class)) {
+                    Organization obj = (Organization) refObj;
                     id = obj.getId();
                 }
 

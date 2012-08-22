@@ -4,34 +4,37 @@
  */
 package uk.ac.liv.mzquantml.validator.rules.general;
 
-import info.psidev.psi.pi.mzquantml._1_0.*;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.log4j.Level;
+import uk.ac.liv.jmzqml.model.mzqml.*;
 import uk.ac.liv.mzquantml.validator.utils.AnalysisType;
 import uk.ac.liv.mzquantml.validator.utils.AnalysisType.AnalTp;
 import uk.ac.liv.mzquantml.validator.utils.Message;
 
 /**
  *
- * @author Da Qi @time 16:27:16 12-May-2012 @institution University of Liverpool
+ * @author Da Qi
+ * @time 16:27:16 12-May-2012
+ * @institution University of Liverpool
  */
 public class ListsRule {
 
     AnalysisType at;
-    InputFilesType infls;
-    ProteinGroupListType protGrpLst;
-    ProteinListType protLst;
-    List<PeptideConsensusListType> pepCnsLsts;
-    List<FeatureListType> ftLsts;
+    InputFiles infls;
+    ProteinGroupList protGrpLst;
+    ProteinList protLst;
+    List<PeptideConsensusList> pepCnsLsts;
+    List<FeatureList> ftLsts;
     List<Message> msgs = new ArrayList<Message>();
 
     /*
      * constructor
      */
-    public ListsRule(AnalysisType analysisType, InputFilesType inputFiles,
-            ProteinGroupListType proteinGroupList, ProteinListType proteinList,
-            List<PeptideConsensusListType> peptideConsensusLists, List<FeatureListType> featureLists) {
+    public ListsRule(AnalysisType analysisType, InputFiles inputFiles,
+                     ProteinGroupList proteinGroupList, ProteinList proteinList,
+                     List<PeptideConsensusList> peptideConsensusLists,
+                     List<FeatureList> featureLists) {
         this.at = analysisType;
         this.infls = inputFiles;
         this.protGrpLst = proteinGroupList;
@@ -46,7 +49,7 @@ public class ListsRule {
     public void check() {
         if ((this.protLst != null) && (this.pepCnsLsts != null)) {
             // All proteins SHOULD have peptide_refs
-            for (ProteinType protein : this.protLst.getProtein()) {
+            for (Protein protein : this.protLst.getProtein()) {
                 if (protein.getPeptideConsensusRefs() == null) {
                     msgs.add(new Message("If there is a ProteinList and "
                             + "a PeptideConsensusList, all protein SHOULD have peptide_refs", Level.INFO));
@@ -89,7 +92,7 @@ public class ListsRule {
         }
 
         if (this.ftLsts != null) {
-            for (FeatureListType featureList : ftLsts) {
+            for (FeatureList featureList : ftLsts) {
                 if (!featureList.getFeatureQuantLayer().isEmpty()) {
                     msgs.add(new Message("There SHOULD NOT be a FeatureQuantLayer", Level.INFO));
                     msgs.add(new Message("FeatureQuantLayer found in FeatrueList "
@@ -125,7 +128,7 @@ public class ListsRule {
                     + "there MUST be a MS2AssayQuantLayer present"), Level.INFO));
             msgs.add(new Message("There is no FeatureList\n", Level.ERROR));
         } else {
-            for (FeatureListType ftLst : this.ftLsts) {
+            for (FeatureList ftLst : this.ftLsts) {
                 if (ftLst.getMS2AssayQuantLayer() == null) {
                     msgs.add(new Message(("If PeptideConsensusList is present there MUST be a FeatureList present and "
                             + "there MUST be a MS2AssayQuantLayer present"), Level.INFO));
