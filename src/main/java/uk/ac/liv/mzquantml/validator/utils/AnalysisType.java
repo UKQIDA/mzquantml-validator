@@ -4,8 +4,9 @@
  */
 package uk.ac.liv.mzquantml.validator.utils;
 
-import info.psidev.psi.pi.mzquantml._1_0.*;
 import java.util.List;
+import uk.ac.liv.jmzqml.model.mzqml.AbstractParam;
+import uk.ac.liv.jmzqml.model.mzqml.ParamList;
 
 /**
  *
@@ -33,9 +34,9 @@ public class AnalysisType {
     };
     AnalTp at;
 
-    public AnalysisType(ParamListType analysisSummary) {
-        List<AbstractParamType> paramGroups = analysisSummary.getParamGroup();
-        for (AbstractParamType param : paramGroups) {
+    public AnalysisType(ParamList analysisSummary) {
+        List<AbstractParam> paramGroups = analysisSummary.getParamGroup();
+        for (AbstractParam param : paramGroups) {
             //Technique tech = new Technique(param.getName());
             if (param.getName().equals(AnalTp.LabelFree.getName())) {
                 at = AnalTp.LabelFree;

@@ -4,19 +4,21 @@
  */
 package uk.ac.liv.mzquantml.validator.rules.general;
 
-import info.psidev.psi.pi.mzquantml._1_0.PeptideConsensusListType;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.log4j.Level;
+import uk.ac.liv.jmzqml.model.mzqml.PeptideConsensusList;
 import uk.ac.liv.mzquantml.validator.utils.Message;
 
 /**
  *
- * @author Da Qi @time 19:08:11 12-May-2012 @institution University of Liverpool
+ * @author Da Qi
+ * @time 19:08:11 12-May-2012
+ * @institution University of Liverpool
  */
 public class FinalResultRule {
 
-    List<PeptideConsensusListType> pepCnsLsts;
+    List<PeptideConsensusList> pepCnsLsts;
     ArrayList<Message> msgs = new ArrayList<Message>();
 
     /*
@@ -26,7 +28,7 @@ public class FinalResultRule {
         this.pepCnsLsts = null;
     }
 
-    public FinalResultRule(List<PeptideConsensusListType> peptideConsensusLists) {
+    public FinalResultRule(List<PeptideConsensusList> peptideConsensusLists) {
         this.pepCnsLsts = peptideConsensusLists;
     }
 
@@ -36,7 +38,7 @@ public class FinalResultRule {
     public void check() {
         int count = 0;
         if (!this.pepCnsLsts.isEmpty()) {
-            for (PeptideConsensusListType peptideConsensusList : this.pepCnsLsts) {
+            for (PeptideConsensusList peptideConsensusList : this.pepCnsLsts) {
                 if (peptideConsensusList.isFinalResult()) {
                     count++;
                 }

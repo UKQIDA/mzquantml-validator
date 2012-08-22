@@ -4,22 +4,24 @@
  */
 package uk.ac.liv.mzquantml.validator.rules.general;
 
-import info.psidev.psi.pi.mzquantml._1_0.InputFilesType;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.log4j.Level;
+import uk.ac.liv.jmzqml.model.mzqml.InputFiles;
 import uk.ac.liv.mzquantml.validator.utils.AnalysisType;
 import uk.ac.liv.mzquantml.validator.utils.AnalysisType.AnalTp;
 import uk.ac.liv.mzquantml.validator.utils.Message;
 
 /**
  *
- * @author Da Qi @time 18:44:31 12-May-2012 @institution University of Liverpool
+ * @author Da Qi
+ * @time 18:44:31 12-May-2012
+ * @institution University of Liverpool
  */
 public class RawFileRule {
 
     AnalysisType at;
-    InputFilesType infls;
+    InputFiles infls;
     List<Message> msgs = new ArrayList<Message>();
 
     /*
@@ -29,7 +31,7 @@ public class RawFileRule {
         this.at = null;
     }
 
-    public RawFileRule(AnalysisType analysisType, InputFilesType inputFiles) {
+    public RawFileRule(AnalysisType analysisType, InputFiles inputFiles) {
         this.at = analysisType;
         this.infls = inputFiles;
     }

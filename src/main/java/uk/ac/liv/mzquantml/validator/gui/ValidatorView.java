@@ -14,7 +14,6 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.net.URISyntaxException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -214,7 +213,7 @@ public class ValidatorView extends javax.swing.JFrame {
     }//GEN-LAST:event_jbValidateActionPerformed
 
     private void jbFileSelectorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbFileSelectorActionPerformed
-        // TODO add your handling code here:            
+          
         JFileChooser fileChooser = new javax.swing.JFileChooser("user.home");
         fileChooser.setDialogTitle("Select a MzQuantML file");
         fileChooser.setCurrentDirectory(currentDirectory);

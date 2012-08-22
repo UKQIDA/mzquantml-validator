@@ -4,29 +4,31 @@
  */
 package uk.ac.liv.mzquantml.validator.rules.general;
 
-import info.psidev.psi.pi.mzquantml._1_0.FeatureListType;
-import info.psidev.psi.pi.mzquantml._1_0.PeptideConsensusListType;
-import info.psidev.psi.pi.mzquantml._1_0.ProteinGroupListType;
-import info.psidev.psi.pi.mzquantml._1_0.ProteinListType;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
 import org.apache.log4j.Level;
+import uk.ac.liv.jmzqml.model.mzqml.FeatureList;
+import uk.ac.liv.jmzqml.model.mzqml.PeptideConsensusList;
+import uk.ac.liv.jmzqml.model.mzqml.ProteinGroupList;
+import uk.ac.liv.jmzqml.model.mzqml.ProteinList;
 import uk.ac.liv.mzquantml.validator.utils.AnalysisSummaryElement;
 import uk.ac.liv.mzquantml.validator.utils.AnalysisType.AnalTp;
 import uk.ac.liv.mzquantml.validator.utils.Message;
 
 /**
  *
- * @author Da Qi @time 13:57:11 13-May-2012 @institution University of Liverpool
+ * @author Da Qi
+ * @time 13:57:11 13-May-2012
+ * @institution University of Liverpool
  */
 public class QuantLayerRule {
 
     EnumMap<AnalysisSummaryElement, Boolean> anlSumMap;
-    List<PeptideConsensusListType> pepCnsLsts;
-    ProteinGroupListType protGrpLst;
-    ProteinListType protLst;
-    List<FeatureListType> ftLsts;
+    List<PeptideConsensusList> pepCnsLsts;
+    ProteinGroupList protGrpLst;
+    ProteinList protLst;
+    List<FeatureList> ftLsts;
     ArrayList<Message> msgs = new ArrayList<Message>();
 
     /*
@@ -37,8 +39,11 @@ public class QuantLayerRule {
         this.anlSumMap = null;
     }
 
-    public QuantLayerRule(EnumMap<AnalysisSummaryElement, Boolean> summaryMap, ProteinGroupListType proteinGroupList, ProteinListType proteinList,
-            List<PeptideConsensusListType> peptideConsensusLists, List<FeatureListType> featureLists) {
+    public QuantLayerRule(EnumMap<AnalysisSummaryElement, Boolean> summaryMap,
+                          ProteinGroupList proteinGroupList,
+                          ProteinList proteinList,
+                          List<PeptideConsensusList> peptideConsensusLists,
+                          List<FeatureList> featureLists) {
         this.anlSumMap = summaryMap;
         this.protGrpLst = proteinGroupList;
         this.protLst = proteinList;
@@ -125,7 +130,7 @@ public class QuantLayerRule {
                         + "but there is no PeptideConsensusList\n", Level.ERROR));
             }
             if (this.pepCnsLsts != null) {
-                for (PeptideConsensusListType pepCnsLst : this.pepCnsLsts) {
+                for (PeptideConsensusList pepCnsLst : this.pepCnsLsts) {
                     if (isPepQLExist(pepCnsLst) != b.booleanValue()) {
                         if (b.booleanValue()) {
                             msgs.add(new Message("If the cvParam values in AnalysisSummary states that a particular type of QuantLayer is present, "
@@ -151,7 +156,7 @@ public class QuantLayerRule {
                         + "but there is no FeatureList\n", Level.ERROR));
             }
             if (this.ftLsts != null) {
-                for (FeatureListType ftLst : this.ftLsts) {
+                for (FeatureList ftLst : this.ftLsts) {
                     if (b.booleanValue() && ftLst.getFeatureQuantLayer().isEmpty()) {
                         msgs.add(new Message(ase.getName() + " = \"true\", "
                                 + "but there is no FeatureQuantLayer in FeatureList "
@@ -219,7 +224,7 @@ public class QuantLayerRule {
                         + "but there is no PeptideConsensusList\n", Level.ERROR));
             }
             if (this.pepCnsLsts != null) {
-                for (PeptideConsensusListType pepCnsLst : this.pepCnsLsts) {
+                for (PeptideConsensusList pepCnsLst : this.pepCnsLsts) {
                     if (isPepQLExist(pepCnsLst) != b.booleanValue()) {
                         if (b.booleanValue()) {
                             msgs.add(new Message("If the cvParam values in AnalysisSummary states that a particular type of QuantLayer is present, "
@@ -243,7 +248,7 @@ public class QuantLayerRule {
                         + "but there is no FeatureList\n", Level.ERROR));
             }
             if (this.ftLsts != null) {
-                for (FeatureListType ftLst : this.ftLsts) {
+                for (FeatureList ftLst : this.ftLsts) {
                     if (b.booleanValue() && ftLst.getFeatureQuantLayer() == null) {
                         msgs.add(new Message(ase.getName() + " = \"true\", "
                                 + "but there is no FeatureQuantLayer\n", Level.ERROR));
@@ -261,7 +266,7 @@ public class QuantLayerRule {
         }
     }
 
-    private boolean isPepQLExist(PeptideConsensusListType peptideConsensusList) {
+    private boolean isPepQLExist(PeptideConsensusList peptideConsensusList) {
         boolean b = false;
         if (peptideConsensusList != null) {
             if (!peptideConsensusList.getAssayQuantLayer().isEmpty()
@@ -274,7 +279,7 @@ public class QuantLayerRule {
         return b;
     }
 
-    private boolean isProtGQLExist(ProteinGroupListType proteinGroupList) {
+    private boolean isProtGQLExist(ProteinGroupList proteinGroupList) {
         boolean b = false;
         if (proteinGroupList != null) {
             if (!proteinGroupList.getAssayQuantLayer().isEmpty()
@@ -287,7 +292,7 @@ public class QuantLayerRule {
         return b;
     }
 
-    private boolean isProtQLExist(ProteinListType proteinList) {
+    private boolean isProtQLExist(ProteinList proteinList) {
         boolean b = false;
         if (proteinList != null) {
             if (!proteinList.getAssayQuantLayer().isEmpty()
@@ -300,7 +305,7 @@ public class QuantLayerRule {
         return b;
     }
 
-    private boolean isFtQLExist(FeatureListType featureList) {
+    private boolean isFtQLExist(FeatureList featureList) {
         boolean b = false;
         if (featureList != null) {
             if (!featureList.getMS2AssayQuantLayer().isEmpty()
@@ -313,7 +318,7 @@ public class QuantLayerRule {
         return b;
     }
 
-    private boolean isMS2QLExist(FeatureListType featureList) {
+    private boolean isMS2QLExist(FeatureList featureList) {
         boolean b = false;
         if (featureList != null) {
             if (!featureList.getMS2AssayQuantLayer().isEmpty()

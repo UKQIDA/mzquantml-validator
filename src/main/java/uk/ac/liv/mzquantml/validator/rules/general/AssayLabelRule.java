@@ -4,28 +4,30 @@
  */
 package uk.ac.liv.mzquantml.validator.rules.general;
 
-import info.psidev.psi.pi.mzquantml._1_0.AssayListType;
-import info.psidev.psi.pi.mzquantml._1_0.AssayType;
-import info.psidev.psi.pi.mzquantml._1_0.ModParamType;
-import info.psidev.psi.pi.mzquantml._1_0.RawFilesGroupType;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+import uk.ac.liv.jmzqml.model.mzqml.Assay;
+import uk.ac.liv.jmzqml.model.mzqml.AssayList;
+import uk.ac.liv.jmzqml.model.mzqml.ModParam;
+import uk.ac.liv.jmzqml.model.mzqml.RawFilesGroup;
 import uk.ac.liv.mzquantml.validator.utils.AnalysisType;
 import uk.ac.liv.mzquantml.validator.utils.AnalysisType.AnalTp;
 import uk.ac.liv.mzquantml.validator.utils.Message;
 
 /**
  *
- * @author Da Qi @time 17:08:22 12-May-2012 @institution University of Liverpool
+ * @author Da Qi
+ * @time 17:08:22 12-May-2012
+ * @institution University of Liverpool
  */
 public class AssayLabelRule {
 
     private static final Logger logger = Logger.getLogger(AssayLabelRule.class);
     AnalysisType at;
-    AssayListType assyLst;
+    AssayList assyLst;
     List<Message> msgs = new ArrayList<Message>();
 
     /*
@@ -35,7 +37,7 @@ public class AssayLabelRule {
         this.at = null;
     }
 
-    public AssayLabelRule(AnalysisType analysisType, AssayListType assayList) {
+    public AssayLabelRule(AnalysisType analysisType, AssayList assayList) {
         this.at = analysisType;
         this.assyLst = assayList;
     }
@@ -63,9 +65,9 @@ public class AssayLabelRule {
      * private methods
      */
     private void checkSC() {
-        for (AssayType assay : this.assyLst.getAssay()) {
+        for (Assay assay : this.assyLst.getAssay()) {
             if (assay.getLabel() != null) {
-                List<ModParamType> modParamList = assay.getLabel().getModification();
+                List<ModParam> modParamList = assay.getLabel().getModification();
 
                 if (modParamList != null) {
 
@@ -93,9 +95,9 @@ public class AssayLabelRule {
     }
 
     private void checkLCMS() {
-        for (AssayType assay : this.assyLst.getAssay()) {
+        for (Assay assay : this.assyLst.getAssay()) {
             if (assay.getLabel() != null) {
-                List<ModParamType> modParamList = assay.getLabel().getModification();
+                List<ModParam> modParamList = assay.getLabel().getModification();
 
                 if (modParamList != null) {
 
@@ -116,19 +118,20 @@ public class AssayLabelRule {
     }
 
     private void checkMS1() {
-        HashMap<Object, ArrayList<AssayType>> rawfilegrouprefAssayMap =
+        HashMap<Object, ArrayList<Assay>> rawfilegrouprefAssayMap =
                 getRawfilegrouprefAssayMap(this.assyLst.getAssay());
         checkRawfilegrouprefAssayMap(rawfilegrouprefAssayMap);
     }
 
-    private HashMap<Object, ArrayList<AssayType>> getRawfilegrouprefAssayMap(List<AssayType> assays) {
-        HashMap<Object, ArrayList<AssayType>> rawfilegrouprefAssayMap =
-                new HashMap<Object, ArrayList<AssayType>>();
-        for (AssayType assay : assays) {
+    private HashMap<Object, ArrayList<Assay>> getRawfilegrouprefAssayMap(
+            List<Assay> assays) {
+        HashMap<Object, ArrayList<Assay>> rawfilegrouprefAssayMap =
+                new HashMap<Object, ArrayList<Assay>>();
+        for (Assay assay : assays) {
             Object rawfilegroupRef = assay.getRawFilesGroupRef();
-            ArrayList<AssayType> manyAssay = rawfilegrouprefAssayMap.get(rawfilegroupRef);
+            ArrayList<Assay> manyAssay = rawfilegrouprefAssayMap.get(rawfilegroupRef);
             if (manyAssay == null) {
-                manyAssay = new ArrayList<AssayType>();
+                manyAssay = new ArrayList<Assay>();
                 rawfilegrouprefAssayMap.put(rawfilegroupRef, manyAssay);
             }
             manyAssay.add(assay);
@@ -136,13 +139,14 @@ public class AssayLabelRule {
         return rawfilegrouprefAssayMap;
     }
 
-    private void checkRawfilegrouprefAssayMap(HashMap<Object, ArrayList<AssayType>> rawfilegrouprefAssayMap) {
+    private void checkRawfilegrouprefAssayMap(
+            HashMap<Object, ArrayList<Assay>> rawfilegrouprefAssayMap) {
 
         // check MS1 label base rule MUST No. 3:
         // The file MUST contain two or more assays references to the same rawFileGroup
         for (Object ref : rawfilegrouprefAssayMap.keySet()) {
-            RawFilesGroupType rawFileGroup = (RawFilesGroupType) ref;
-            ArrayList<AssayType> assays = rawfilegrouprefAssayMap.get(ref);
+            RawFilesGroup rawFileGroup = (RawFilesGroup) ref;
+            ArrayList<Assay> assays = rawfilegrouprefAssayMap.get(ref);
             if (assays.size() < 2) {
                 msgs.add(new Message("The file MUST contain two or more "
                         + "assays references to the same rawFileGroup", Level.INFO));
@@ -154,8 +158,8 @@ public class AssayLabelRule {
         // check MS1 label base rule MUST No. 4:
         // At least one of the grouped assays that reference to a common rawFileGroup MUST have the "Label" element
         for (Object ref : rawfilegrouprefAssayMap.keySet()) {
-            RawFilesGroupType rawFileGroup = (RawFilesGroupType) ref;
-            ArrayList<AssayType> assays = rawfilegrouprefAssayMap.get(ref);
+            RawFilesGroup rawFileGroup = (RawFilesGroup) ref;
+            ArrayList<Assay> assays = rawfilegrouprefAssayMap.get(ref);
             if (assays.size() > 1) {
                 if (!haveAssayLabel(assays)) {
                     msgs.add(new Message("At least one of the grouped assays that "
@@ -167,9 +171,9 @@ public class AssayLabelRule {
         }
     }
 
-    private boolean haveAssayLabel(ArrayList<AssayType> assays) {
+    private boolean haveAssayLabel(ArrayList<Assay> assays) {
         boolean b = true;
-        for (AssayType assay : assays) {
+        for (Assay assay : assays) {
             if (assay.getLabel() == null) {
                 b = false;
                 break;
