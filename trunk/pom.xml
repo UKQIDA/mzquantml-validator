@@ -100,7 +100,8 @@
             <resource>
                 <directory> src/main/resources/ </directory>
                 <excludes>
-                    <exclude> **/*.* </exclude>
+                    <exclude> examples/*.* </exclude>
+                    <exclude> lib/*.* </exclude>
                 </excludes>
             </resource>
         </resources>
@@ -127,6 +128,16 @@
             <artifactId>jmzquantml</artifactId>
             <version>1.0.0-rc2-1.0.0</version>
         </dependency>
+        <dependency>
+            <groupId>psidev.psi.tools</groupId>
+            <artifactId>validator</artifactId>
+            <version>2.0.3</version>
+        </dependency>
+        <dependency>
+            <groupId>psidev.psi.tools</groupId>
+            <artifactId>ontology-manager</artifactId>
+            <version>2.0.3</version>
+        </dependency>
     </dependencies>
     <pluginRepositories>
         <pluginRepository>
@@ -140,6 +151,28 @@
             <id>jmzquantml-maven-repo</id>
             <name>Maven Repository for jmzquantml release</name>
             <url>http://jmzquantml.googlecode.com/svn/maven/repo</url>
+        </repository>
+        <repository>
+            <id>ebi-repo</id>
+            <name>The EBI internal repository</name>
+            <url>http://www.ebi.ac.uk/~maven/m2repo</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>ebi-snapshot-repo</id>
+            <name>The EBI internal snapshot repository</name>
+            <url>http://www.ebi.ac.uk/~maven/m2repo_snapshots</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
         </repository>
     </repositories>
     
