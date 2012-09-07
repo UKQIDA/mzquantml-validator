@@ -203,7 +203,8 @@ public class ValidatorView extends javax.swing.JFrame {
         try {
             // TODO add your handling code here:
             String fileName = this.jtfFileName.getText();
-            List<Message> results = MzQuantMLValidator.main(fileName, this.jcb_schemaValidating.isSelected(), this.jtfSchema.getText());
+            MzQuantMLValidator mzqValidator = new MzQuantMLValidator(fileName, this.jcb_schemaValidating.isSelected(), this.jtfSchema.getText());
+            List<Message> results = mzqValidator.validate(fileName, this.jcb_schemaValidating.isSelected(), this.jtfSchema.getText());
             this.jtaValidationResults.setLineWrap(true);
             String results_mod = results.toString();
             this.jtaValidationResults.setText(results_mod.substring(2, results_mod.length() - 1));
