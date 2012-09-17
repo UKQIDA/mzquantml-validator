@@ -1,13 +1,19 @@
 package uk.ac.liv.mzquantml.validator;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.EnumMap;
-import java.util.List;
+import java.io.InputStream;
+import java.net.URL;
+import java.util.*;
+import java.util.logging.Logger;
 import org.apache.log4j.Level;
+import psidev.psi.tools.ontology_manager.impl.local.OntologyLoaderException;
+import psidev.psi.tools.validator.ValidatorException;
+import psidev.psi.tools.validator.ValidatorMessage;
 import uk.ac.liv.jmzqml.model.mzqml.*;
 import uk.ac.liv.jmzqml.xml.io.MzQuantMLUnmarshaller;
+import uk.ac.liv.mzquantml.validator.cvmapping.CvValidator;
 import uk.ac.liv.mzquantml.validator.rules.general.*;
 import uk.ac.liv.mzquantml.validator.utils.AnalysisSummaryElement;
 import uk.ac.liv.mzquantml.validator.utils.AnalysisType;
@@ -24,12 +30,22 @@ public class MzQuantMLValidator {
     private static AnalysisType at = new AnalysisType();
     private static EnumMap<AnalysisSummaryElement, Boolean> analysisSummaryMap;
     private static List<Message> msgs = new ArrayList<Message>();
+    private String fileName;
+    private boolean schemaValidating;
+    private String schemaFn;
+
+    public MzQuantMLValidator(String fileName, boolean schemaValidating,
+            String schemaFn) {
+        this.fileName = fileName;
+        this.schemaValidating = schemaValidating;
+        this.schemaFn = schemaFn;
+    }
 
     /**
      * @param args the command line arguments
      */
-    public static List<Message> main(String fileName, boolean schemaValidating,
-                                     String schemaFn) throws FileNotFoundException {
+    public List<Message> validate(String fileName, boolean schemaValidating,
+            String schemaFn) throws FileNotFoundException {
         // TODO code application logic here
         msgs.clear();
         msgs.add(new Message("Starting validation process......", Level.INFO));
@@ -192,12 +208,30 @@ public class MzQuantMLValidator {
             quantLayerRule.check();
             msgs.addAll(quantLayerRule.getMsgs());
 
+            // start validate Cv Mapping rule
+            InputStream ontology = getOntologiesFileInputStream();
+            InputStream mappingRule = getGeneralMappingRuleInputStream();
+            CvValidator cvValidator;
+            try {
+                cvValidator = new CvValidator(ontology, mappingRule);
+                final Collection<ValidatorMessage> validationResult = cvValidator.startValidation(new File(fileName));
+
+                for (ValidatorMessage vMsg : validationResult) {
+                    msgs.add(new Message(vMsg.getMessage()));
+                }
+            } catch (ValidatorException ex) {
+                Logger.getLogger(MzQuantMLValidator.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            } catch (OntologyLoaderException ex) {
+                Logger.getLogger(MzQuantMLValidator.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            }
+
             /*
              * final output
              */
             System.out.println("MzQuantML validation process is finished");
             msgs.add(new Message("MzQuantML validation process is finished", Level.INFO));
         }
+
         return msgs;
     }
 
@@ -299,7 +333,7 @@ public class MzQuantMLValidator {
     }
 
     static public void checkColumnDefinition(String targetClassId,
-                                             ColumnDefinition columnDefinition) {
+            ColumnDefinition columnDefinition) {
         List<Column> columns = columnDefinition.getColumn();
         if (!columns.isEmpty()) {
             for (Column column : columns) {
@@ -393,7 +427,7 @@ public class MzQuantMLValidator {
     }
 
     static public void checkDBIdentificationRef(String tarClsId,
-                                                DBIdentificationRef dBidRef) {
+            DBIdentificationRef dBidRef) {
         Object ref = dBidRef.getSearchDatabaseRef();
         checkObjectRef(tarClsId, ref, uk.ac.liv.jmzqml.model.mzqml.SearchDatabase.class);
     }
@@ -501,7 +535,7 @@ public class MzQuantMLValidator {
     }
 
     static public void checkIdentificationRefs(String tarClsId,
-                                               List<IdentificationRef> identificationRefs) {
+            List<IdentificationRef> identificationRefs) {
         if (!identificationRefs.isEmpty()) {
             for (IdentificationRef idRef : identificationRefs) {
                 Object idFileRef = idRef.getIdentificationFileRef();
@@ -551,7 +585,7 @@ public class MzQuantMLValidator {
     }
 
     static public void checkModification(String tarClsId,
-                                         Modification modification) {
+            Modification modification) {
         List<CvParam> cvParams = modification.getCvParam();
         if (!cvParams.isEmpty()) {
             for (CvParam cvParam : cvParams) {
@@ -568,8 +602,8 @@ public class MzQuantMLValidator {
     }
 
     static public <T> ArrayList<Message> checkObjectRef(String tarClsId,
-                                                        Object objRef,
-                                                        Class<T> cls) {
+            Object objRef,
+            Class<T> cls) {
         ObjectRefTypeMatchRule objectRefMatchRule = new ObjectRefTypeMatchRule(tarClsId, objRef, cls);
         objectRefMatchRule.check();
         return objectRefMatchRule.getMessage();
@@ -583,7 +617,7 @@ public class MzQuantMLValidator {
     }
 
     static public void checkParamGroups(String tarClsId,
-                                        List<AbstractParam> paramGroups) {
+            List<AbstractParam> paramGroups) {
         for (AbstractParam param : paramGroups) {
             if (param.getClass().isInstance(uk.ac.liv.jmzqml.model.mzqml.CvParam.class)) {
                 CvParam cv = (CvParam) param;
@@ -713,7 +747,7 @@ public class MzQuantMLValidator {
     }
 
     static public void checkProcessingMethods(String tarClsId,
-                                              List<ProcessingMethod> processingMethods) {
+            List<ProcessingMethod> processingMethods) {
         if (!processingMethods.isEmpty()) {
             for (ProcessingMethod processingMethod : processingMethods) {
                 processingMethod.getOrder();
@@ -977,7 +1011,7 @@ public class MzQuantMLValidator {
     }
 
     static public void checkSmallMolModifications(String tarClsId,
-                                                  List<SmallMolModification> smallMolModifications) {
+            List<SmallMolModification> smallMolModifications) {
         if (!smallMolModifications.isEmpty()) {
             for (SmallMolModification smallMolMod : smallMolModifications) {
                 List<CvParam> cvParams = smallMolMod.getCvParam();
@@ -1074,5 +1108,30 @@ public class MzQuantMLValidator {
     }
 
     static public void checkVersion(String version) {
+    }
+
+    /*
+     * protected methods
+     */
+    protected InputStream getOntologiesFileInputStream() throws FileNotFoundException {
+
+        File file = new File(getClass().getClassLoader().getResource("ontologies.xml").getFile());
+        if (!file.exists()) {
+            ClassLoader cl = this.getClass().getClassLoader();
+            return cl.getResourceAsStream("ontologies.xml");
+        }
+        return new FileInputStream(file);
+    }
+
+    protected InputStream getGeneralMappingRuleInputStream() throws FileNotFoundException {
+        String mappingRuleFile = getClass().getClassLoader().
+                getResource("mzQuantML-mapping_1.0.0-rc2-general.xml").getFile();
+        File file = new File(mappingRuleFile);
+        if (!file.exists()) {
+            ClassLoader cl = this.getClass().getClassLoader();
+            return cl.getResourceAsStream(mappingRuleFile);
+        }
+
+        return new FileInputStream(file);
     }
 }
