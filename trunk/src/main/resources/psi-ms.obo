@@ -1,13 +1,13 @@
 format-version: 1.2
-data-version: 3.31.0_rc1
-date: 28:08:2012 08:28
+data-version: 3.31.0
+date: 30:08:2012 10:50
 saved-by: Gerhard Mayer
 auto-generated-by: OBO-Edit 2.2
 import: http://unit-ontology.googlecode.com/svn/trunk/unit.obo
 default-namespace: MS
 remark: namespace: MS
-remark: version: 3.31.0_rc1
-remark: release date: 2012-08-28
+remark: version: 3.31.0
+remark: release date: 2012-08-30
 remark: coverage: Mass spectrometer output files and spectra interpretation
 remark: creator: Matt Chambers <matt.chambers <-at-> vanderbilt.edu>
 remark: creator: Andreas Bertsch <bertsch <-at-> informatik.uni-tuebingen.de>
