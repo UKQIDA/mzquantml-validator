@@ -138,6 +138,11 @@
             <artifactId>ontology-manager</artifactId>
             <version>2.0.3</version>
         </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>jmzquantml</artifactId>
+            <version>1.0.0-rc2-1.0.1-SNAPSHOT</version>
+        </dependency>
     </dependencies>
     <pluginRepositories>
         <pluginRepository>
