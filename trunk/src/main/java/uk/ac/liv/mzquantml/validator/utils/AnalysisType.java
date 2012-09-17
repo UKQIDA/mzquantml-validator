@@ -18,18 +18,24 @@ public class AnalysisType {
 
     public static enum AnalTp {
 
-        LabelFree("LC-MS label-free quantitation analysis"),
-        SpectralCounting("spectral counting quantitation analysis"),
-        MS1LabelBased("MS1 label-based analysis"),
-        MS2TagBased("MS2 tag-based analysis");
+        LabelFree("LC-MS label-free quantitation analysis", "MS:1001834"),
+        SpectralCounting("spectral counting quantitation analysis", "MS:1001836"),
+        MS1LabelBased("MS1 label-based analysis", "MS:1002018"),
+        MS2TagBased("MS2 tag-based analysis", "MS:1002023");
         private final String name;
-
-        AnalTp(String name) {
+        private final String assession;
+        
+        AnalTp(String name, String assession) {
             this.name = name;
+            this.assession = assession;
         }
 
         public String getName() {
             return name;
+        }
+        
+        public String getAccession(){
+            return assession;
         }
     };
     AnalTp at;
