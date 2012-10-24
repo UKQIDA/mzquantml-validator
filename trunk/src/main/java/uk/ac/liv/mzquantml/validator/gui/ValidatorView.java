@@ -166,6 +166,7 @@ public class ValidatorView extends javax.swing.JFrame {
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Validation Results"));
 
         jtaValidationResults.setColumns(20);
+        jtaValidationResults.setEditable(false);
         jtaValidationResults.setRows(5);
         jScrollPane1.setViewportView(jtaValidationResults);
 
@@ -177,7 +178,7 @@ public class ValidatorView extends javax.swing.JFrame {
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 311, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 307, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
