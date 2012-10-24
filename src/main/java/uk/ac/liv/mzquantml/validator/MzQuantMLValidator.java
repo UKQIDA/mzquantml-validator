@@ -35,7 +35,7 @@ public class MzQuantMLValidator {
     private String schemaFn;
 
     public MzQuantMLValidator(String fileName, boolean schemaValidating,
-            String schemaFn) {
+                              String schemaFn) {
         this.fileName = fileName;
         this.schemaValidating = schemaValidating;
         this.schemaFn = schemaFn;
@@ -45,7 +45,7 @@ public class MzQuantMLValidator {
      * @param args the command line arguments
      */
     public List<Message> validate(String fileName, boolean schemaValidating,
-            String schemaFn) throws FileNotFoundException {
+                                  String schemaFn) throws FileNotFoundException {
         // TODO code application logic here
         msgs.clear();
         msgs.add(new Message("Starting validation process......", Level.INFO));
@@ -214,7 +214,7 @@ public class MzQuantMLValidator {
             CvValidator cvValidator;
             try {
                 cvValidator = new CvValidator(ontology, mappingRule);
-                final Collection<ValidatorMessage> validationResult = cvValidator.startValidation(new File(fileName));
+                final Collection<ValidatorMessage> validationResult = cvValidator.startValidation(fileName);
 
                 for (ValidatorMessage vMsg : validationResult) {
                     msgs.add(new Message(vMsg.getMessage()));
@@ -333,7 +333,7 @@ public class MzQuantMLValidator {
     }
 
     static public void checkColumnDefinition(String targetClassId,
-            ColumnDefinition columnDefinition) {
+                                             ColumnDefinition columnDefinition) {
         List<Column> columns = columnDefinition.getColumn();
         if (!columns.isEmpty()) {
             for (Column column : columns) {
@@ -427,7 +427,7 @@ public class MzQuantMLValidator {
     }
 
     static public void checkDBIdentificationRef(String tarClsId,
-            DBIdentificationRef dBidRef) {
+                                                DBIdentificationRef dBidRef) {
         Object ref = dBidRef.getSearchDatabaseRef();
         checkObjectRef(tarClsId, ref, uk.ac.liv.jmzqml.model.mzqml.SearchDatabase.class);
     }
@@ -468,8 +468,8 @@ public class MzQuantMLValidator {
                 List<QuantLayer> ms2AssayQuantLayers = featureList.getMS2AssayQuantLayer();
                 checkQuantLayers(ms2AssayQuantLayers);
 
-                List<QuantLayer> ms2RatioQuantLayers = featureList.getMS2RatioQuantLayer();
-                checkQuantLayers(ms2RatioQuantLayers);
+                QuantLayer ms2RatioQuantLayer = featureList.getMS2RatioQuantLayer();
+                checkQuantLayer(ms2RatioQuantLayer);
 
                 List<QuantLayer> ms2StudyVariableQuantLayers = featureList.getMS2StudyVariableQuantLayer();
                 checkQuantLayers(ms2StudyVariableQuantLayers);
@@ -535,7 +535,7 @@ public class MzQuantMLValidator {
     }
 
     static public void checkIdentificationRefs(String tarClsId,
-            List<IdentificationRef> identificationRefs) {
+                                               List<IdentificationRef> identificationRefs) {
         if (!identificationRefs.isEmpty()) {
             for (IdentificationRef idRef : identificationRefs) {
                 Object idFileRef = idRef.getIdentificationFileRef();
@@ -585,7 +585,7 @@ public class MzQuantMLValidator {
     }
 
     static public void checkModification(String tarClsId,
-            Modification modification) {
+                                         Modification modification) {
         List<CvParam> cvParams = modification.getCvParam();
         if (!cvParams.isEmpty()) {
             for (CvParam cvParam : cvParams) {
@@ -593,17 +593,20 @@ public class MzQuantMLValidator {
             }
         }
 
-        List<Object> ftRefs = modification.getFeatureRefs();
-        if (!ftRefs.isEmpty()) {
-            for (Object ref : ftRefs) {
-                msgs.addAll(checkObjectRef(tarClsId, ref, uk.ac.liv.jmzqml.model.mzqml.Feature.class));
-            }
-        }
+//      There is no FeatureRefs under Modification in new schema  ///
+        
+//        List<Object> ftRefs = modification.getFeatureRefs();
+//        if (!ftRefs.isEmpty()) {
+//            for (Object ref : ftRefs) {
+//                msgs.addAll(checkObjectRef(tarClsId, ref, uk.ac.liv.jmzqml.model.mzqml.Feature.class));
+//            }
+//        }
+        
     }
 
     static public <T> ArrayList<Message> checkObjectRef(String tarClsId,
-            Object objRef,
-            Class<T> cls) {
+                                                        Object objRef,
+                                                        Class<T> cls) {
         ObjectRefTypeMatchRule objectRefMatchRule = new ObjectRefTypeMatchRule(tarClsId, objRef, cls);
         objectRefMatchRule.check();
         return objectRefMatchRule.getMessage();
@@ -617,7 +620,7 @@ public class MzQuantMLValidator {
     }
 
     static public void checkParamGroups(String tarClsId,
-            List<AbstractParam> paramGroups) {
+                                        List<AbstractParam> paramGroups) {
         for (AbstractParam param : paramGroups) {
             if (param.getClass().isInstance(uk.ac.liv.jmzqml.model.mzqml.CvParam.class)) {
                 CvParam cv = (CvParam) param;
@@ -640,7 +643,7 @@ public class MzQuantMLValidator {
             String id = peptideConsensusList.getId();
             List<AbstractParam> paramGroups = peptideConsensusList.getParamGroup();
             List<PeptideConsensus> peptideConsensuses = peptideConsensusList.getPeptideConsensus();
-            List<QuantLayer> ratioQuantLayers = peptideConsensusList.getRatioQuantLayer();
+            QuantLayer ratioQuantLayer = peptideConsensusList.getRatioQuantLayer();
             List<QuantLayer> studyVariableQuantLayers = peptideConsensusList.getStudyVariableQuantLayer();
 
             checkQuantLayers(assayQuantLayers);
@@ -648,7 +651,7 @@ public class MzQuantMLValidator {
             String targetClassId = id;
             checkParamGroups(targetClassId, paramGroups);
             checkPeptideConsensuses(peptideConsensuses);
-            checkQuantLayers(ratioQuantLayers);
+            checkQuantLayer(ratioQuantLayer);
             checkQuantLayers(studyVariableQuantLayers);
         }
     }
@@ -747,7 +750,7 @@ public class MzQuantMLValidator {
     }
 
     static public void checkProcessingMethods(String tarClsId,
-            List<ProcessingMethod> processingMethods) {
+                                              List<ProcessingMethod> processingMethods) {
         if (!processingMethods.isEmpty()) {
             for (ProcessingMethod processingMethod : processingMethods) {
                 processingMethod.getOrder();
@@ -806,7 +809,7 @@ public class MzQuantMLValidator {
             String id = proteinGroupList.getId();
             List<AbstractParam> paramGroups = proteinGroupList.getParamGroup();
             List<ProteinGroup> proteinGroups = proteinGroupList.getProteinGroup();
-            List<QuantLayer> ratioQuantLayers = proteinGroupList.getRatioQuantLayer();
+            QuantLayer ratioQuantLayer = proteinGroupList.getRatioQuantLayer();
             List<QuantLayer> studyVariableQuantLayers = proteinGroupList.getStudyVariableQuantLayer();
 
             checkQuantLayers(assayQuantLayers);
@@ -814,7 +817,7 @@ public class MzQuantMLValidator {
             String targetClassId = id;
             checkParamGroups(targetClassId, paramGroups);
             checkProteinGroups(proteinGroups);
-            checkQuantLayers(ratioQuantLayers);
+            checkQuantLayer(ratioQuantLayer);
             checkQuantLayers(studyVariableQuantLayers);
         }
     }
@@ -837,7 +840,7 @@ public class MzQuantMLValidator {
             String id = proteinList.getId();
             List<AbstractParam> paramGroups = proteinList.getParamGroup();
             List<Protein> proteins = proteinList.getProtein();
-            List<QuantLayer> ratioQuantLayers = proteinList.getRatioQuantLayer();
+            QuantLayer ratioQuantLayer = proteinList.getRatioQuantLayer();
             List<QuantLayer> studyVariableQuantLayers = proteinList.getStudyVariableQuantLayer();
 
             checkQuantLayers(assayQuantLayers);
@@ -845,7 +848,7 @@ public class MzQuantMLValidator {
             String targetClassId = id;
             checkParamGroups(targetClassId, paramGroups);
             checkProteins(proteins);
-            checkQuantLayers(ratioQuantLayers);
+            checkQuantLayer(ratioQuantLayer);
             checkQuantLayers(studyVariableQuantLayers);
         }
     }
@@ -873,24 +876,29 @@ public class MzQuantMLValidator {
         if (!quantLayers.isEmpty()) {
             for (QuantLayer quantLayer : quantLayers) {
 
-                //TODO: need to figure out what  does columnIndex refer to 
-                List<Object> columnIndex = quantLayer.getColumnIndex();
-
-                String id = quantLayer.getId();
-                String targetClassId = id;
-
-                DataMatrix dataMatrix = quantLayer.getDataMatrix();
-                checkDataMatrix(dataMatrix);
-
-                CvParamRef data = quantLayer.getDataType();
-                CvParam cvParam = data.getCvParam();
-                checkCvParam(targetClassId, cvParam);
-
-                ColIndRowValNumMatchRule colIndRowValNumMatchRule = new ColIndRowValNumMatchRule();
-                colIndRowValNumMatchRule.check(quantLayer);
-                msgs.addAll(colIndRowValNumMatchRule.getMessage());
+                checkQuantLayer(quantLayer);
             }
         }
+    }
+
+    static public void checkQuantLayer(QuantLayer quantLayer) {
+
+        //TODO: need to figure out what  does columnIndex refer to 
+        List<Object> columnIndex = quantLayer.getColumnIndex();
+
+        String id = quantLayer.getId();
+        String targetClassId = id;
+
+        DataMatrix dataMatrix = quantLayer.getDataMatrix();
+        checkDataMatrix(dataMatrix);
+
+        CvParamRef data = quantLayer.getDataType();
+        CvParam cvParam = data.getCvParam();
+        checkCvParam(targetClassId, cvParam);
+
+        ColIndRowValNumMatchRule colIndRowValNumMatchRule = new ColIndRowValNumMatchRule();
+        colIndRowValNumMatchRule.check(quantLayer);
+        msgs.addAll(colIndRowValNumMatchRule.getMessage());
     }
 
     /*
@@ -1011,7 +1019,7 @@ public class MzQuantMLValidator {
     }
 
     static public void checkSmallMolModifications(String tarClsId,
-            List<SmallMolModification> smallMolModifications) {
+                                                  List<SmallMolModification> smallMolModifications) {
         if (!smallMolModifications.isEmpty()) {
             for (SmallMolModification smallMolMod : smallMolModifications) {
                 List<CvParam> cvParams = smallMolMod.getCvParam();
@@ -1038,7 +1046,7 @@ public class MzQuantMLValidator {
         List<GlobalQuantLayer> globalQuantLayers = smallMoleculeList.getGlobalQuantLayer();
         String id = smallMoleculeList.getId();
         List<AbstractParam> paramGroups = smallMoleculeList.getParamGroup();
-        List<QuantLayer> ratioQuantLayers = smallMoleculeList.getRatioQuantLayer();
+        QuantLayer ratioQuantLayer = smallMoleculeList.getRatioQuantLayer();
         List<SmallMolecule> smallMolecules = smallMoleculeList.getSmallMolecule();
         List<QuantLayer> studyVariableQuantLayers = smallMoleculeList.getStudyVariableQuantLayer();
 
@@ -1047,7 +1055,7 @@ public class MzQuantMLValidator {
         String targetClassId = id;
         checkParamGroups(targetClassId, paramGroups);
         checkSmallMolecules(smallMolecules);
-        checkQuantLayers(ratioQuantLayers);
+        checkQuantLayer(ratioQuantLayer);
         checkQuantLayers(studyVariableQuantLayers);
     }
 

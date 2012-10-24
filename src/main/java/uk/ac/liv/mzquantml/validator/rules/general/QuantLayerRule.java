@@ -271,7 +271,7 @@ public class QuantLayerRule {
         if (peptideConsensusList != null) {
             if (!peptideConsensusList.getAssayQuantLayer().isEmpty()
                     || !peptideConsensusList.getStudyVariableQuantLayer().isEmpty()
-                    || !peptideConsensusList.getRatioQuantLayer().isEmpty()
+                    || (peptideConsensusList.getRatioQuantLayer() != null)
                     || !peptideConsensusList.getGlobalQuantLayer().isEmpty()) {
                 b = true;
             }
@@ -284,7 +284,7 @@ public class QuantLayerRule {
         if (proteinGroupList != null) {
             if (!proteinGroupList.getAssayQuantLayer().isEmpty()
                     || !proteinGroupList.getStudyVariableQuantLayer().isEmpty()
-                    || !proteinGroupList.getRatioQuantLayer().isEmpty()
+                    || (proteinGroupList.getRatioQuantLayer() != null)
                     || !proteinGroupList.getGlobalQuantLayer().isEmpty()) {
                 b = true;
             }
@@ -297,7 +297,7 @@ public class QuantLayerRule {
         if (proteinList != null) {
             if (!proteinList.getAssayQuantLayer().isEmpty()
                     || !proteinList.getStudyVariableQuantLayer().isEmpty()
-                    || !proteinList.getRatioQuantLayer().isEmpty()
+                    || (proteinList.getRatioQuantLayer() != null)
                     || !proteinList.getGlobalQuantLayer().isEmpty()) {
                 b = true;
             }
@@ -310,7 +310,7 @@ public class QuantLayerRule {
         if (featureList != null) {
             if (!featureList.getMS2AssayQuantLayer().isEmpty()
                     || !featureList.getMS2StudyVariableQuantLayer().isEmpty()
-                    || !featureList.getMS2RatioQuantLayer().isEmpty()
+                    || (featureList.getMS2RatioQuantLayer() != null)
                     || !featureList.getFeatureQuantLayer().isEmpty()) {
                 b = true;
             }
@@ -322,7 +322,7 @@ public class QuantLayerRule {
         boolean b = false;
         if (featureList != null) {
             if (!featureList.getMS2AssayQuantLayer().isEmpty()
-                    || !featureList.getMS2RatioQuantLayer().isEmpty()
+                    || (featureList.getMS2RatioQuantLayer() != null)
                     || !featureList.getMS2StudyVariableQuantLayer().isEmpty()) {
                 b = true;
             }
