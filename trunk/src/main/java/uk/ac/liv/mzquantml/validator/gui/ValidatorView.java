@@ -201,14 +201,16 @@ public class ValidatorView extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jbValidateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbValidateActionPerformed
+        
         try {
-            // TODO add your handling code here:
+            this.jtaValidationResults.setText("INFO: Starting validation process......\nINFO: Loading MzQuantML file......\n");
+            this.update(this.getGraphics());
             String fileName = this.jtfFileName.getText();
             MzQuantMLValidator mzqValidator = new MzQuantMLValidator(fileName, this.jcb_schemaValidating.isSelected(), this.jtfSchema.getText());
             List<Message> results = mzqValidator.validate(fileName, this.jcb_schemaValidating.isSelected(), this.jtfSchema.getText());
             this.jtaValidationResults.setLineWrap(true);
             String results_mod = results.toString();
-            this.jtaValidationResults.setText(results_mod.substring(2, results_mod.length() - 1));
+            this.jtaValidationResults.append(results_mod.substring(2, results_mod.length() - 1));
         } catch (FileNotFoundException ex) {
             Logger.getLogger(ValidatorView.class.getName()).log(Level.SEVERE, null, ex);
         }

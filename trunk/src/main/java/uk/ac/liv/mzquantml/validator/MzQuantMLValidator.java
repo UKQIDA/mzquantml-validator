@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.net.URL;
 import java.util.*;
 import java.util.logging.Logger;
 import org.apache.log4j.Level;
@@ -48,10 +47,18 @@ public class MzQuantMLValidator {
                                   String schemaFn) throws FileNotFoundException {
         // TODO code application logic here
         msgs.clear();
-        msgs.add(new Message("Starting validation process......", Level.INFO));
-        msgs.add(new Message("Loading MzQuantML file......", Level.INFO));
+//        msgs.add(new Message("Starting validation process......", Level.INFO));
+//        msgs.add(new Message("Loading MzQuantML file......", Level.INFO));
+        
 
-        MzQuantMLUnmarshaller unmarshaller = new MzQuantMLUnmarshaller(fileName, schemaValidating, schemaFn);
+        MzQuantMLUnmarshaller unmarshaller;
+        if (schemaValidating) {
+            unmarshaller = new MzQuantMLUnmarshaller(fileName, schemaValidating, new File(schemaFn));
+        } else {
+            File schema = new File(getClass().getClassLoader().getResource("mzQuantML_1_0_0-rc2.xsd").getFile());
+            unmarshaller = new MzQuantMLUnmarshaller(fileName, true, schema);
+        }
+
         MzQuantML mzq = (MzQuantML) unmarshaller.unmarshall();
 
         if (!unmarshaller.getExceptionalMessages().isEmpty()) {
@@ -217,7 +224,7 @@ public class MzQuantMLValidator {
                 final Collection<ValidatorMessage> validationResult = cvValidator.startValidation(fileName);
 
                 for (ValidatorMessage vMsg : validationResult) {
-                    msgs.add(new Message(vMsg.getMessage()));
+                    msgs.add(new Message(vMsg.getRule().toString() + vMsg.getMessage()));
                 }
             } catch (ValidatorException ex) {
                 Logger.getLogger(MzQuantMLValidator.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
@@ -594,14 +601,14 @@ public class MzQuantMLValidator {
         }
 
 //      There is no FeatureRefs under Modification in new schema  ///
-        
+
 //        List<Object> ftRefs = modification.getFeatureRefs();
 //        if (!ftRefs.isEmpty()) {
 //            for (Object ref : ftRefs) {
 //                msgs.addAll(checkObjectRef(tarClsId, ref, uk.ac.liv.jmzqml.model.mzqml.Feature.class));
 //            }
 //        }
-        
+
     }
 
     static public <T> ArrayList<Message> checkObjectRef(String tarClsId,
@@ -883,22 +890,24 @@ public class MzQuantMLValidator {
 
     static public void checkQuantLayer(QuantLayer quantLayer) {
 
-        //TODO: need to figure out what  does columnIndex refer to 
-        List<Object> columnIndex = quantLayer.getColumnIndex();
+        if (quantLayer != null) {
+            //TODO: need to figure out what  does columnIndex refer to 
+            List<Object> columnIndex = quantLayer.getColumnIndex();
 
-        String id = quantLayer.getId();
-        String targetClassId = id;
+            String id = quantLayer.getId();
+            String targetClassId = id;
 
-        DataMatrix dataMatrix = quantLayer.getDataMatrix();
-        checkDataMatrix(dataMatrix);
+            DataMatrix dataMatrix = quantLayer.getDataMatrix();
+            checkDataMatrix(dataMatrix);
 
-        CvParamRef data = quantLayer.getDataType();
-        CvParam cvParam = data.getCvParam();
-        checkCvParam(targetClassId, cvParam);
+            CvParamRef data = quantLayer.getDataType();
+            CvParam cvParam = data.getCvParam();
+            checkCvParam(targetClassId, cvParam);
 
-        ColIndRowValNumMatchRule colIndRowValNumMatchRule = new ColIndRowValNumMatchRule();
-        colIndRowValNumMatchRule.check(quantLayer);
-        msgs.addAll(colIndRowValNumMatchRule.getMessage());
+            ColIndRowValNumMatchRule colIndRowValNumMatchRule = new ColIndRowValNumMatchRule();
+            colIndRowValNumMatchRule.check(quantLayer);
+            msgs.addAll(colIndRowValNumMatchRule.getMessage());
+        }
     }
 
     /*
