@@ -174,7 +174,7 @@
             <CvTerm termAccession="MS:1001805" useTermName="false" useTerm="false" termName="quantification datatype" isRepeatable="false" allowChildren="true" cvIdentifierRef="MS" />
         </CvMappingRule>
 		
-        <CvMappingRule id="PeptideConsensusGlobalQuantLayer_rule" cvElementPath="/MzQuantML/PeptideConsensusList/globalQuantLayer/dataType/cvParam/@accession" requirementLevel="MUST"  scopePath="/MzQuantML/PeptideConsensusList/globalQuantLayer/dataType" cvTermsCombinationLogic="OR">
+        <CvMappingRule id="PeptideConsensusGlobalQuantLayer_rule" cvElementPath="/MzQuantML/PeptideConsensusList/globalQuantLayer/columnDefinition/column/dataType/cvParam/@accession" requirementLevel="MUST"  scopePath="/MzQuantML/PeptideConsensusList/globalQuantLayer/columnDefinition/column/dataType" cvTermsCombinationLogic="OR">
             <CvTerm termAccession="MS:1001805" useTermName="false" useTerm="false" termName="quantification datatype" isRepeatable="false" allowChildren="true" cvIdentifierRef="MS" />
         </CvMappingRule>
 
@@ -204,7 +204,7 @@
             <CvTerm termAccession="MS:1001805" useTermName="false" useTerm="false" termName="quantification datatype" isRepeatable="false" allowChildren="true" cvIdentifierRef="MS" />
         </CvMappingRule>
 
-        <CvMappingRule id="SmallMoleculeGlobalQuantLayer_rule" cvElementPath="/MzQuantML/SmallMoleculeList/globalQuantLayer/dataType/cvParam/@accession" requirementLevel="MUST"  scopePath="/MzQuantML/SmallMoleculeList/globalQuantLayer/dataType" cvTermsCombinationLogic="OR">
+        <CvMappingRule id="SmallMoleculeGlobalQuantLayer_rule" cvElementPath="/MzQuantML/SmallMoleculeList/globalQuantLayer/columnDefinition/column/dataType/cvParam/@accession" requirementLevel="MUST"  scopePath="/MzQuantML/SmallMoleculeList/globalQuantLayer/columnDefinition/column/dataType" cvTermsCombinationLogic="OR">
             <CvTerm termAccession="MS:1001805" useTermName="false" useTerm="false" termName="quantification datatype" isRepeatable="false" allowChildren="true" cvIdentifierRef="MS" />
         </CvMappingRule>
 
