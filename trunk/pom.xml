@@ -124,11 +124,6 @@
             <version>1.2.16</version>
         </dependency>
         <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>jmzquantml</artifactId>
-            <version>1.0.0-rc2-1.0.0</version>
-        </dependency>
-        <dependency>
             <groupId>psidev.psi.tools</groupId>
             <artifactId>validator</artifactId>
             <version>2.0.3</version>
@@ -139,9 +134,14 @@
             <version>2.0.3</version>
         </dependency>
         <dependency>
+            <groupId>psidev.psi.pi</groupId>
+            <artifactId>mzIdentMLValidator</artifactId>
+            <version>1.3-SNAPSHOT</version>
+        </dependency>
+        <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>jmzquantml</artifactId>
-            <version>1.0.0-rc2-1.0.1-SNAPSHOT</version>
+            <version>1.0.0-rc2-1.0.1</version>
         </dependency>
     </dependencies>
     <pluginRepositories>
