@@ -152,11 +152,13 @@ public class CvValidator extends Validator {
 
         //checkElementCvMapping(MzQuantMLElement.Provider);
         Provider provider = this.mzq.getProvider();
-        Collection<ValidatorMessage> cvMappingResult = this.checkCvMapping(provider, MzQuantMLElement.Provider.getXpath());
-        if (cvMappingResult != null) {
-            //addMessages("check ProviderContactRole_rule", this.msgL);
+
+        Collection<ValidatorMessage> cvMappingResult;
+        if (provider != null) {
+            cvMappingResult = this.checkCvMapping(provider, MzQuantMLElement.Provider.getXpath());
             addMessages(cvMappingResult, this.msgL);
         }
+
 
 //        ParamList analysisSummary = this.mzq.getAnalysisSummary();
 //        cvMappingResult = this.checkCvMapping(analysisSummary, "/MzQuantML/AnalysisSummary");
@@ -165,16 +167,20 @@ public class CvValidator extends Validator {
 
         //checkElementCvMapping(MzQuantMLElement.AuditCollection);
         AuditCollection auditCollection = this.mzq.getAuditCollection();
-        List<AbstractContact> personOrOrg = auditCollection.getPersonOrOrganization();
-        for (AbstractContact ac : personOrOrg) {
-            if (ac instanceof Person) {
-                cvMappingResult = this.checkCvMapping(ac, MzQuantMLElement.Person.getXpath());
-            } else if (ac instanceof Organization) {
-                cvMappingResult = this.checkCvMapping(ac, MzQuantMLElement.Organization.getXpath());
+        if (auditCollection != null) {
+            List<AbstractContact> personOrOrg = auditCollection.getPersonOrOrganization();
+            if (personOrOrg != null) {
+                for (AbstractContact ac : personOrOrg) {
+                    if (ac instanceof Person) {
+                        cvMappingResult = this.checkCvMapping(ac, MzQuantMLElement.Person.getXpath());
+                        addMessages(cvMappingResult, this.msgL);
+                    } else if (ac instanceof Organization) {
+                        cvMappingResult = this.checkCvMapping(ac, MzQuantMLElement.Organization.getXpath());
+                        addMessages(cvMappingResult, this.msgL);
+                    }
+                }
             }
         }
-
-        addMessages(cvMappingResult, this.msgL);
 
         //////////////////////////
         // check InputFiles  //
@@ -189,8 +195,10 @@ public class CvValidator extends Validator {
             List<IdentificationFile> idFiles = inputFiles.getIdentificationFiles().getIdentificationFile();
             for (IdentificationFile idFile : idFiles) {
                 FileFormat idFF = idFile.getFileFormat();
-                cvMappingResult = this.checkCvMapping(idFF, "/MzQuantML/InputFiles/identificationFiles/identificationFile/fileFormat");
-                addMessages(cvMappingResult, this.msgL);
+                if (idFF != null) {
+                    cvMappingResult = this.checkCvMapping(idFF, "/MzQuantML/InputFiles/identificationFiles/identificationFile/fileFormat");
+                    addMessages(cvMappingResult, this.msgL);
+                }
             }
         }
 
@@ -199,8 +207,10 @@ public class CvValidator extends Validator {
             List<SourceFile> sourceFiles = inputFiles.getSourceFile();
             for (SourceFile sFile : sourceFiles) {
                 FileFormat sFF = sFile.getFileFormat();
-                cvMappingResult = this.checkCvMapping(sFF, "/MzQuantML/InputFiles/sourceFile/fileFormat");
-                addMessages(cvMappingResult, this.msgL);
+                if (sFF != null) {
+                    cvMappingResult = this.checkCvMapping(sFF, "/MzQuantML/InputFiles/sourceFile/fileFormat");
+                    addMessages(cvMappingResult, this.msgL);
+                }
             }
         }
 
@@ -209,8 +219,10 @@ public class CvValidator extends Validator {
             List<SearchDatabase> searchDBs = inputFiles.getSearchDatabase();
             for (SearchDatabase sDB : searchDBs) {
                 FileFormat sDBFF = sDB.getFileFormat();
-                cvMappingResult = this.checkCvMapping(sDBFF, "/MzQuantML/InputFiles/searchDatabase/fileFormat");
-                addMessages(cvMappingResult, this.msgL);
+                if (sDBFF != null) {
+                    cvMappingResult = this.checkCvMapping(sDBFF, "/MzQuantML/InputFiles/searchDatabase/fileFormat");
+                    addMessages(cvMappingResult, this.msgL);
+                }
             }
         }
 
@@ -262,9 +274,11 @@ public class CvValidator extends Validator {
 
             // check ProteinGroupRatioQuantLayer_rule
             QuantLayer pgRQL = pgList.getRatioQuantLayer();
-            CvParamRef pgcvParamRef = pgRQL.getDataType();
-            cvMappingResult = this.checkCvMapping(pgcvParamRef, "/MzQuantML/ProteinGroupList/ratioQuantLayer/dataType");
-            addMessages(cvMappingResult, this.msgL);
+            if (pgRQL != null) {
+                CvParamRef pgcvParamRef = pgRQL.getDataType();
+                cvMappingResult = this.checkCvMapping(pgcvParamRef, "/MzQuantML/ProteinGroupList/ratioQuantLayer/dataType");
+                addMessages(cvMappingResult, this.msgL);
+            }
         }
 
         ///////////////////////////
@@ -302,9 +316,11 @@ public class CvValidator extends Validator {
 
             // check ProteinRatioQuantLayer_rule
             QuantLayer protRQL = protList.getRatioQuantLayer();
-            CvParamRef protcvParamRef = protRQL.getDataType();
-            cvMappingResult = this.checkCvMapping(protcvParamRef, "/MzQuantML/ProteinList/ratioQuantLayer/dataType");
-            addMessages(cvMappingResult, this.msgL);
+            if (protRQL != null) {
+                CvParamRef protcvParamRef = protRQL.getDataType();
+                cvMappingResult = this.checkCvMapping(protcvParamRef, "/MzQuantML/ProteinList/ratioQuantLayer/dataType");
+                addMessages(cvMappingResult, this.msgL);
+            }
         }
 
         /////////////////////////////////
@@ -346,9 +362,11 @@ public class CvValidator extends Validator {
 
                     // check PeptideConsensusRatioQuantLayer_rule
                     QuantLayer pepRQL = pepList.getRatioQuantLayer();
-                    CvParamRef pepcvParamRef = pepRQL.getDataType();
-                    cvMappingResult = this.checkCvMapping(pepcvParamRef, "/MzQuantML/PeptideConsensusList/ratioQuantLayer/dataType");
-                    addMessages(cvMappingResult, this.msgL);
+                    if (pepRQL != null) {
+                        CvParamRef pepcvParamRef = pepRQL.getDataType();
+                        cvMappingResult = this.checkCvMapping(pepcvParamRef, "/MzQuantML/PeptideConsensusList/ratioQuantLayer/dataType");
+                        addMessages(cvMappingResult, this.msgL);
+                    }
 
                     // check PeptideConsensusModification_rule
                     for (PeptideConsensus pep : pepList.getPeptideConsensus()) {
@@ -395,9 +413,11 @@ public class CvValidator extends Validator {
 
             // check SmallMoleculeRatioQuantLayer_rule
             QuantLayer smRQL = smList.getRatioQuantLayer();
-            CvParamRef smcvParamRef = smRQL.getDataType();
-            cvMappingResult = this.checkCvMapping(smcvParamRef, "/MzQuantML/SmallMoleculeList/ratioQuantLayer/dataType");
-            addMessages(cvMappingResult, this.msgL);
+            if (smRQL != null) {
+                CvParamRef smcvParamRef = smRQL.getDataType();
+                cvMappingResult = this.checkCvMapping(smcvParamRef, "/MzQuantML/SmallMoleculeList/ratioQuantLayer/dataType");
+                addMessages(cvMappingResult, this.msgL);
+            }
         }
 
         ////////////////////////////
@@ -438,9 +458,11 @@ public class CvValidator extends Validator {
 
                     // check FeatureListMS2RatioQuantLayer_rule
                     QuantLayer ftRQL = ftList.getMS2RatioQuantLayer();
-                    CvParamRef ftcvParamRef = ftRQL.getDataType();
-                    cvMappingResult = this.checkCvMapping(ftcvParamRef, "/MzQuantML/FeatureList/MS2RatioQuantLayer/dataType");
-                    addMessages(cvMappingResult, this.msgL);
+                    if (ftRQL != null) {
+                        CvParamRef ftcvParamRef = ftRQL.getDataType();
+                        cvMappingResult = this.checkCvMapping(ftcvParamRef, "/MzQuantML/FeatureList/MS2RatioQuantLayer/dataType");
+                        addMessages(cvMappingResult, this.msgL);
+                    }
                 }
             }
         }
