@@ -11,11 +11,8 @@ import psidev.psi.tools.ontology_manager.impl.local.OntologyLoaderException;
 import psidev.psi.tools.validator.*;
 import psidev.psi.tools.validator.rules.cvmapping.CvRule;
 import uk.ac.liv.jmzqml.MzQuantMLElement;
-import uk.ac.liv.jmzqml.model.MzQuantMLObject;
 import uk.ac.liv.jmzqml.model.mzqml.*;
 import uk.ac.liv.jmzqml.xml.io.MzQuantMLUnmarshaller;
-import uk.ac.liv.mzquantml.rulefilter.RuleFilterManager;
-import uk.ac.liv.mzquantml.validator.rules.general.MandatoryElementsObjectRule;
 
 /**
  *
@@ -28,7 +25,6 @@ public class CvValidator extends Validator {
     private HashMap<String, List<ValidatorMessage>> msgs = null;
     private MzQuantMLUnmarshaller unmarshaller = null;
     private MzQuantML mzq = null;
-    private RuleFilterManager ruleFilterManager;
     private long uniqId = 0;
 
     public CvValidator(InputStream ontoConfig,
@@ -101,7 +97,9 @@ public class CvValidator extends Validator {
 
 
             // Cv mapping rules.
-            applyCvMappingRules();
+            if (this.mzq != null) {
+                applyCvMappingRules();
+            }
 
         } catch (ValidatorException ve) {
             logger.error("Exceptions during validation!", ve);
@@ -466,7 +464,6 @@ public class CvValidator extends Validator {
                 }
             }
         }
-
     }
 
     public Collection<ValidatorMessage> validate(InputStream aInputStream) throws ValidatorException {
@@ -538,20 +535,19 @@ public class CvValidator extends Validator {
         return ++uniqId;
     }
 
-    private void checkElementCvMapping(MzQuantMLElement element) throws ValidatorException {
-
-        Iterator<MzQuantMLObject> mzqIter;
-        mzqIter = this.unmarshaller.unmarshalCollectionFromXpath(element);
-        Collection toValidate = new ArrayList();
-        while (mzqIter.hasNext()) {
-            final Object next = mzqIter.next();
-            toValidate.add(next);
-        }
-
-        final Collection<ValidatorMessage> cvMappingResult = this.checkCvMapping(toValidate, element.getXpath());
-        addMessages(cvMappingResult, this.msgL);
-    }
-
+//    private void checkElementCvMapping(MzQuantMLElement element) throws ValidatorException {
+//
+//        Iterator<MzQuantMLObject> mzqIter;
+//        mzqIter = this.unmarshaller.unmarshalCollectionFromXpath(element);
+//        Collection toValidate = new ArrayList();
+//        while (mzqIter.hasNext()) {
+//            final Object next = mzqIter.next();
+//            toValidate.add(next);
+//        }
+//
+//        final Collection<ValidatorMessage> cvMappingResult = this.checkCvMapping(toValidate, element.getXpath());
+//        addMessages(cvMappingResult, this.msgL);
+//    }
     @Override
     public Collection<ValidatorMessage> checkCvMapping(Collection<?> collection,
                                                        String xPath) throws ValidatorException {
@@ -587,32 +583,31 @@ public class CvValidator extends Validator {
      * Check for the presence of all mandatory elements required at this
      * validation type
      */
-    private void checkMandatoryElements() {
-        List<ValidatorMessage> ret = new ArrayList<ValidatorMessage>();
-        if (ruleFilterManager != null) {
-            final List<String> mandatoryElements = ruleFilterManager.getMandatoryElements();
-            for (String elementName : mandatoryElements) {
-                MzQuantMLElement mzQuantMLElement = getMzQuantMLElement(elementName);
-                // check if that element is present on the file
-                final MzQuantMLObject mzQuantMLObject = unmarshaller.unmarshal(mzQuantMLElement);
-                if (mzQuantMLObject == null) {
-                    final MandatoryElementsObjectRule mandatoryObjectRule = new MandatoryElementsObjectRule(
-                            ontologyMngr);
-                    final ValidatorMessage validatorMessage = new ValidatorMessage(
-                            "The element on xPath:'" + mzQuantMLElement.getXpath()
-                            + "' is required for the current type of validation.",
-                            MessageLevel.ERROR, new Context(mzQuantMLElement.getXpath()),
-                            mandatoryObjectRule);
-                    // extendedReport.objectRuleExecuted(mandatoryObjectRule,
-                    // validatorMessage);
-                    // this.addObjectRule(mandatoryObjectRule);
-                    addValidatorMessage(validatorMessage.getRule().getId(), validatorMessage,
-                            this.msgL);
-                }
-            }
-        }
-    }
-
+//    private void checkMandatoryElements() {
+//        List<ValidatorMessage> ret = new ArrayList<ValidatorMessage>();
+//        if (ruleFilterManager != null) {
+//            final List<String> mandatoryElements = ruleFilterManager.getMandatoryElements();
+//            for (String elementName : mandatoryElements) {
+//                MzQuantMLElement mzQuantMLElement = getMzQuantMLElement(elementName);
+//                // check if that element is present on the file
+//                final MzQuantMLObject mzQuantMLObject = unmarshaller.unmarshal(mzQuantMLElement);
+//                if (mzQuantMLObject == null) {
+//                    final MandatoryElementsObjectRule mandatoryObjectRule = new MandatoryElementsObjectRule(
+//                            ontologyMngr);
+//                    final ValidatorMessage validatorMessage = new ValidatorMessage(
+//                            "The element on xPath:'" + mzQuantMLElement.getXpath()
+//                            + "' is required for the current type of validation.",
+//                            MessageLevel.ERROR, new Context(mzQuantMLElement.getXpath()),
+//                            mandatoryObjectRule);
+//                    // extendedReport.objectRuleExecuted(mandatoryObjectRule,
+//                    // validatorMessage);
+//                    // this.addObjectRule(mandatoryObjectRule);
+//                    addValidatorMessage(validatorMessage.getRule().getId(), validatorMessage,
+//                            this.msgL);
+//                }
+//            }
+//        }
+//    }
     private MzQuantMLElement getMzQuantMLElement(String elementName) {
         for (MzQuantMLElement element : MzQuantMLElement.values()) {
             if (element.name().equals(elementName)) {
