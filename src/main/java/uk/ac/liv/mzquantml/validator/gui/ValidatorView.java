@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -78,7 +79,6 @@ public class ValidatorView extends javax.swing.JFrame {
         jtfFileName = new javax.swing.JTextField();
         jbFileSelector = new javax.swing.JButton();
         jbValidate = new javax.swing.JButton();
-        jcb_schemaValidating = new javax.swing.JCheckBox();
         jtfSchema = new javax.swing.JTextField();
         jbSchema = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
@@ -106,18 +106,7 @@ public class ValidatorView extends javax.swing.JFrame {
             }
         });
 
-        jcb_schemaValidating.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
-        jcb_schemaValidating.setText("Schema validation.");
-        jcb_schemaValidating.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                jcb_schemaValidatingStateChanged(evt);
-            }
-        });
-
-        jtfSchema.setEnabled(false);
-
         jbSchema.setText("Schema");
-        jbSchema.setEnabled(false);
         jbSchema.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jbSchemaActionPerformed(evt);
@@ -136,8 +125,7 @@ public class ValidatorView extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jbFileSelector))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jcb_schemaValidating)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(jbValidate))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jtfSchema, javax.swing.GroupLayout.DEFAULT_SIZE, 606, Short.MAX_VALUE)
@@ -157,9 +145,7 @@ public class ValidatorView extends javax.swing.JFrame {
                     .addComponent(jtfSchema, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jbSchema))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jbValidate)
-                    .addComponent(jcb_schemaValidating))
+                .addComponent(jbValidate)
                 .addContainerGap())
         );
 
@@ -201,23 +187,27 @@ public class ValidatorView extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jbValidateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbValidateActionPerformed
-        
+
         try {
-            this.jtaValidationResults.setText("INFO: Starting validation process......\nINFO: Loading MzQuantML file......\n");
-            this.update(this.getGraphics());
-            String fileName = this.jtfFileName.getText();
-            MzQuantMLValidator mzqValidator = new MzQuantMLValidator(fileName, this.jcb_schemaValidating.isSelected(), this.jtfSchema.getText());
-            List<Message> results = mzqValidator.validate(fileName, this.jcb_schemaValidating.isSelected(), this.jtfSchema.getText());
-            this.jtaValidationResults.setLineWrap(true);
-            String results_mod = results.toString();
-            this.jtaValidationResults.append(results_mod.substring(2, results_mod.length() - 1));
+            if (!this.jtfFileName.getText().isEmpty() && !this.jtfSchema.getText().isEmpty()) {
+                this.jtaValidationResults.setText("INFO: Starting validation process......\nINFO: Loading MzQuantML file......\n");
+                this.update(this.getGraphics());
+                String fileName = this.jtfFileName.getText();
+                MzQuantMLValidator mzqValidator = new MzQuantMLValidator(fileName, true, this.jtfSchema.getText());
+                List<Message> results = mzqValidator.validate(fileName, true, this.jtfSchema.getText());
+                this.jtaValidationResults.setLineWrap(true);
+                String results_mod = results.toString();
+                this.jtaValidationResults.append(results_mod.substring(2, results_mod.length() - 1));
+            } else {
+                JOptionPane.showMessageDialog(this.jPanel2, "Missing mzq file or schema file!");
+            }
         } catch (FileNotFoundException ex) {
             Logger.getLogger(ValidatorView.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_jbValidateActionPerformed
 
     private void jbFileSelectorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbFileSelectorActionPerformed
-          
+
         JFileChooser fileChooser = new javax.swing.JFileChooser("user.home");
         fileChooser.setDialogTitle("Select a MzQuantML file");
         fileChooser.setCurrentDirectory(currentDirectory);
@@ -233,19 +223,6 @@ public class ValidatorView extends javax.swing.JFrame {
             currentDirectory = file.getParentFile();
         }
     }//GEN-LAST:event_jbFileSelectorActionPerformed
-
-    private void jcb_schemaValidatingStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jcb_schemaValidatingStateChanged
-        // TODO add your handling code here:
-        if (this.jcb_schemaValidating.isSelected()) {
-            jcb_schemaValidating.setText("Schema validation. For larger files, selecting this option could result in long waiting!");
-            jtfSchema.setEnabled(true);
-            jbSchema.setEnabled(true);
-        } else {
-            jcb_schemaValidating.setText("Schema validation.");
-            jtfSchema.setEnabled(false);
-            jbSchema.setEnabled(false);
-        }
-    }//GEN-LAST:event_jcb_schemaValidatingStateChanged
 
     private void jbSchemaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbSchemaActionPerformed
         // TODO add your handling code here:
@@ -313,7 +290,6 @@ public class ValidatorView extends javax.swing.JFrame {
     private javax.swing.JButton jbFileSelector;
     private javax.swing.JButton jbSchema;
     private javax.swing.JButton jbValidate;
-    private javax.swing.JCheckBox jcb_schemaValidating;
     private javax.swing.JTextArea jtaValidationResults;
     private javax.swing.JTextField jtfFileName;
     private javax.swing.JTextField jtfSchema;
