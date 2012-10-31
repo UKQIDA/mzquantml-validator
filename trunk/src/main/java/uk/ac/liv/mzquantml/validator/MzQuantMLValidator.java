@@ -1,12 +1,15 @@
 package uk.ac.liv.mzquantml.validator;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
+import java.io.*;
+import java.rmi.UnmarshalException;
+import static javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI;
 import java.util.*;
 import java.util.logging.Logger;
+import javax.xml.bind.*;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
 import org.apache.log4j.Level;
+import org.xml.sax.SAXException;
 import psidev.psi.tools.ontology_manager.impl.local.OntologyLoaderException;
 import psidev.psi.tools.validator.ValidatorException;
 import psidev.psi.tools.validator.ValidatorMessage;
@@ -20,9 +23,7 @@ import uk.ac.liv.mzquantml.validator.utils.Message;
 
 /**
  *
- * @author Da Qi
- * @time 10:28:09 14-Mar-2012
- * @institution University of Liverpool
+ * @author Da Qi @time 10:28:09 14-Mar-2012 @institution University of Liverpool
  */
 public class MzQuantMLValidator {
 
@@ -49,22 +50,91 @@ public class MzQuantMLValidator {
         msgs.clear();
 //        msgs.add(new Message("Starting validation process......", Level.INFO));
 //        msgs.add(new Message("Loading MzQuantML file......", Level.INFO));
-        
 
-        MzQuantMLUnmarshaller unmarshaller;
+
+//        MzQuantMLUnmarshaller unmarshaller;
+//        if (schemaValidating) {
+//            unmarshaller = new MzQuantMLUnmarshaller(fileName, schemaValidating, new File(schemaFn));
+//        } else {
+//            File schema = new File(getClass().getClassLoader().getResource("mzQuantML_1_0_0-rc2.xsd").getFile());
+//            unmarshaller = new MzQuantMLUnmarshaller(fileName, true, schema);
+//        }
+
+        Unmarshaller unmarsh;
+        MzQuantML mzq = new MzQuantML();
         if (schemaValidating) {
-            unmarshaller = new MzQuantMLUnmarshaller(fileName, schemaValidating, new File(schemaFn));
-        } else {
-            File schema = new File(getClass().getClassLoader().getResource("mzQuantML_1_0_0-rc2.xsd").getFile());
-            unmarshaller = new MzQuantMLUnmarshaller(fileName, true, schema);
-        }
+            try {
+                JAXBContext context = JAXBContext.newInstance(new Class[]{MzQuantML.class
+                        });
+                unmarsh = context.createUnmarshaller();
+                SchemaFactory sf = SchemaFactory.newInstance(W3C_XML_SCHEMA_NS_URI);
+                File schemaFile = new File(schemaFn);
+                Schema schema = sf.newSchema(schemaFile);
+                unmarsh.setSchema(schema);
 
-        MzQuantML mzq = (MzQuantML) unmarshaller.unmarshall();
+                ValidationEventHandler veh = new ValidationEventHandler() {
 
-        if (!unmarshaller.getExceptionalMessages().isEmpty()) {
-            msgs.add(new Message(unmarshaller.getExceptionalMessages()));
-            msgs.add(new Message("Semantic validation processing will not perform as this file is not schema valid!", Level.ERROR));
+                    @Override
+                    public boolean handleEvent(ValidationEvent event) {
+                        //ignore warnings
+                        if (event.getSeverity() != ValidationEvent.WARNING) {
+                            ValidationEventLocator vel = event.getLocator();
+//                            System.out.println("Line:Col[" + vel.getLineNumber()
+//                                    + ":" + vel.getColumnNumber()
+//                                    + "]:" + event.getMessage());
+                            msgs.add(new Message("Line:Col[" + vel.getLineNumber()
+                                    + ":" + vel.getColumnNumber()
+                                    + "]:" + event.getMessage()));
+                        }
+                        return true;
+                    }
+                };
+                unmarsh.setEventHandler(veh);
+                mzq = (MzQuantML) unmarsh.unmarshal(new FileReader(fileName));
+            } catch (JAXBException ex) {
+                Logger.getLogger(MzQuantMLValidator.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            } catch (SAXException ex) {
+                ex.printStackTrace();
+            }
         } else {
+
+            try {
+                JAXBContext context = JAXBContext.newInstance(new Class[]{MzQuantML.class
+                        });
+                unmarsh = context.createUnmarshaller();
+                SchemaFactory sf = SchemaFactory.newInstance(W3C_XML_SCHEMA_NS_URI);
+                File schemaFile = new File(getClass().getClassLoader().getResource("mzQuantML_1_0_0-rc2.xsd").getFile());                
+                //File schemaFile = new File("mzQuantML_1_0_0-rc2.xsd");
+                Schema schema = sf.newSchema(schemaFile);
+                unmarsh.setSchema(schema);
+
+                ValidationEventHandler veh = new ValidationEventHandler() {
+
+                    @Override
+                    public boolean handleEvent(ValidationEvent event) {
+                        //ignore warnings
+                        if (event.getSeverity() != ValidationEvent.WARNING) {
+                            ValidationEventLocator vel = event.getLocator();
+//                            System.out.println("Line:Col[" + vel.getLineNumber()
+//                                    + ":" + vel.getColumnNumber()
+//                                    + "]:" + event.getMessage());
+                            msgs.add(new Message("Line:Col[" + vel.getLineNumber()
+                                    + ":" + vel.getColumnNumber()
+                                    + "]:" + event.getMessage()));
+                        }
+                        return true;
+                    }
+                };
+                unmarsh.setEventHandler(veh);
+                mzq = (MzQuantML) unmarsh.unmarshal(new FileReader(fileName));
+            } catch (JAXBException ex) {
+                Logger.getLogger(MzQuantMLValidator.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            } catch (SAXException ex) {
+                ex.printStackTrace();
+            }
+        }    
+
+//        if (unmarshaller.getExceptionalMessages().isEmpty()) {
             /*
              * get all mzQuantML elements
              */
@@ -231,13 +301,17 @@ public class MzQuantMLValidator {
             } catch (OntologyLoaderException ex) {
                 Logger.getLogger(MzQuantMLValidator.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
             }
-
-            /*
-             * final output
-             */
-            System.out.println("MzQuantML validation process is finished");
-            msgs.add(new Message("MzQuantML validation process is finished", Level.INFO));
-        }
+//        } else {
+//            msgs.add(new Message(unmarshaller.getExceptionalMessages()));
+//            msgs.add(new Message("Semantic validation processing will not perform as this file is not schema valid!", Level.ERROR));
+//        }
+            
+            
+        /*
+         * final output
+         */
+        System.out.println("MzQuantML validation process is finished");
+        msgs.add(new Message("MzQuantML validation process is finished", Level.INFO));
 
         return msgs;
     }
@@ -1146,9 +1220,8 @@ public class MzQuantMLValidator {
         File file = new File(mappingRuleFile);
         if (!file.exists()) {
             ClassLoader cl = this.getClass().getClassLoader();
-            return cl.getResourceAsStream(mappingRuleFile);
+            return cl.getResourceAsStream("mzQuantML-mapping_1.0.0-rc2-general.xml");
         }
-
         return new FileInputStream(file);
     }
 }
