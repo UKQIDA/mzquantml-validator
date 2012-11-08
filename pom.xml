@@ -127,7 +127,7 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>jmzquantml</artifactId>
-            <version>1.0.0-rc2-1.0.1</version>
+            <version>1.0.0-rc3-1.0.2</version>
         </dependency>
     </dependencies>
     <pluginRepositories>
@@ -142,6 +142,12 @@
             <id>jmzquantml-maven-repo</id>
             <name>Maven Repository for jmzquantml release</name>
             <url>http://jmzquantml.googlecode.com/svn/maven/repo</url>
+        </repository>
+        <repository>
+            <id>jmzquantml-maven-snapshot-repo</id>
+            <name>Maven Repository for jmzquantml (snapshot)</name>
+            <url>http://jmzquantml.googlecode.com/svn/maven/snapshot-repo</url>
+            <snapshots><enabled>1</enabled></snapshots>
         </repository>
         <repository>
             <id>ebi-repo</id>
