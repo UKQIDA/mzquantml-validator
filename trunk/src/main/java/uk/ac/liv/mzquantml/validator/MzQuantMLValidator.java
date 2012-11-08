@@ -15,7 +15,7 @@ import psidev.psi.tools.validator.ValidatorException;
 import psidev.psi.tools.validator.ValidatorMessage;
 import uk.ac.liv.jmzqml.model.mzqml.*;
 import uk.ac.liv.jmzqml.xml.io.MzQuantMLUnmarshaller;
-import uk.ac.liv.mzquantml.validator.cvmapping.CvValidator;
+import uk.ac.liv.mzquantml.validator.cvmapping.MzQuantMLCvValidator;
 import uk.ac.liv.mzquantml.validator.rules.general.*;
 import uk.ac.liv.mzquantml.validator.utils.AnalysisSummaryElement;
 import uk.ac.liv.mzquantml.validator.utils.AnalysisType;
@@ -62,6 +62,15 @@ public class MzQuantMLValidator {
 
         Unmarshaller unmarsh;
         MzQuantML mzq = new MzQuantML();
+
+        /**
+         * ****************************************************************
+         * Schema validation happens before validating cv mapping and schema
+         * rule
+         * If MzQuantML file is not schema valid, it is unable to continue the
+         * validation process
+         *******************************************************************
+         */
         if (schemaValidating) {
             try {
                 JAXBContext context = JAXBContext.newInstance(new Class[]{MzQuantML.class
@@ -103,7 +112,7 @@ public class MzQuantMLValidator {
                         });
                 unmarsh = context.createUnmarshaller();
                 SchemaFactory sf = SchemaFactory.newInstance(W3C_XML_SCHEMA_NS_URI);
-                File schemaFile = new File(getClass().getClassLoader().getResource("mzQuantML_1_0_0-rc2.xsd").getFile());                
+                File schemaFile = new File(getClass().getClassLoader().getResource("mzQuantML_1_0_0-rc2.xsd").getFile());
                 //File schemaFile = new File("mzQuantML_1_0_0-rc2.xsd");
                 Schema schema = sf.newSchema(schemaFile);
                 unmarsh.setSchema(schema);
@@ -132,181 +141,214 @@ public class MzQuantMLValidator {
             } catch (SAXException ex) {
                 ex.printStackTrace();
             }
-        }    
+        }
 
 //        if (unmarshaller.getExceptionalMessages().isEmpty()) {
-            /*
-             * get all mzQuantML elements
-             */
-            ParamList analysisSummary = mzq.getAnalysisSummary();
-            AssayList assayList = mzq.getAssayList();
-            AuditCollection auditCollection = mzq.getAuditCollection();
-            List<BibliographicReference> bibliographicReferences = mzq.getBibliographicReference();
-            Calendar creationDate = mzq.getCreationDate();
-            CvList cvList = mzq.getCvList();
-            DataProcessingList dataProcessingList = mzq.getDataProcessingList();
-            List<FeatureList> featureLists = mzq.getFeatureList();
-            InputFiles inputFiles = mzq.getInputFiles();
-            List<PeptideConsensusList> peptideConsensusLists = mzq.getPeptideConsensusList();
-            ProteinGroupList proteinGroupList = mzq.getProteinGroupList();
-            ProteinList proteinList = mzq.getProteinList();
-            Provider provider = mzq.getProvider();
-            RatioList ratioList = mzq.getRatioList();
-            SmallMoleculeList smallMoleculeList = mzq.getSmallMoleculeList();
-            SoftwareList softwareList = mzq.getSoftwareList();
-            StudyVariableList studyVariableList = mzq.getStudyVariableList();
-            String version = mzq.getVersion();
 
-            /*
-             * check all mzQuantML elements one by one
-             */
-            if (analysisSummary != null) {
-                at = new AnalysisType(analysisSummary);
-                checkAnalysisSummary(analysisSummary);
-            } else {
-                // message there is no AnalysisSummary which is not acceptable
-            }
+        /**
+         * ********************************************************************
+         * If the MzQuantML file is schema invalid, the codes will break before
+         * this.
+         * If the MzQuantML file is schema valid, then the following codes will
+         * be executed.
+         **********************************************************************
+         */
 
-            if (assayList != null) {
-                checkAssayList(assayList);
-            } else {
-                // message there is no AssayList which is not acceptable
-            }
+        /*
+         * get all mzQuantML elements
+         */
+        ParamList analysisSummary = mzq.getAnalysisSummary();
+        AssayList assayList = mzq.getAssayList();
+        AuditCollection auditCollection = mzq.getAuditCollection();
+        List<BibliographicReference> bibliographicReferences = mzq.getBibliographicReference();
+        Calendar creationDate = mzq.getCreationDate();
+        CvList cvList = mzq.getCvList();
+        DataProcessingList dataProcessingList = mzq.getDataProcessingList();
+        List<FeatureList> featureLists = mzq.getFeatureList();
+        InputFiles inputFiles = mzq.getInputFiles();
+        List<PeptideConsensusList> peptideConsensusLists = mzq.getPeptideConsensusList();
+        ProteinGroupList proteinGroupList = mzq.getProteinGroupList();
+        ProteinList proteinList = mzq.getProteinList();
+        Provider provider = mzq.getProvider();
+        RatioList ratioList = mzq.getRatioList();
+        SmallMoleculeList smallMoleculeList = mzq.getSmallMoleculeList();
+        SoftwareList softwareList = mzq.getSoftwareList();
+        StudyVariableList studyVariableList = mzq.getStudyVariableList();
+        String version = mzq.getVersion();
+
+        /**
+         * ********************************
+         * Start checking the schema rule
+         * These rules are manually written located in MzQuantML/schema folder.
+         *
+         * They are:
+         * Schema_rules_general.txt
+         * Schema_rules_LCMS_label_free.txt
+         * Schema_rules_MS1_label_based.txt
+         * Schema_rules_MS2_tag_based.txt
+         * Schema_rules_spectral_counting.txt
+         ********************************
+         */
+
+        /*
+         * check all mzQuantML elements one by one
+         */
+        if (analysisSummary != null) {
+            at = new AnalysisType(analysisSummary);
+            checkAnalysisSummary(analysisSummary);
+        } else {
+            // message there is no AnalysisSummary which is not acceptable
+        }
+
+        if (assayList != null) {
+            checkAssayList(assayList);
+        } else {
+            // message there is no AssayList which is not acceptable
+        }
 
 
-            if (auditCollection != null) {
-                checkAuditCollection(auditCollection);
-            } else {
-                // message
-            }
+        if (auditCollection != null) {
+            checkAuditCollection(auditCollection);
+        } else {
+            // message
+        }
 
-            if (bibliographicReferences != null) {
-                checkBibliographicReference(bibliographicReferences);
-            } else {
-                // message
-            }
+        if (bibliographicReferences != null) {
+            checkBibliographicReference(bibliographicReferences);
+        } else {
+            // message
+        }
 
-            if (creationDate != null) {
-                checkCreationDate(creationDate);
-            } else {
-                // message
-            }
+        if (creationDate != null) {
+            checkCreationDate(creationDate);
+        } else {
+            // message
+        }
 
-            if (cvList != null) {
-                checkCvList(cvList);
-            } else {
-                // message
-            }
+        if (cvList != null) {
+            checkCvList(cvList);
+        } else {
+            // message
+        }
 
-            if (dataProcessingList != null) {
-                checkDataProcessingList(dataProcessingList);
-            } else {
-                // message
-            }
+        if (dataProcessingList != null) {
+            checkDataProcessingList(dataProcessingList);
+        } else {
+            // message
+        }
 
-            if (featureLists != null) {
-                checkFeatureLists(featureLists);
-            } else {
-                // messages
-            }
+        if (featureLists != null) {
+            checkFeatureLists(featureLists);
+        } else {
+            // messages
+        }
 
-            if (inputFiles != null) {
-                checkInputFiles(inputFiles);
-            } else {
-                // message there is no inputFiles which is not acceptable
-            }
+        if (inputFiles != null) {
+            checkInputFiles(inputFiles);
+        } else {
+            // message there is no inputFiles which is not acceptable
+        }
 
-            if (peptideConsensusLists != null) {
-                checkPeptideConsensusLists(peptideConsensusLists);
-            } else {
-                // some message
-            }
+        if (peptideConsensusLists != null) {
+            checkPeptideConsensusLists(peptideConsensusLists);
+        } else {
+            // some message
+        }
 
-            if (proteinGroupList != null) {
-                checkProteinGroupList(proteinGroupList);
-            } else {
-                // message
-            }
+        if (proteinGroupList != null) {
+            checkProteinGroupList(proteinGroupList);
+        } else {
+            // message
+        }
 
-            if (proteinList != null) {
-                checkProteinList(proteinList);
-            } else {
-                // message
-            }
+        if (proteinList != null) {
+            checkProteinList(proteinList);
+        } else {
+            // message
+        }
 
-            if (provider != null) {
-                checkProvider(provider);
-            } else {
-                // message
-            }
+        if (provider != null) {
+            checkProvider(provider);
+        } else {
+            // message
+        }
 
-            if (ratioList != null) {
-                checkRatioList(ratioList);
-            } else {
-                // message
-            }
+        if (ratioList != null) {
+            checkRatioList(ratioList);
+        } else {
+            // message
+        }
 
-            if (smallMoleculeList != null) {
-                checkSmallMoleculeList(smallMoleculeList);
-            } else {
-                // message
-            }
+        if (smallMoleculeList != null) {
+            checkSmallMoleculeList(smallMoleculeList);
+        } else {
+            // message
+        }
 
-            if (softwareList != null) {
-                checkSoftwareList(softwareList);
-            } else {
-                // message
-            }
+        if (softwareList != null) {
+            checkSoftwareList(softwareList);
+        } else {
+            // message
+        }
 
-            if (studyVariableList != null) {
-                checkStudyVariableList(studyVariableList);
-            } else {
-                // message
-            }
+        if (studyVariableList != null) {
+            checkStudyVariableList(studyVariableList);
+        } else {
+            // message
+        }
 
-            if (version != null) {
-                checkVersion(version);
-            } else {
-                // message
-            }
+        if (version != null) {
+            checkVersion(version);
+        } else {
+            // message
+        }
 
-            /*
-             * ListsRule start here
-             */
+        /*
+         * ListsRule start here
+         */
+        if (inputFiles != null) {
             ListsRule listsRule = new ListsRule(at, inputFiles, proteinGroupList, proteinList,
                     peptideConsensusLists, featureLists);
             listsRule.check();
             msgs.addAll(listsRule.getMsgs());
+        }
 
-            /*
-             * QuantLayerRule start here
-             */
-            QuantLayerRule quantLayerRule = new QuantLayerRule(analysisSummaryMap, proteinGroupList, proteinList, peptideConsensusLists, featureLists);
-            quantLayerRule.check();
-            msgs.addAll(quantLayerRule.getMsgs());
+        /*
+         * QuantLayerRule start here
+         */
+        QuantLayerRule quantLayerRule = new QuantLayerRule(analysisSummaryMap, proteinGroupList, proteinList, peptideConsensusLists, featureLists);
+        quantLayerRule.check();
+        msgs.addAll(quantLayerRule.getMsgs());
 
-            // start validate Cv Mapping rule
-            InputStream ontology = getOntologiesFileInputStream();
-            InputStream mappingRule = getGeneralMappingRuleInputStream();
-            CvValidator cvValidator;
-            try {
-                cvValidator = new CvValidator(ontology, mappingRule);
-                final Collection<ValidatorMessage> validationResult = cvValidator.startValidation(fileName);
+        /**
+         * **************************************************
+         * 
+         * start validate Cv Mapping rule
+         *
+         * **************************************************
+         */
+       
+        InputStream ontology = getOntologiesFileInputStream();
+        InputStream mappingRule = getGeneralMappingRuleInputStream();
+        MzQuantMLCvValidator cvValidator;
+        try {
+            cvValidator = new MzQuantMLCvValidator(ontology, mappingRule);
+            final Collection<ValidatorMessage> validationResult = cvValidator.startValidation(fileName,mzq);
 
-                for (ValidatorMessage vMsg : validationResult) {
-                    msgs.add(new Message(vMsg.getRule().toString() + vMsg.getMessage()));
-                }
-            } catch (ValidatorException ex) {
-                Logger.getLogger(MzQuantMLValidator.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-            } catch (OntologyLoaderException ex) {
-                Logger.getLogger(MzQuantMLValidator.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            for (ValidatorMessage vMsg : validationResult) {
+                msgs.add(new Message(vMsg.getRule().toString() + vMsg.getMessage()));
             }
+        } catch (ValidatorException ex) {
+            Logger.getLogger(MzQuantMLValidator.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (OntologyLoaderException ex) {
+            Logger.getLogger(MzQuantMLValidator.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
 //        } else {
 //            msgs.add(new Message(unmarshaller.getExceptionalMessages()));
 //            msgs.add(new Message("Semantic validation processing will not perform as this file is not schema valid!", Level.ERROR));
 //        }
-            
-            
+
+
         /*
          * final output
          */
@@ -1216,11 +1258,11 @@ public class MzQuantMLValidator {
 
     protected InputStream getGeneralMappingRuleInputStream() throws FileNotFoundException {
         String mappingRuleFile = getClass().getClassLoader().
-                getResource("mzQuantML-mapping_1.0.0-rc2-general.xml").getFile();
+                getResource("mzQuantML-mapping_1.0.0-rc3-general.xml").getFile();
         File file = new File(mappingRuleFile);
         if (!file.exists()) {
             ClassLoader cl = this.getClass().getClassLoader();
-            return cl.getResourceAsStream("mzQuantML-mapping_1.0.0-rc2-general.xml");
+            return cl.getResourceAsStream("mzQuantML-mapping_1.0.0-rc3-general.xml");
         }
         return new FileInputStream(file);
     }
