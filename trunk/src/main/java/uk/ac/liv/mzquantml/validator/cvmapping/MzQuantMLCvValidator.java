@@ -21,21 +21,21 @@ import uk.ac.liv.jmzqml.xml.io.MzQuantMLUnmarshaller;
 public class MzQuantMLCvValidator extends Validator {
 
     private static final Logger logger = Logger.getLogger(MzQuantMLCvValidator.class);
-    //private MessageLevel msgL = MessageLevel.WARN;
-    private MessageLevel msgL = MessageLevel.INFO;
+    private MessageLevel msgL = MessageLevel.WARN;
+    //private MessageLevel msgL = MessageLevel.INFO;
     private HashMap<String, List<ValidatorMessage>> msgs = null;
     private MzQuantML mzq = null;
     private long uniqId = 0;
 
     public MzQuantMLCvValidator(InputStream ontoConfig,
-            InputStream cvRuleConfig,
-            InputStream objectRuleConfig) throws ValidatorException, OntologyLoaderException {
+                                InputStream cvRuleConfig,
+                                InputStream objectRuleConfig) throws ValidatorException, OntologyLoaderException {
         super(ontoConfig, cvRuleConfig, objectRuleConfig);
         validatorInit();
     }
 
     public MzQuantMLCvValidator(InputStream ontoConfig,
-            InputStream cvRuleConfig) throws ValidatorException, OntologyLoaderException {
+                                InputStream cvRuleConfig) throws ValidatorException, OntologyLoaderException {
         super(ontoConfig, cvRuleConfig);
         validatorInit();
     }
@@ -69,7 +69,7 @@ public class MzQuantMLCvValidator extends Validator {
      * result.
      */
     public Collection<ValidatorMessage> startValidation(String xmlFile,
-            MzQuantML mzq) {
+                                                        MzQuantML mzq) {
         if (logger.isInfoEnabled()) {
             logger.info("\nStarting new Cv validation, input file: " + new File(xmlFile).getAbsolutePath());
         }
@@ -120,7 +120,7 @@ public class MzQuantMLCvValidator extends Validator {
     }
 
     private void addMessages(Collection<ValidatorMessage> aNewMessages,
-            MessageLevel aLevel) {
+                             MessageLevel aLevel) {
         for (ValidatorMessage aNewMessage : aNewMessages) {
             if (aNewMessage.getLevel().isHigher(aLevel) || aNewMessage.getLevel().isSame(aLevel)) {
                 if (aNewMessage.getRule() != null) {
@@ -133,8 +133,8 @@ public class MzQuantMLCvValidator extends Validator {
     }
 
     private void addValidatorMessage(String ruleId,
-            ValidatorMessage validatorMessage,
-            MessageLevel msgLevel) {
+                                     ValidatorMessage validatorMessage,
+                                     MessageLevel msgLevel) {
         if (validatorMessage.getLevel().isHigher(msgLevel) || validatorMessage.getLevel().isSame(msgLevel)) {
             if (this.msgs.containsKey(ruleId)) {
                 this.msgs.get(ruleId).add(validatorMessage);
@@ -183,6 +183,12 @@ public class MzQuantMLCvValidator extends Validator {
          * ************************
          */
         InputFiles inputFiles = this.mzq.getInputFiles();
+//        Collection toValidate = new ArrayList();
+//        if (inputFiles != null) {
+//            toValidate.add(inputFiles);
+//            cvMappingResult = this.checkCvMapping(toValidate, "/MzQuantML/InputFiles");
+//            addMessages(cvMappingResult, this.msgL);
+//        }
 
         List<RawFilesGroup> rawFileGroupList = inputFiles.getRawFilesGroup();
 
@@ -289,11 +295,11 @@ public class MzQuantMLCvValidator extends Validator {
         }
 
         // check AnalysisSummary_rule
-        ParamList analysisSummary = this.mzq.getAnalysisSummary();
-        if (analysisSummary != null) {
-            cvMappingResult = this.checkCvMapping(analysisSummary, "/MzQuantML/AnalysisSummary");
-            addMessages(cvMappingResult, this.msgL);
-        }
+//        ParamList analysisSummary = this.mzq.getAnalysisSummary();
+//        if (analysisSummary != null) {
+//            cvMappingResult = this.checkCvMapping(analysisSummary, "/MzQuantML/AnalysisSummary");
+//            addMessages(cvMappingResult, this.msgL);
+//        }
 
         // check RatioCalculation_rule
         RatioList ratioList = this.mzq.getRatioList();
@@ -691,7 +697,7 @@ public class MzQuantMLCvValidator extends Validator {
 //    }
     @Override
     public Collection<ValidatorMessage> checkCvMapping(Collection<?> collection,
-            String xPath) throws ValidatorException {
+                                                       String xPath) throws ValidatorException {
         Collection messages = new ArrayList();
 
         if (this.getCvRuleManager() != null) {
