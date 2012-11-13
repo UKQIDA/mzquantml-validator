@@ -1,10 +1,9 @@
 package uk.ac.liv.mzquantml.validator;
 
 import java.io.*;
-import java.rmi.UnmarshalException;
-import static javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI;
 import java.util.*;
 import java.util.logging.Logger;
+import static javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI;
 import javax.xml.bind.*;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
@@ -14,11 +13,11 @@ import psidev.psi.tools.ontology_manager.impl.local.OntologyLoaderException;
 import psidev.psi.tools.validator.ValidatorException;
 import psidev.psi.tools.validator.ValidatorMessage;
 import uk.ac.liv.jmzqml.model.mzqml.*;
-import uk.ac.liv.jmzqml.xml.io.MzQuantMLUnmarshaller;
 import uk.ac.liv.mzquantml.validator.cvmapping.MzQuantMLCvValidator;
 import uk.ac.liv.mzquantml.validator.rules.general.*;
 import uk.ac.liv.mzquantml.validator.utils.AnalysisSummaryElement;
 import uk.ac.liv.mzquantml.validator.utils.AnalysisType;
+import uk.ac.liv.mzquantml.validator.utils.AnalysisType.AnalTp;
 import uk.ac.liv.mzquantml.validator.utils.Message;
 
 /**
@@ -35,7 +34,7 @@ public class MzQuantMLValidator {
     private String schemaFn;
 
     public MzQuantMLValidator(String fileName, boolean schemaValidating,
-                              String schemaFn) {
+            String schemaFn) {
         this.fileName = fileName;
         this.schemaValidating = schemaValidating;
         this.schemaFn = schemaFn;
@@ -45,8 +44,8 @@ public class MzQuantMLValidator {
      * @param args the command line arguments
      */
     public List<Message> validate(String fileName, boolean schemaValidating,
-                                  String schemaFn) throws FileNotFoundException {
-        // TODO code application logic here
+            String schemaFn) throws FileNotFoundException {
+
         msgs.clear();
 //        msgs.add(new Message("Starting validation process......", Level.INFO));
 //        msgs.add(new Message("Loading MzQuantML file......", Level.INFO));
@@ -66,10 +65,9 @@ public class MzQuantMLValidator {
         /**
          * ****************************************************************
          * Schema validation happens before validating cv mapping and schema
-         * rule
-         * If MzQuantML file is not schema valid, it is unable to continue the
-         * validation process
-         *******************************************************************
+         * rule If MzQuantML file is not schema valid, it is unable to continue
+         * the validation process
+         * ******************************************************************
          */
         if (schemaValidating) {
             try {
@@ -112,7 +110,7 @@ public class MzQuantMLValidator {
                         });
                 unmarsh = context.createUnmarshaller();
                 SchemaFactory sf = SchemaFactory.newInstance(W3C_XML_SCHEMA_NS_URI);
-                File schemaFile = new File(getClass().getClassLoader().getResource("mzQuantML_1_0_0-rc2.xsd").getFile());
+                File schemaFile = new File(getClass().getClassLoader().getResource("mzQuantML_1_0_0-rc3.xsd").getFile());
                 //File schemaFile = new File("mzQuantML_1_0_0-rc2.xsd");
                 Schema schema = sf.newSchema(schemaFile);
                 unmarsh.setSchema(schema);
@@ -148,10 +146,9 @@ public class MzQuantMLValidator {
         /**
          * ********************************************************************
          * If the MzQuantML file is schema invalid, the codes will break before
-         * this.
-         * If the MzQuantML file is schema valid, then the following codes will
-         * be executed.
-         **********************************************************************
+         * this. If the MzQuantML file is schema valid, then the following codes
+         * will be executed.
+         * *********************************************************************
          */
 
         /*
@@ -178,16 +175,12 @@ public class MzQuantMLValidator {
 
         /**
          * ********************************
-         * Start checking the schema rule
-         * These rules are manually written located in MzQuantML/schema folder.
+         * Start checking the schema rule These rules are manually written
+         * located in MzQuantML/schema folder.
          *
-         * They are:
-         * Schema_rules_general.txt
-         * Schema_rules_LCMS_label_free.txt
-         * Schema_rules_MS1_label_based.txt
-         * Schema_rules_MS2_tag_based.txt
-         * Schema_rules_spectral_counting.txt
-         ********************************
+         * They are: Schema_rules_general.txt Schema_rules_LCMS_label_free.txt
+         * Schema_rules_MS1_label_based.txt Schema_rules_MS2_tag_based.txt
+         * Schema_rules_spectral_counting.txt *******************************
          */
 
         /*
@@ -195,7 +188,32 @@ public class MzQuantMLValidator {
          */
         if (analysisSummary != null) {
             at = new AnalysisType(analysisSummary);
-            checkAnalysisSummary(analysisSummary);
+            if (at.getAnalysisType() != AnalTp.InvalidAnalysisType) {
+                /**
+                 * check AnalsisSummaryRule first check() return a boolean value
+                 * return ture when there is no cv term missing return false
+                 * when at least one cv term is missing
+                 */
+                AnalysisSummaryRule asr = new AnalysisSummaryRule(analysisSummary);
+                if (asr.check()) {
+                    checkAnalysisSummary(analysisSummary);
+                }
+
+                msgs.addAll(asr.getMsgs());
+            } /**
+             * If the mzq file doesn't contain valid cv term for
+             * AnalysisSummary, validator will not continue to validate other cv
+             * terms or user terms in it.
+             */
+            else {
+                msgs.add(new Message("Missing cv term accession for specific technique in AnalysisSummary. "
+                        + "Hence validator can not identify the technique used in this file. "
+                        + "A valid mzq file MUST contain one of the following cv terms:\n"
+                        + "\"" + AnalTp.LabelFree.toString() + "\"\n"
+                        + "\"" + AnalTp.MS1LabelBased.toString() + "\"\n"
+                        + "\"" + AnalTp.MS2TagBased.toString() + "\"\n"
+                        + "\"" + AnalTp.SpectralCounting.toString() + "\"\n", Level.ERROR));
+            }
         } else {
             // message there is no AnalysisSummary which is not acceptable
         }
@@ -316,27 +334,37 @@ public class MzQuantMLValidator {
         /*
          * QuantLayerRule start here
          */
-        QuantLayerRule quantLayerRule = new QuantLayerRule(analysisSummaryMap, proteinGroupList, proteinList, peptideConsensusLists, featureLists);
-        quantLayerRule.check();
-        msgs.addAll(quantLayerRule.getMsgs());
+
+        if (at.getAnalysisType() != AnalTp.InvalidAnalysisType) {
+            /**
+             * If the mzq file doesn't contain valid cv term for
+             * AnalysisSummary, validator will not continue to validate
+             * QuantLayerRule.
+             */
+            getAnalysisSummaryMap(analysisSummary);
+            QuantLayerRule quantLayerRule = new QuantLayerRule(analysisSummaryMap, proteinGroupList, proteinList, peptideConsensusLists, featureLists);
+            quantLayerRule.check();
+            msgs.addAll(quantLayerRule.getMsgs());
+        }
 
         /**
          * **************************************************
-         * 
+         *
          * start validate Cv Mapping rule
          *
          * **************************************************
          */
-       
         InputStream ontology = getOntologiesFileInputStream();
         InputStream mappingRule = getGeneralMappingRuleInputStream();
         MzQuantMLCvValidator cvValidator;
         try {
             cvValidator = new MzQuantMLCvValidator(ontology, mappingRule);
-            final Collection<ValidatorMessage> validationResult = cvValidator.startValidation(fileName,mzq);
+            final Collection<ValidatorMessage> validationResult = cvValidator.startValidation(fileName, mzq);
 
             for (ValidatorMessage vMsg : validationResult) {
-                msgs.add(new Message(vMsg.getRule().toString() + vMsg.getMessage()));
+                // convert MessageLevel to log4j Level
+                Level lev = Level.toLevel(vMsg.getLevel().toString());
+                msgs.add(new Message(vMsg.getRule().toString() + vMsg.getMessage(), lev));
             }
         } catch (ValidatorException ex) {
             Logger.getLogger(MzQuantMLValidator.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
@@ -360,14 +388,18 @@ public class MzQuantMLValidator {
 
 
     /*
+     * ***************************************
+     *
      * All the check*** functions start here. Organized alphabetically
+     *
+     * ***************************************
      */
     static public void checkAnalysisSummary(ParamList analysisSummary) {
-        analysisSummaryMap = new EnumMap<AnalysisSummaryElement, Boolean>(AnalysisSummaryElement.class);
+//        analysisSummaryMap = new EnumMap<AnalysisSummaryElement, Boolean>(AnalysisSummaryElement.class);
 
         List<AbstractParam> paramGroups = analysisSummary.getParamGroup();
         for (AbstractParam param : paramGroups) {
-            if (param.getClass().isInstance(uk.ac.liv.jmzqml.model.mzqml.CvParam.class)) {
+            if (param instanceof CvParam) {
                 CvParam cv = (CvParam) param;
                 String name = cv.getName();
                 String value = cv.getValue();
@@ -382,10 +414,10 @@ public class MzQuantMLValidator {
                 String unitCvRef = cv.getUnitCvRef();
                 String unitName = cv.getUnitName();
 
-                AnalysisSummaryElement key = AnalysisSummaryElement.getType(name);
-                if (key != null) {
-                    analysisSummaryMap.put(key, Boolean.valueOf(value));
-                }
+//                AnalysisSummaryElement key = AnalysisSummaryElement.getType(name);
+//                if (key != null) {
+//                    analysisSummaryMap.put(key, Boolean.valueOf(value));
+//                }
             }
         }
         String targetClassId = "AnalysisSummary";
@@ -456,7 +488,7 @@ public class MzQuantMLValidator {
     }
 
     static public void checkColumnDefinition(String targetClassId,
-                                             ColumnDefinition columnDefinition) {
+            ColumnDefinition columnDefinition) {
         List<Column> columns = columnDefinition.getColumn();
         if (!columns.isEmpty()) {
             for (Column column : columns) {
@@ -550,7 +582,7 @@ public class MzQuantMLValidator {
     }
 
     static public void checkDBIdentificationRef(String tarClsId,
-                                                DBIdentificationRef dBidRef) {
+            DBIdentificationRef dBidRef) {
         Object ref = dBidRef.getSearchDatabaseRef();
         checkObjectRef(tarClsId, ref, uk.ac.liv.jmzqml.model.mzqml.SearchDatabase.class);
     }
@@ -658,7 +690,7 @@ public class MzQuantMLValidator {
     }
 
     static public void checkIdentificationRefs(String tarClsId,
-                                               List<IdentificationRef> identificationRefs) {
+            List<IdentificationRef> identificationRefs) {
         if (!identificationRefs.isEmpty()) {
             for (IdentificationRef idRef : identificationRefs) {
                 Object idFileRef = idRef.getIdentificationFileRef();
@@ -708,7 +740,7 @@ public class MzQuantMLValidator {
     }
 
     static public void checkModification(String tarClsId,
-                                         Modification modification) {
+            Modification modification) {
         List<CvParam> cvParams = modification.getCvParam();
         if (!cvParams.isEmpty()) {
             for (CvParam cvParam : cvParams) {
@@ -728,8 +760,8 @@ public class MzQuantMLValidator {
     }
 
     static public <T> ArrayList<Message> checkObjectRef(String tarClsId,
-                                                        Object objRef,
-                                                        Class<T> cls) {
+            Object objRef,
+            Class<T> cls) {
         ObjectRefTypeMatchRule objectRefMatchRule = new ObjectRefTypeMatchRule(tarClsId, objRef, cls);
         objectRefMatchRule.check();
         return objectRefMatchRule.getMessage();
@@ -743,7 +775,7 @@ public class MzQuantMLValidator {
     }
 
     static public void checkParamGroups(String tarClsId,
-                                        List<AbstractParam> paramGroups) {
+            List<AbstractParam> paramGroups) {
         for (AbstractParam param : paramGroups) {
             if (param.getClass().isInstance(uk.ac.liv.jmzqml.model.mzqml.CvParam.class)) {
                 CvParam cv = (CvParam) param;
@@ -873,7 +905,7 @@ public class MzQuantMLValidator {
     }
 
     static public void checkProcessingMethods(String tarClsId,
-                                              List<ProcessingMethod> processingMethods) {
+            List<ProcessingMethod> processingMethods) {
         if (!processingMethods.isEmpty()) {
             for (ProcessingMethod processingMethod : processingMethods) {
                 processingMethod.getOrder();
@@ -1144,7 +1176,7 @@ public class MzQuantMLValidator {
     }
 
     static public void checkSmallMolModifications(String tarClsId,
-                                                  List<SmallMolModification> smallMolModifications) {
+            List<SmallMolModification> smallMolModifications) {
         if (!smallMolModifications.isEmpty()) {
             for (SmallMolModification smallMolMod : smallMolModifications) {
                 List<CvParam> cvParams = smallMolMod.getCvParam();
@@ -1265,5 +1297,26 @@ public class MzQuantMLValidator {
             return cl.getResourceAsStream("mzQuantML-mapping_1.0.0-rc3-general.xml");
         }
         return new FileInputStream(file);
+    }
+
+    /*
+     * private methods
+     */
+    private void getAnalysisSummaryMap(ParamList analysisSummary) {
+        analysisSummaryMap = new EnumMap<AnalysisSummaryElement, Boolean>(AnalysisSummaryElement.class);
+
+        List<AbstractParam> paramGroups = analysisSummary.getParamGroup();
+        for (AbstractParam param : paramGroups) {
+            if (param instanceof CvParam) {
+                CvParam cv = (CvParam) param;
+                String name = cv.getName();
+                String value = cv.getValue();
+                AnalysisSummaryElement key = AnalysisSummaryElement.getType(name);
+                if (key != null) {
+                    analysisSummaryMap.put(key, Boolean.valueOf(value));
+                }
+            }
+        }
+
     }
 }
