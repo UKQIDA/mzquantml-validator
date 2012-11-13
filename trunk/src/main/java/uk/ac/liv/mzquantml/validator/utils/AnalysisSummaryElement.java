@@ -4,6 +4,7 @@
  */
 package uk.ac.liv.mzquantml.validator.utils;
 
+import java.util.ArrayList;
 import uk.ac.liv.jmzqml.model.mzqml.FeatureList;
 import uk.ac.liv.jmzqml.model.mzqml.PeptideConsensusList;
 import uk.ac.liv.jmzqml.model.mzqml.ProteinGroupList;
@@ -40,6 +41,7 @@ public enum AnalysisSummaryElement {
                                    String accession, String cvTerm) {
         this.at = analysisType;
         this.cls = clazz;
+        this.accession = accession;
         this.name = cvTerm;
     }
 
@@ -66,5 +68,15 @@ public enum AnalysisSummaryElement {
             }
         }
         return null;
+    }
+    
+    public static ArrayList<AnalysisSummaryElement> valuesByType(AnalysisType at){
+        ArrayList<AnalysisSummaryElement> aseList = new ArrayList<AnalysisSummaryElement>();
+        for (AnalysisSummaryElement ase: AnalysisSummaryElement.values()){
+            if (ase.getAnalysisType()==at.getAnalysisType()){
+                aseList.add(ase);
+            }
+        }
+        return aseList;
     }
 }
