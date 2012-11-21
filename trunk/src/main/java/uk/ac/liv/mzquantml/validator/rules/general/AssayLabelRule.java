@@ -71,16 +71,16 @@ public class AssayLabelRule {
 
                 if (modParamList != null) {
 
-                    if (modParamList.size() == 1 && !modParamList.get(0).getCvParam().getName().toLowerCase().equals("unmodified")) {
+                    if (modParamList.size() == 1 && !modParamList.get(0).getCvParam().getName().toLowerCase().equals("unlabeled sample")) {
                         msgs.add(new Message("There MUST NOT be any Label in "
-                                + "AssayList or only \"Unmodified\" label (spectral counting)", Level.INFO));
-                        msgs.add(new Message("The label is not \"Unmodified\"\n", Level.ERROR));
+                                + "AssayList or only \"unlabeled sample\" label (spectral counting)", Level.INFO));
+                        msgs.add(new Message("The label is not \"unlabeled sample\"\n", Level.ERROR));
                     }
                     if (modParamList.size() > 1) {
                         msgs.add(new Message("There MUST NOT be any Label in "
-                                + "AssayList or only \"Unmodified\" label (spectral counting)", Level.INFO));
+                                + "AssayList or only \"unlabeled sample\" label (spectral counting)", Level.INFO));
                         msgs.add(new Message("There MUST NOT be any modification label "
-                                + "(excepte Unmodified Label) in AssayList\n", Level.ERROR));
+                                + "(except unlabeled sample) in AssayList\n", Level.ERROR));
                     }
                 }
             }
@@ -101,16 +101,16 @@ public class AssayLabelRule {
 
                 if (modParamList != null) {
 
-                    if (modParamList.size() == 1 && !modParamList.get(0).getCvParam().getName().toLowerCase().equals("unmodified")) {
+                    if (modParamList.size() == 1 && !modParamList.get(0).getCvParam().getName().toLowerCase().equals("unlabeled sample")) {
                         msgs.add(new Message("There MUST NOT be any Label in "
-                                + "AssayList or only \"Unmodified\" label (LC-MS label-free)", Level.INFO));
-                        msgs.add(new Message("The label is not \"Unmodified\"\n", Level.ERROR));
+                                + "AssayList or only \"unlabeled sample\" label (LC-MS label-free)", Level.INFO));
+                        msgs.add(new Message("The label is not \"unlabeled sample\"\n", Level.ERROR));
                     }
                     if (modParamList.size() > 1) {
                         msgs.add(new Message("There MUST NOT be any Label in "
-                                + "AssayList or only \"Unmodified\" label (LC-MS label-free)", Level.INFO));
+                                + "AssayList or only \"unlabeled sample\" label (LC-MS label-free)", Level.INFO));
                         msgs.add(new Message("There MUST NOT be any modification label "
-                                + "(excepte Unmodified Label) in AssayList\n", Level.ERROR));
+                                + "(except unlabeled sample) in AssayList\n", Level.ERROR));
                     }
                 }
             }
