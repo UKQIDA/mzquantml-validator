@@ -76,7 +76,7 @@
             <CvTerm termAccession="MS:1001055" useTermName="false" useTerm="false" termName="modification parameters" isRepeatable="true" allowChildren="true" cvIdentifierRef="MS" />
 		</CvMappingRule -->
 
-        <CvMappingRule id="AssayLabelModification_rule" cvElementPath="/MzQuantML/AssayList/assay/label/modification/cvParam/@accession" requirementLevel="MUST"  scopePath="/MzQuantML/AssayList/assay/label/modification" cvTermsCombinationLogic="OR">
+        <CvMappingRule id="AssayLabelModification_rule" cvElementPath="/MzQuantML/AssayList/Assay/Label/Modification/cvParam/@accession" requirementLevel="MUST"  scopePath="/MzQuantML/AssayList/Assay/Label/Modification" cvTermsCombinationLogic="OR">
             <CvTerm termAccession="UNIMOD:0" useTermName="false" useTerm="false" termName="unimod root node" isRepeatable="false" allowChildren="true" cvIdentifierRef="UNIMOD" />
             <CvTerm termAccession="MOD:00000" useTermName="false" useTerm="false" termName="protein modification" isRepeatable="false" allowChildren="true" cvIdentifierRef="MOD" />
             <CvTerm termAccession="MS:1001471" useTermName="false" useTerm="false" termName="peptide modification details" isRepeatable="false" allowChildren="true" cvIdentifierRef="MS" />
@@ -218,15 +218,15 @@
 			<CvTerm termAccession="MS:1001405" useTermName="false" useTerm="false" termName="spectrum identification result details" isRepeatable="false" allowChildren="true" cvIdentifierRef="MS" />
         </CvMappingRule>
 
-        <CvMappingRule id="Feature_rule" cvElementPath="/MzQuantML/FeatureList/Feature/cvParam/@accession" requirementLevel="MAY"  scopePath="/MzQuantML/FeatureList/Feature" cvTermsCombinationLogic="OR">
-            <CvTerm termAccession="MS:1001828" useTermName="false" useTerm="false" termName="Feature attribute" isRepeatable="true" allowChildren="true" cvIdentifierRef="MS" />
+        <CvMappingRule id="Feature_rule" cvElementPath="/MzQuantML/FeatureList/feature/cvParam/@accession" requirementLevel="MAY"  scopePath="/MzQuantML/FeatureList/feature" cvTermsCombinationLogic="OR">
+            <CvTerm termAccession="MS:1001828" useTermName="false" useTerm="false" termName="feature attribute" isRepeatable="true" allowChildren="true" cvIdentifierRef="MS" />
         </CvMappingRule>
 
         <CvMappingRule id="FeatureList_rule" cvElementPath="/MzQuantML/featureList/cvParam/@accession" requirementLevel="MAY"  scopePath="/MzQuantML/featureList" cvTermsCombinationLogic="OR">
             <CvTerm termAccession="MS:1001825" useTermName="false" useTerm="false" termName="FeatureList attribute" isRepeatable="true" allowChildren="true" cvIdentifierRef="MS" />
         </CvMappingRule>
 		
-        <CvMappingRule id="FeatureListFeatureQuantLayer_rule" cvElementPath="/MzQuantML/FeatureList/featureQuantLayer/columnDefinition/column/dataType/cvParam/@accession" requirementLevel="MUST"  scopePath="/MzQuantML/FeatureList/featureQuantLayer/columnDefinition/column/dataType" cvTermsCombinationLogic="OR">
+        <CvMappingRule id="FeatureListFeatureQuantLayer_rule" cvElementPath="/MzQuantML/FeatureList/FeatureQuantLayer/ColumnDefinition/Column/dataType/cvParam/@accession" requirementLevel="MUST"  scopePath="/MzQuantML/FeatureList/FeatureQuantLayer/ColumnDefinition/Column/dataType" cvTermsCombinationLogic="OR">
             <CvTerm termAccession="MS:1001805" useTermName="false" useTerm="false" termName="quantification datatype" isRepeatable="false" allowChildren="true" cvIdentifierRef="MS" />
 			<CvTerm termAccession="MS:1001405" useTermName="false" useTerm="false" termName="spectrum identification result details" isRepeatable="false" allowChildren="true" cvIdentifierRef="MS" />
         </CvMappingRule>
@@ -248,11 +248,11 @@
 		
         <CvMappingRule id="Software_rule_1" cvElementPath="/MzQuantML/SoftwareList/Software/cvParam/@accession" requirementLevel="SHOULD" scopePath="/MzQuantML/SoftwareList/Software" cvTermsCombinationLogic="AND">
             <CvTerm termAccession="MS:1001139" useTermName="false" useTerm="false" termName="quantitation software name" isRepeatable="false" allowChildren="true" cvIdentifierRef="MS" />
-            <CvTerm termAccession="MS:1001832" useTermName="false" useTerm="true" termName="quantitation software comment / customizations" isRepeatable="true" allowChildren="true" cvIdentifierRef="MS" />
+            <CvTerm termAccession="MS:1001832" useTermName="false" useTerm="true" termName="quantitation software comment or customizations" isRepeatable="true" allowChildren="true" cvIdentifierRef="MS" />
         </CvMappingRule>
 
         <CvMappingRule id="Software_rule_2" cvElementPath="/MzQuantML/SoftwareList/Software/cvParam/@accession" requirementLevel="MAY" scopePath="/MzQuantML/SoftwareList/Software" cvTermsCombinationLogic="AND">
-            <CvTerm termAccession="MS:1001832" useTermName="false" useTerm="true" termName="quantitation software comment / customizations" isRepeatable="true" allowChildren="true" cvIdentifierRef="MS" />
+            <CvTerm termAccession="MS:1001832" useTermName="false" useTerm="true" termName="quantitation software comment or customizations" isRepeatable="true" allowChildren="true" cvIdentifierRef="MS" />
         </CvMappingRule>
 
         <CvMappingRule id="DataProcessing_rule" cvElementPath="/MzQuantML/DataProcessingList/DataProcessing/ProcessingMethod/cvParam/@accession" requirementLevel="MAY" scopePath="/MzQuantML/DataProcessingList/DataProcessing/ProcessingMethod" cvTermsCombinationLogic="OR">
