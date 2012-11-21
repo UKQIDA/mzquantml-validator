@@ -34,7 +34,7 @@ public class MzQuantMLValidator {
     private String schemaFn;
 
     public MzQuantMLValidator(String fileName, boolean schemaValidating,
-            String schemaFn) {
+                              String schemaFn) {
         this.fileName = fileName;
         this.schemaValidating = schemaValidating;
         this.schemaFn = schemaFn;
@@ -44,7 +44,7 @@ public class MzQuantMLValidator {
      * @param args the command line arguments
      */
     public List<Message> validate(String fileName, boolean schemaValidating,
-            String schemaFn) throws FileNotFoundException {
+                                  String schemaFn) throws FileNotFoundException {
 
         msgs.clear();
 //        msgs.add(new Message("Starting validation process......", Level.INFO));
@@ -341,7 +341,9 @@ public class MzQuantMLValidator {
              * AnalysisSummary, validator will not continue to validate
              * QuantLayerRule.
              */
-            getAnalysisSummaryMap(analysisSummary);
+            if (analysisSummary != null) {
+                getAnalysisSummaryMap(analysisSummary);
+            }
             QuantLayerRule quantLayerRule = new QuantLayerRule(analysisSummaryMap, proteinGroupList, proteinList, peptideConsensusLists, featureLists);
             quantLayerRule.check();
             msgs.addAll(quantLayerRule.getMsgs());
@@ -488,7 +490,7 @@ public class MzQuantMLValidator {
     }
 
     static public void checkColumnDefinition(String targetClassId,
-            ColumnDefinition columnDefinition) {
+                                             ColumnDefinition columnDefinition) {
         List<Column> columns = columnDefinition.getColumn();
         if (!columns.isEmpty()) {
             for (Column column : columns) {
@@ -582,7 +584,7 @@ public class MzQuantMLValidator {
     }
 
     static public void checkDBIdentificationRef(String tarClsId,
-            DBIdentificationRef dBidRef) {
+                                                DBIdentificationRef dBidRef) {
         Object ref = dBidRef.getSearchDatabaseRef();
         checkObjectRef(tarClsId, ref, uk.ac.liv.jmzqml.model.mzqml.SearchDatabase.class);
     }
@@ -690,7 +692,7 @@ public class MzQuantMLValidator {
     }
 
     static public void checkIdentificationRefs(String tarClsId,
-            List<IdentificationRef> identificationRefs) {
+                                               List<IdentificationRef> identificationRefs) {
         if (!identificationRefs.isEmpty()) {
             for (IdentificationRef idRef : identificationRefs) {
                 Object idFileRef = idRef.getIdentificationFileRef();
@@ -740,7 +742,7 @@ public class MzQuantMLValidator {
     }
 
     static public void checkModification(String tarClsId,
-            Modification modification) {
+                                         Modification modification) {
         List<CvParam> cvParams = modification.getCvParam();
         if (!cvParams.isEmpty()) {
             for (CvParam cvParam : cvParams) {
@@ -760,8 +762,8 @@ public class MzQuantMLValidator {
     }
 
     static public <T> ArrayList<Message> checkObjectRef(String tarClsId,
-            Object objRef,
-            Class<T> cls) {
+                                                        Object objRef,
+                                                        Class<T> cls) {
         ObjectRefTypeMatchRule objectRefMatchRule = new ObjectRefTypeMatchRule(tarClsId, objRef, cls);
         objectRefMatchRule.check();
         return objectRefMatchRule.getMessage();
@@ -775,7 +777,7 @@ public class MzQuantMLValidator {
     }
 
     static public void checkParamGroups(String tarClsId,
-            List<AbstractParam> paramGroups) {
+                                        List<AbstractParam> paramGroups) {
         for (AbstractParam param : paramGroups) {
             if (param.getClass().isInstance(uk.ac.liv.jmzqml.model.mzqml.CvParam.class)) {
                 CvParam cv = (CvParam) param;
@@ -905,7 +907,7 @@ public class MzQuantMLValidator {
     }
 
     static public void checkProcessingMethods(String tarClsId,
-            List<ProcessingMethod> processingMethods) {
+                                              List<ProcessingMethod> processingMethods) {
         if (!processingMethods.isEmpty()) {
             for (ProcessingMethod processingMethod : processingMethods) {
                 processingMethod.getOrder();
@@ -1176,7 +1178,7 @@ public class MzQuantMLValidator {
     }
 
     static public void checkSmallMolModifications(String tarClsId,
-            List<SmallMolModification> smallMolModifications) {
+                                                  List<SmallMolModification> smallMolModifications) {
         if (!smallMolModifications.isEmpty()) {
             for (SmallMolModification smallMolMod : smallMolModifications) {
                 List<CvParam> cvParams = smallMolMod.getCvParam();
