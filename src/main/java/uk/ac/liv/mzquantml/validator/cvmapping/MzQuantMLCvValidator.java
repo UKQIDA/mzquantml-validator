@@ -12,7 +12,6 @@ import psidev.psi.tools.validator.*;
 import psidev.psi.tools.validator.rules.cvmapping.CvRule;
 import uk.ac.liv.jmzqml.MzQuantMLElement;
 import uk.ac.liv.jmzqml.model.mzqml.*;
-import uk.ac.liv.jmzqml.xml.io.MzQuantMLUnmarshaller;
 
 /**
  *
@@ -277,10 +276,15 @@ public class MzQuantMLCvValidator extends Validator {
         if (assayList != null) {
             List<Assay> assays = assayList.getAssay();
             for (Assay assay : assays) {
-                List<ModParam> modParams = assay.getLabel().getModification();
-                for (ModParam modParam : modParams) {
-                    cvMappingResult = this.checkCvMapping(modParam, "/MzQuantML/AssayList/Assay/Label/Modification");
-                    addMessages(cvMappingResult, this.msgL);
+                Label label = assay.getLabel();
+                if (label != null) {
+                    List<ModParam> modParams = label.getModification();
+                    if (modParams != null || !modParams.isEmpty()) {
+                        for (ModParam modParam : modParams) {
+                            cvMappingResult = this.checkCvMapping(modParam, "/MzQuantML/AssayList/Assay/Label/Modification");
+                            addMessages(cvMappingResult, this.msgL);
+                        }
+                    }
                 }
             }
         }
@@ -327,29 +331,39 @@ public class MzQuantMLCvValidator extends Validator {
         ProteinGroupList pgList = this.mzq.getProteinGroupList();
         if (pgList != null) {
             List<GlobalQuantLayer> pgGlobalQuantLayers = pgList.getGlobalQuantLayer();
-            for (GlobalQuantLayer pgGQL : pgGlobalQuantLayers) {
-                List<Column> columns = pgGQL.getColumnDefinition().getColumn();
-                for (Column col : columns) {
-                    CvParamRef cvParamRef = col.getDataType();
-                    cvMappingResult = this.checkCvMapping(cvParamRef, "/MzQuantML/ProteinGroupList/GlobalQuantLayer/ColumnDefinition/Column/dataType");
-                    addMessages(cvMappingResult, this.msgL);
+            if (pgGlobalQuantLayers != null) {
+                for (GlobalQuantLayer pgGQL : pgGlobalQuantLayers) {
+                    if (pgGQL.getColumnDefinition() != null) {
+                        List<Column> columns = pgGQL.getColumnDefinition().getColumn();
+                        if (columns != null) {
+                            for (Column col : columns) {
+                                CvParamRef cvParamRef = col.getDataType();
+                                cvMappingResult = this.checkCvMapping(cvParamRef, "/MzQuantML/ProteinGroupList/GlobalQuantLayer/ColumnDefinition/Column/dataType");
+                                addMessages(cvMappingResult, this.msgL);
+                            }
+                        }
+                    }
                 }
             }
 
             // check ProteinGroupAssayQuantLayer_rule
             List<QuantLayer> pgAssayQuantLayers = pgList.getAssayQuantLayer();
-            for (QuantLayer pgAQL : pgAssayQuantLayers) {
-                CvParamRef cvParamRef = pgAQL.getDataType();
-                cvMappingResult = this.checkCvMapping(cvParamRef, "/MzQuantML/ProteinGroupList/AssayQuantLayer/dataType");
-                addMessages(cvMappingResult, this.msgL);
+            if (pgAssayQuantLayers != null) {
+                for (QuantLayer pgAQL : pgAssayQuantLayers) {
+                    CvParamRef cvParamRef = pgAQL.getDataType();
+                    cvMappingResult = this.checkCvMapping(cvParamRef, "/MzQuantML/ProteinGroupList/AssayQuantLayer/dataType");
+                    addMessages(cvMappingResult, this.msgL);
+                }
             }
 
             // check ProteinGroupStudyVariableQuantLayer_rule
             List<QuantLayer> pgStudyVariableQuantLayers = pgList.getStudyVariableQuantLayer();
-            for (QuantLayer pgSVQL : pgStudyVariableQuantLayers) {
-                CvParamRef cvParamRef = pgSVQL.getDataType();
-                cvMappingResult = this.checkCvMapping(cvParamRef, "/MzQuantML/ProteinGroupList/StudyVariableQuantLayer/dataType");
-                addMessages(cvMappingResult, this.msgL);
+            if (pgStudyVariableQuantLayers != null) {
+                for (QuantLayer pgSVQL : pgStudyVariableQuantLayers) {
+                    CvParamRef cvParamRef = pgSVQL.getDataType();
+                    cvMappingResult = this.checkCvMapping(cvParamRef, "/MzQuantML/ProteinGroupList/StudyVariableQuantLayer/dataType");
+                    addMessages(cvMappingResult, this.msgL);
+                }
             }
 
             // check ProteinGroupRatioQuantLayer_rule
@@ -372,29 +386,39 @@ public class MzQuantMLCvValidator extends Validator {
         ProteinList protList = this.mzq.getProteinList();
         if (protList != null) {
             List<GlobalQuantLayer> protGlobalQuantLayers = protList.getGlobalQuantLayer();
-            for (GlobalQuantLayer protGQL : protGlobalQuantLayers) {
-                List<Column> columns = protGQL.getColumnDefinition().getColumn();
-                for (Column col : columns) {
-                    CvParamRef cvParamRef = col.getDataType();
-                    cvMappingResult = this.checkCvMapping(cvParamRef, "/MzQuantML/ProteinList/GlobalQuantLayer/ColumnDefinition/Column/dataType");
-                    addMessages(cvMappingResult, this.msgL);
+            if (protGlobalQuantLayers != null) {
+                for (GlobalQuantLayer protGQL : protGlobalQuantLayers) {
+                    if (protGQL.getColumnDefinition() != null) {
+                        List<Column> columns = protGQL.getColumnDefinition().getColumn();
+                        if (columns != null) {
+                            for (Column col : columns) {
+                                CvParamRef cvParamRef = col.getDataType();
+                                cvMappingResult = this.checkCvMapping(cvParamRef, "/MzQuantML/ProteinList/GlobalQuantLayer/ColumnDefinition/Column/dataType");
+                                addMessages(cvMappingResult, this.msgL);
+                            }
+                        }
+                    }
                 }
             }
 
             // check ProteinAssayQuantLayer_rule
             List<QuantLayer> protAssayQuantLayers = protList.getAssayQuantLayer();
-            for (QuantLayer protAQL : protAssayQuantLayers) {
-                CvParamRef cvParamRef = protAQL.getDataType();
-                cvMappingResult = this.checkCvMapping(cvParamRef, "/MzQuantML/ProteinList/AssayQuantLayer/dataType");
-                addMessages(cvMappingResult, this.msgL);
+            if (protAssayQuantLayers != null) {
+                for (QuantLayer protAQL : protAssayQuantLayers) {
+                    CvParamRef cvParamRef = protAQL.getDataType();
+                    cvMappingResult = this.checkCvMapping(cvParamRef, "/MzQuantML/ProteinList/AssayQuantLayer/dataType");
+                    addMessages(cvMappingResult, this.msgL);
+                }
             }
 
             // check ProteinStudyVariableQuantLayer_rule
             List<QuantLayer> protStudyVariableQuantLayers = protList.getStudyVariableQuantLayer();
-            for (QuantLayer protSVQL : protStudyVariableQuantLayers) {
-                CvParamRef cvParamRef = protSVQL.getDataType();
-                cvMappingResult = this.checkCvMapping(cvParamRef, "/MzQuantML/ProteinList/StudyVariableQuantLayer/dataType");
-                addMessages(cvMappingResult, this.msgL);
+            if (protStudyVariableQuantLayers != null) {
+                for (QuantLayer protSVQL : protStudyVariableQuantLayers) {
+                    CvParamRef cvParamRef = protSVQL.getDataType();
+                    cvMappingResult = this.checkCvMapping(cvParamRef, "/MzQuantML/ProteinList/StudyVariableQuantLayer/dataType");
+                    addMessages(cvMappingResult, this.msgL);
+                }
             }
 
             // check ProteinRatioQuantLayer_rule
@@ -418,31 +442,42 @@ public class MzQuantMLCvValidator extends Validator {
             for (PeptideConsensusList pepList : pepLists) {
 
                 if (pepList != null) {
+
                     // check PeptideConsensusGlobalQuantLayer_rule
                     List<GlobalQuantLayer> pepGlobalQuantLayers = pepList.getGlobalQuantLayer();
-                    for (GlobalQuantLayer pepGQL : pepGlobalQuantLayers) {
-                        List<Column> columns = pepGQL.getColumnDefinition().getColumn();
-                        for (Column col : columns) {
-                            CvParamRef cvParamRef = col.getDataType();
-                            cvMappingResult = this.checkCvMapping(cvParamRef, "/MzQuantML/PeptideConsensusList/GlobalQuantLayer/ColumnDefinition/Column/dataType");
-                            addMessages(cvMappingResult, this.msgL);
+                    if (pepGlobalQuantLayers != null) {
+                        for (GlobalQuantLayer pepGQL : pepGlobalQuantLayers) {
+                            if (pepGQL.getColumnDefinition() != null) {
+                                List<Column> columns = pepGQL.getColumnDefinition().getColumn();
+                                if (columns != null) {
+                                    for (Column col : columns) {
+                                        CvParamRef cvParamRef = col.getDataType();
+                                        cvMappingResult = this.checkCvMapping(cvParamRef, "/MzQuantML/PeptideConsensusList/GlobalQuantLayer/ColumnDefinition/Column/dataType");
+                                        addMessages(cvMappingResult, this.msgL);
+                                    }
+                                }
+                            }
                         }
                     }
 
                     // check PeptideConsensusAssayQuantLayer_rule
                     List<QuantLayer> pepAssayQuantLayers = pepList.getAssayQuantLayer();
-                    for (QuantLayer pepAQL : pepAssayQuantLayers) {
-                        CvParamRef cvParamRef = pepAQL.getDataType();
-                        cvMappingResult = this.checkCvMapping(cvParamRef, "/MzQuantML/PeptideConsensusList/AssayQuantLayer/dataType");
-                        addMessages(cvMappingResult, this.msgL);
+                    if (pepAssayQuantLayers != null) {
+                        for (QuantLayer pepAQL : pepAssayQuantLayers) {
+                            CvParamRef cvParamRef = pepAQL.getDataType();
+                            cvMappingResult = this.checkCvMapping(cvParamRef, "/MzQuantML/PeptideConsensusList/AssayQuantLayer/dataType");
+                            addMessages(cvMappingResult, this.msgL);
+                        }
                     }
 
                     // check PeptideConsensusStudyVariableQuantLayer_rule
                     List<QuantLayer> pepStudyVariableQuantLayers = pepList.getStudyVariableQuantLayer();
-                    for (QuantLayer pepSVQL : pepStudyVariableQuantLayers) {
-                        CvParamRef cvParamRef = pepSVQL.getDataType();
-                        cvMappingResult = this.checkCvMapping(cvParamRef, "/MzQuantML/PeptideConsensusList/StudyVariableQuantLayer/dataType");
-                        addMessages(cvMappingResult, this.msgL);
+                    if (pepStudyVariableQuantLayers != null) {
+                        for (QuantLayer pepSVQL : pepStudyVariableQuantLayers) {
+                            CvParamRef cvParamRef = pepSVQL.getDataType();
+                            cvMappingResult = this.checkCvMapping(cvParamRef, "/MzQuantML/PeptideConsensusList/StudyVariableQuantLayer/dataType");
+                            addMessages(cvMappingResult, this.msgL);
+                        }
                     }
 
                     // check PeptideConsensusRatioQuantLayer_rule
@@ -454,10 +489,14 @@ public class MzQuantMLCvValidator extends Validator {
                     }
 
                     // check PeptideConsensusModification_rule
-                    for (PeptideConsensus pep : pepList.getPeptideConsensus()) {
-                        List<Modification> mods = pep.getModification();
-                        cvMappingResult = this.checkCvMapping(mods, "/MzQuantML/PeptideConsensusList/PeptideConsensus/modification");
-                        addMessages(cvMappingResult, this.msgL);
+                    if (pepList.getPeptideConsensus() != null) {
+                        for (PeptideConsensus pep : pepList.getPeptideConsensus()) {
+                            List<Modification> mods = pep.getModification();
+                            if (mods != null) {
+                                cvMappingResult = this.checkCvMapping(mods, "/MzQuantML/PeptideConsensusList/PeptideConsensus/modification");
+                                addMessages(cvMappingResult, this.msgL);
+                            }
+                        }
                     }
                 }
             }
@@ -474,29 +513,39 @@ public class MzQuantMLCvValidator extends Validator {
         SmallMoleculeList smList = this.mzq.getSmallMoleculeList();
         if (smList != null) {
             List<GlobalQuantLayer> smGlobalQuantLayers = smList.getGlobalQuantLayer();
-            for (GlobalQuantLayer smGQL : smGlobalQuantLayers) {
-                List<Column> columns = smGQL.getColumnDefinition().getColumn();
-                for (Column col : columns) {
-                    CvParamRef cvParamRef = col.getDataType();
-                    cvMappingResult = this.checkCvMapping(cvParamRef, "/MzQuantML/SmallMoleculeList/GlobalQuantLayer/ColumnDefinition/Column/dataType");
-                    addMessages(cvMappingResult, this.msgL);
+            if (smGlobalQuantLayers != null) {
+                for (GlobalQuantLayer smGQL : smGlobalQuantLayers) {
+                    if (smGQL.getColumnDefinition() != null) {
+                        List<Column> columns = smGQL.getColumnDefinition().getColumn();
+                        if (columns != null) {
+                            for (Column col : columns) {
+                                CvParamRef cvParamRef = col.getDataType();
+                                cvMappingResult = this.checkCvMapping(cvParamRef, "/MzQuantML/SmallMoleculeList/GlobalQuantLayer/ColumnDefinition/Column/dataType");
+                                addMessages(cvMappingResult, this.msgL);
+                            }
+                        }
+                    }
                 }
             }
 
             // check SmallMoleculeAssayQuantLayer_rule
             List<QuantLayer> smAssayQuantLayers = smList.getAssayQuantLayer();
-            for (QuantLayer smAQL : smAssayQuantLayers) {
-                CvParamRef cvParamRef = smAQL.getDataType();
-                cvMappingResult = this.checkCvMapping(cvParamRef, "/MzQuantML/SmallMoleculeList/AssayQuantLayer/dataType");
-                addMessages(cvMappingResult, this.msgL);
+            if (smAssayQuantLayers != null) {
+                for (QuantLayer smAQL : smAssayQuantLayers) {
+                    CvParamRef cvParamRef = smAQL.getDataType();
+                    cvMappingResult = this.checkCvMapping(cvParamRef, "/MzQuantML/SmallMoleculeList/AssayQuantLayer/dataType");
+                    addMessages(cvMappingResult, this.msgL);
+                }
             }
 
             // check SmallMoleculeStudyVariableQuantLayer_rule
             List<QuantLayer> smStudyVariableQuantLayers = smList.getStudyVariableQuantLayer();
-            for (QuantLayer smSVQL : smStudyVariableQuantLayers) {
-                CvParamRef cvParamRef = smSVQL.getDataType();
-                cvMappingResult = this.checkCvMapping(cvParamRef, "/MzQuantML/SmallMoleculeList/StudyVariableQuantLayer/dataType");
-                addMessages(cvMappingResult, this.msgL);
+            if (smStudyVariableQuantLayers != null) {
+                for (QuantLayer smSVQL : smStudyVariableQuantLayers) {
+                    CvParamRef cvParamRef = smSVQL.getDataType();
+                    cvMappingResult = this.checkCvMapping(cvParamRef, "/MzQuantML/SmallMoleculeList/StudyVariableQuantLayer/dataType");
+                    addMessages(cvMappingResult, this.msgL);
+                }
             }
 
             // check SmallMoleculeRatioQuantLayer_rule
@@ -518,47 +567,55 @@ public class MzQuantMLCvValidator extends Validator {
         List<FeatureList> featureLists = this.mzq.getFeatureList();
         if (featureLists != null) {
             for (FeatureList ftList : featureLists) {
-
                 if (ftList != null) {
-
                     // check FeatureList_rule
                     cvMappingResult = this.checkCvMapping(ftList, "/MzQuantML/featureList");
                     addMessages(cvMappingResult, this.msgL);
 
                     // check Feature_rule
                     List<Feature> features = ftList.getFeature();
-                    if ((features != null) && (!features.isEmpty())) {
+                    if (features != null) {
                         for (Feature feature : features) {
-                            cvMappingResult = this.checkCvMapping(feature, "/MzQuantML/FeatureList/Feature");
+                            cvMappingResult = this.checkCvMapping(feature, "/MzQuantML/FeatureList/feature");
                             addMessages(cvMappingResult, this.msgL);
                         }
                     }
 
                     // check FeatureListFeatureQuantLayer_rule
                     List<GlobalQuantLayer> ftGlobalQuantLayers = ftList.getFeatureQuantLayer();
-                    for (GlobalQuantLayer ftGQL : ftGlobalQuantLayers) {
-                        List<Column> columns = ftGQL.getColumnDefinition().getColumn();
-                        for (Column col : columns) {
-                            CvParamRef cvParamRef = col.getDataType();
-                            cvMappingResult = this.checkCvMapping(cvParamRef, "/MzQuantML/FeatureList/FeatureQuantLayer/ColumnDefinition/Column/dataType");
-                            addMessages(cvMappingResult, this.msgL);
+                    if (ftGlobalQuantLayers != null) {
+                        for (GlobalQuantLayer ftGQL : ftGlobalQuantLayers) {
+                            if (ftGQL.getColumnDefinition() != null) {
+                                List<Column> columns = ftGQL.getColumnDefinition().getColumn();
+                                if (columns != null) {
+                                    for (Column col : columns) {
+                                        CvParamRef cvParamRef = col.getDataType();
+                                        cvMappingResult = this.checkCvMapping(cvParamRef, "/MzQuantML/FeatureList/FeatureQuantLayer/ColumnDefinition/Column/dataType");
+                                        addMessages(cvMappingResult, this.msgL);
+                                    }
+                                }
+                            }
                         }
                     }
 
                     // check FeatureListMS2AssayQuantLayer_rule
                     List<QuantLayer> ftAssayQuantLayers = ftList.getMS2AssayQuantLayer();
-                    for (QuantLayer ftAQL : ftAssayQuantLayers) {
-                        CvParamRef cvParamRef = ftAQL.getDataType();
-                        cvMappingResult = this.checkCvMapping(cvParamRef, "/MzQuantML/FeatureList/MS2AssayQuantLayer/dataType");
-                        addMessages(cvMappingResult, this.msgL);
+                    if (ftAssayQuantLayers != null) {
+                        for (QuantLayer ftAQL : ftAssayQuantLayers) {
+                            CvParamRef cvParamRef = ftAQL.getDataType();
+                            cvMappingResult = this.checkCvMapping(cvParamRef, "/MzQuantML/FeatureList/MS2AssayQuantLayer/dataType");
+                            addMessages(cvMappingResult, this.msgL);
+                        }
                     }
 
                     // check FeatureListMS2StudyVariableQuantLayer_rule
                     List<QuantLayer> ftStudyVariableQuantLayers = ftList.getMS2StudyVariableQuantLayer();
-                    for (QuantLayer ftSVQL : ftStudyVariableQuantLayers) {
-                        CvParamRef cvParamRef = ftSVQL.getDataType();
-                        cvMappingResult = this.checkCvMapping(cvParamRef, "/MzQuantML/FeatureList/MS2StudyVariableQuantLayer/dataType");
-                        addMessages(cvMappingResult, this.msgL);
+                    if (ftStudyVariableQuantLayers != null) {
+                        for (QuantLayer ftSVQL : ftStudyVariableQuantLayers) {
+                            CvParamRef cvParamRef = ftSVQL.getDataType();
+                            cvMappingResult = this.checkCvMapping(cvParamRef, "/MzQuantML/FeatureList/MS2StudyVariableQuantLayer/dataType");
+                            addMessages(cvMappingResult, this.msgL);
+                        }
                     }
 
                     // check FeatureListMS2RatioQuantLayer_rule
@@ -583,7 +640,7 @@ public class MzQuantMLCvValidator extends Validator {
         SoftwareList softwareList = this.mzq.getSoftwareList();
         if (softwareList != null) {
             List<Software> softwares = softwareList.getSoftware();
-            if ((softwares != null) && (!softwares.isEmpty())) {
+            if (softwares != null) {
                 for (Software software : softwares) {
                     cvMappingResult = this.checkCvMapping(software, "/MzQuantML/SoftwareList/Software");
                     addMessages(cvMappingResult, this.msgL);
@@ -602,7 +659,7 @@ public class MzQuantMLCvValidator extends Validator {
         DataProcessingList dpList = this.mzq.getDataProcessingList();
         if (dpList != null) {
             List<DataProcessing> dps = dpList.getDataProcessing();
-            if ((dps != null) && (!dps.isEmpty())) {
+            if (dps != null) {
                 for (DataProcessing dp : dps) {
                     List<ProcessingMethod> pms = dp.getProcessingMethod();
                     if (pms != null) {
@@ -625,6 +682,7 @@ public class MzQuantMLCvValidator extends Validator {
 //            throw new ValidatorException("Unable to process input stream", e);
 //        }
 //    }
+    
     /**
      * Store the content of the given input stream into a temporary file and
      * return its descriptor.
