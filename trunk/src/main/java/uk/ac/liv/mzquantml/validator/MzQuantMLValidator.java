@@ -466,9 +466,12 @@ public class MzQuantMLValidator {
     }
 
     static public void checkAuditCollection(AuditCollection auditCollection) {
-        List<AbstractContact> personOrOrganizations = auditCollection.getPersonOrOrganization();
-
-        checkPersonOrOrganizations(personOrOrganizations);
+//        List<AbstractContact> personOrOrganizations = auditCollection.getPersonOrOrganization();
+        List<Person> persons = auditCollection.getPerson();
+        List<Organization> orgs = auditCollection.getOrganization();
+        //TODO: split to separated methods?
+//        checkPersonOrOrganizations(persons);
+//        checkPersonOrOrganizations(orgs);
     }
 
     static public void checkBibliographicReference(

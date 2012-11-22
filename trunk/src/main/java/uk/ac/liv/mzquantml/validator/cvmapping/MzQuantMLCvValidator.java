@@ -15,7 +15,9 @@ import uk.ac.liv.jmzqml.model.mzqml.*;
 
 /**
  *
- * @author Da Qi @institute University of Liverpool @time 06-Sep-2012 11:53:19
+ * @author Da Qi
+ * @institute University of Liverpool
+ * @time 06-Sep-2012 11:53:19
  */
 public class MzQuantMLCvValidator extends Validator {
 
@@ -160,18 +162,34 @@ public class MzQuantMLCvValidator extends Validator {
         //check AuditCollectionPerson_rule and AuditCollectionOrganization_rule
         AuditCollection auditCollection = this.mzq.getAuditCollection();
         if (auditCollection != null) {
-            List<AbstractContact> personOrOrg = auditCollection.getPersonOrOrganization();
-            if (personOrOrg != null) {
-                for (AbstractContact ac : personOrOrg) {
-                    if (ac instanceof Person) {
-                        cvMappingResult = this.checkCvMapping(ac, MzQuantMLElement.Person.getXpath());
-                        addMessages(cvMappingResult, this.msgL);
-                    } else if (ac instanceof Organization) {
-                        cvMappingResult = this.checkCvMapping(ac, MzQuantMLElement.Organization.getXpath());
-                        addMessages(cvMappingResult, this.msgL);
-                    }
+            List<Person> persons = auditCollection.getPerson();
+            if (persons != null) {
+                for (Person person : persons) {
+                    cvMappingResult = this.checkCvMapping(person, MzQuantMLElement.Person.getXpath());
+                    addMessages(cvMappingResult, this.msgL);
                 }
             }
+
+            List<Organization> orgs = auditCollection.getOrganization();
+            if (orgs != null) {
+                for (Organization org : orgs) {
+                    cvMappingResult = this.checkCvMapping(org, MzQuantMLElement.Organization.getXpath());
+                    addMessages(cvMappingResult, this.msgL);
+                }
+            }
+
+//            List<AbstractContact> personOrOrg = auditCollection.getPersonOrOrganization();
+//            if (personOrOrg != null) {
+//                for (AbstractContact ac : personOrOrg) {
+//                    if (ac instanceof Person) {
+//                        cvMappingResult = this.checkCvMapping(ac, MzQuantMLElement.Person.getXpath());
+//                        addMessages(cvMappingResult, this.msgL);
+//                    } else if (ac instanceof Organization) {
+//                        cvMappingResult = this.checkCvMapping(ac, MzQuantMLElement.Organization.getXpath());
+//                        addMessages(cvMappingResult, this.msgL);
+//                    }
+//                }
+//            }
         }
 
         /**
@@ -682,7 +700,6 @@ public class MzQuantMLCvValidator extends Validator {
 //            throw new ValidatorException("Unable to process input stream", e);
 //        }
 //    }
-    
     /**
      * Store the content of the given input stream into a temporary file and
      * return its descriptor.
