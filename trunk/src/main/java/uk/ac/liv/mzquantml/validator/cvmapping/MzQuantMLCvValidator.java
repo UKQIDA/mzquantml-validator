@@ -153,7 +153,7 @@ public class MzQuantMLCvValidator extends Validator {
         //check ProviderContactRole_rule
         Provider provider = this.mzq.getProvider();
 
-        Collection<ValidatorMessage> cvMappingResult;
+        Collection<ValidatorMessage> cvMappingResult = new ArrayList<ValidatorMessage>();
         if (provider != null) {
             cvMappingResult = this.checkCvMapping(provider, MzQuantMLElement.Provider.getXpath());
             addMessages(cvMappingResult, this.msgL);
@@ -177,19 +177,6 @@ public class MzQuantMLCvValidator extends Validator {
                     addMessages(cvMappingResult, this.msgL);
                 }
             }
-
-//            List<AbstractContact> personOrOrg = auditCollection.getPersonOrOrganization();
-//            if (personOrOrg != null) {
-//                for (AbstractContact ac : personOrOrg) {
-//                    if (ac instanceof Person) {
-//                        cvMappingResult = this.checkCvMapping(ac, MzQuantMLElement.Person.getXpath());
-//                        addMessages(cvMappingResult, this.msgL);
-//                    } else if (ac instanceof Organization) {
-//                        cvMappingResult = this.checkCvMapping(ac, MzQuantMLElement.Organization.getXpath());
-//                        addMessages(cvMappingResult, this.msgL);
-//                    }
-//                }
-//            }
         }
 
         /**
@@ -236,14 +223,28 @@ public class MzQuantMLCvValidator extends Validator {
             }
         }
 
-
-        // check IdentificationFileFormat_rule
         if (inputFiles.getIdentificationFiles() != null) {
             List<IdentificationFile> idFiles = inputFiles.getIdentificationFiles().getIdentificationFile();
             for (IdentificationFile idFile : idFiles) {
+                // check IdentificationFile_rule
+                cvMappingResult = this.checkCvMapping(idFile, "/MzQuantML/InputFiles/IdentificationFiles/identificationFile");
+                addMessages(cvMappingResult, this.msgL);
                 FileFormat idFF = idFile.getFileFormat();
                 if (idFF != null) {
+                    // check IdentificationFileFormat_rule
                     cvMappingResult = this.checkCvMapping(idFF, "/MzQuantML/InputFiles/IdentificationFiles/IdentificationFile/fileFormat");
+                    addMessages(cvMappingResult, this.msgL);
+                }
+            }
+        }
+
+        if (inputFiles.getMethodFiles() != null) {
+            List<MethodFile> metFiles = inputFiles.getMethodFiles().getMethodFile();
+            for (MethodFile metFile : metFiles) {
+                // check MethodFileFormat_rule
+                FileFormat metFF = metFile.getFileFormat();
+                if (metFF != null) {
+                    cvMappingResult = this.checkCvMapping(metFF, "/MzQuantML/InputFiles/MethodFiles/MethodFile/fileFormat");
                     addMessages(cvMappingResult, this.msgL);
                 }
             }
@@ -309,8 +310,9 @@ public class MzQuantMLCvValidator extends Validator {
 
         // check StudyVariable_rule
         StudyVariableList studyVariables = this.mzq.getStudyVariableList();
-        if (studyVariables != null) {
-            for (StudyVariable studyVariable : studyVariables.getStudyVariable()) {
+        List<StudyVariable> studyVariableList = studyVariables.getStudyVariable();
+        if (studyVariableList != null) {
+            for (StudyVariable studyVariable : studyVariableList) {
                 cvMappingResult = this.checkCvMapping(studyVariable, "/MzQuantML/StudyVariableList/studyVariable");
                 addMessages(cvMappingResult, this.msgL);
             }
@@ -323,17 +325,39 @@ public class MzQuantMLCvValidator extends Validator {
 //            addMessages(cvMappingResult, this.msgL);
 //        }
 
-        // check RatioCalculation_rule
+        /**
+         * *************************
+         *
+         * check RatioList
+         *
+         * ************************
+         */
         RatioList ratioList = this.mzq.getRatioList();
         if (ratioList != null) {
             List<Ratio> ratios = ratioList.getRatio();
             if (!ratios.isEmpty()) {
                 for (Ratio ratio : ratios) {
+                    // check RatioCalculation_rule
                     ParamList ratioCalculation = ratio.getRatioCalculation();
                     if (ratioCalculation != null) {
                         cvMappingResult = this.checkCvMapping(ratioCalculation, "/MzQuantML/RatioList/Ratio/ratioCalculation");
                         addMessages(cvMappingResult, this.msgL);
                     }
+
+                    // check RatioNumeratorDataType_rule
+                    CvParamRef numDT = ratio.getNumeratorDataType();
+                    if (numDT != null) {
+                        cvMappingResult = this.checkCvMapping(numDT, "/MzQuantML/RatioList/Ratio/NumeratorDataType");
+                        addMessages(cvMappingResult, this.msgL);
+                    }
+
+                    //check RatioDenominatorDataType_rule
+                    CvParamRef denDT = ratio.getDenominatorDataType();
+                    if (denDT != null) {
+                        cvMappingResult = this.checkCvMapping(denDT, "/MzQuantML/RatioList/Ratio/DenominatorDataType");
+                        addMessages(cvMappingResult, this.msgL);
+                    }
+
                 }
             }
         }
