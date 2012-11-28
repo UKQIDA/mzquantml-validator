@@ -1,14 +1,14 @@
 format-version: 1.2
-data-version: 3.41.0_rc1
-date: 27:11:2012 13:33
+data-version: 3.41.0
+date: 28:11:2012 13:03
 saved-by: Gerhard Mayer
 auto-generated-by: OBO-Edit 2.3
 import: http://purl.obolibrary.org/obo/pato.obo
 import: http://unit-ontology.googlecode.com/svn/trunk/unit.obo
 default-namespace: MS
 remark: namespace: MS
-remark: version: 3.41.0_rc1
-remark: release date: 2012-11-27
+remark: version: 3.41.0
+remark: release date: 2012-11-28
 remark: coverage: Mass spectrometer output files and spectra interpretation
 remark: creator: Matt Chambers <matt.chambers <-at-> vanderbilt.edu>
 remark: creator: Andreas Bertsch <bertsch <-at-> informatik.uni-tuebingen.de>
@@ -6847,8 +6847,8 @@ is_a: MS:1001116 ! single protein result details
 
 [Term]
 id: MS:1001101
-name: protein group/subset relationship
-def: "Protein group/subset relationships." [PSI:PI]
+name: protein group or subset relationship
+def: "Protein group or subset relationships." [PSI:PI]
 is_a: MS:1001085 ! protein result details
 
 [Term]
@@ -9926,62 +9926,62 @@ id: MS:1001591
 name: anchor protein
 def: "A representative protein selected from a set of sequence same-set or spectrum same-set proteins." [PSI:MS]
 xref: value-type:xsd\:string "The allowed value-type for this CV term."
-is_a: MS:1001101 ! protein group/subset relationship
+is_a: MS:1001101 ! protein group or subset relationship
 
 [Term]
 id: MS:1001592
 name: family member protein
 def: "A protein with significant homology to another protein, but some distinguishing peptide matches." [PSI:MS]
 xref: value-type:xsd\:string "The allowed value-type for this CV term."
-is_a: MS:1001101 ! protein group/subset relationship
+is_a: MS:1001101 ! protein group or subset relationship
 
 [Term]
 id: MS:1001593
 name: group member with undefined relationship OR ortholog protein
 def: "TO ENDETAIL: a really generic relationship OR ortholog protein." [PSI:MS]
-is_a: MS:1001101 ! protein group/subset relationship
+is_a: MS:1001101 ! protein group or subset relationship
 
 [Term]
 id: MS:1001594
 name: sequence same-set protein
 def: "A protein which is indistinguishable or equivalent to another protein, having matches to an identical set of peptide sequences." [PSI:MS]
 xref: value-type:xsd\:string "The allowed value-type for this CV term."
-is_a: MS:1001101 ! protein group/subset relationship
+is_a: MS:1001101 ! protein group or subset relationship
 
 [Term]
 id: MS:1001595
 name: spectrum same-set protein
 def: "A protein which is indistinguishable or equivalent to another protein, having matches to a set of peptide sequences that cannot be distinguished using the evidence in the mass spectra." [PSI:MS]
 xref: value-type:xsd\:string "The allowed value-type for this CV term."
-is_a: MS:1001101 ! protein group/subset relationship
+is_a: MS:1001101 ! protein group or subset relationship
 
 [Term]
 id: MS:1001596
 name: sequence sub-set protein
 def: "A protein with a sub-set of the peptide sequence matches for another protein, and no distinguishing peptide matches." [PSI:MS]
 xref: value-type:xsd\:string "The allowed value-type for this CV term."
-is_a: MS:1001101 ! protein group/subset relationship
+is_a: MS:1001101 ! protein group or subset relationship
 
 [Term]
 id: MS:1001597
 name: spectrum sub-set protein
 def: "A protein with a sub-set of the matched spectra for another protein, where the matches cannot be distinguished using the evidence in the mass spectra, and no distinguishing peptide matches." [PSI:MS]
 xref: value-type:xsd\:string "The allowed value-type for this CV term."
-is_a: MS:1001101 ! protein group/subset relationship
+is_a: MS:1001101 ! protein group or subset relationship
 
 [Term]
 id: MS:1001598
 name: sequence subsumable protein
 def: "A sequence same-set or sequence sub-set protein where the matches are distributed across two or more proteins." [PSI:MS]
 xref: value-type:xsd\:string "The allowed value-type for this CV term."
-is_a: MS:1001101 ! protein group/subset relationship
+is_a: MS:1001101 ! protein group or subset relationship
 
 [Term]
 id: MS:1001599
 name: spectrum subsumable protein
 def: "A spectrum same-set or spectrum sub-set protein where the matches are distributed across two or more proteins." [PSI:MS]
 xref: value-type:xsd\:string "The allowed value-type for this CV term."
-is_a: MS:1001101 ! protein group/subset relationship
+is_a: MS:1001101 ! protein group or subset relationship
 
 [Term]
 id: MS:1001600
