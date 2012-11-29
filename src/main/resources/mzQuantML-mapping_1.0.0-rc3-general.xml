@@ -72,7 +72,7 @@
             <CvTerm termAccession="MS:1001347" useTermName="false" useTerm="false" termName="database file formats" isRepeatable="false" allowChildren="true" cvIdentifierRef="MS" />
         </CvMappingRule>
 				
-        <CvMappingRule id="Assay_rule" cvElementPath="/MzQuantML/AssayList/Assay/cvParam/@accession" requirementLevel="MAY" scopePath="/MzQuantML/AssayList/Assay" cvTermsCombinationLogic="OR">
+        <CvMappingRule id="Assay_rule" cvElementPath="/MzQuantML/AssayList/assay/cvParam/@accession" requirementLevel="MAY" scopePath="/MzQuantML/AssayList/assay" cvTermsCombinationLogic="OR">
             <CvTerm termAccession="MS:1002110" useTermName="false" useTerm="false" termName="assay attribute" isRepeatable="true" allowChildren="true" cvIdentifierRef="MS" />
         </CvMappingRule>		
 
@@ -105,11 +105,11 @@
             <CvTerm termAccession="MS:1001405" useTermName="false" useTerm="false" termName="spectrum identification result details" isRepeatable="false" allowChildren="true" cvIdentifierRef="MS" />
         </CvMappingRule>		
 		
-        <CvMappingRule id="ProteinGroupList_rule" cvElementPath="/MzQuantML/ProteinGroupList/cvParam/@accession" requirementLevel="MAY" scopePath="/MzQuantML/ProteinGroupList" cvTermsCombinationLogic="OR">
+        <CvMappingRule id="ProteinGroupList_rule" cvElementPath="/MzQuantML/proteinGroupList/cvParam/@accession" requirementLevel="MAY" scopePath="/MzQuantML/proteinGroupList" cvTermsCombinationLogic="OR">
             <CvTerm termAccession="MS:1002112" useTermName="false" useTerm="false" termName="protein group list attribute" isRepeatable="true" allowChildren="true" cvIdentifierRef="MS" />
         </CvMappingRule>
 
-        <CvMappingRule id="ProteinGroup_rule" cvElementPath="/MzQuantML/ProteinGroupList/ProteinGroup/cvParam/@accession" requirementLevel="MAY" scopePath="/MzQuantML/ProteinGroupList/ProteinGroup" cvTermsCombinationLogic="OR">
+        <CvMappingRule id="ProteinGroup_rule" cvElementPath="/MzQuantML/ProteinGroupList/proteinGroup/cvParam/@accession" requirementLevel="MAY" scopePath="/MzQuantML/ProteinGroupList/proteinGroup" cvTermsCombinationLogic="OR">
             <CvTerm termAccession="MS:1002113" useTermName="false" useTerm="false" termName="protein group attribute" isRepeatable="true" allowChildren="true" cvIdentifierRef="MS" />
         </CvMappingRule>
         
@@ -137,11 +137,11 @@
             <CvTerm termAccession="MS:1001405" useTermName="false" useTerm="false" termName="spectrum identification result details" isRepeatable="false" allowChildren="true" cvIdentifierRef="MS" />
         </CvMappingRule>
 
-        <CvMappingRule id="ProteinList_rule" cvElementPath="/MzQuantML/ProteinList/cvParam/@accession" requirementLevel="MAY" scopePath="/MzQuantML/ProteinList" cvTermsCombinationLogic="OR">
+        <CvMappingRule id="ProteinList_rule" cvElementPath="/MzQuantML/proteinList/cvParam/@accession" requirementLevel="MAY" scopePath="/MzQuantML/proteinList" cvTermsCombinationLogic="OR">
             <CvTerm termAccession="MS:1002114" useTermName="false" useTerm="false" termName="protein list attribute" isRepeatable="true" allowChildren="true" cvIdentifierRef="MS" />
         </CvMappingRule>
 
-        <CvMappingRule id="Protein_rule" cvElementPath="/MzQuantML/ProteinList/Protein/cvParam/@accession" requirementLevel="MAY"  scopePath="/MzQuantML/ProteinList/Protein" cvTermsCombinationLogic="OR">
+        <CvMappingRule id="Protein_rule" cvElementPath="/MzQuantML/ProteinList/protein/cvParam/@accession" requirementLevel="MAY"  scopePath="/MzQuantML/ProteinList/protein" cvTermsCombinationLogic="OR">
             <CvTerm termAccession="MS:1000884" useTermName="false" useTerm="false" termName="protein attribute" isRepeatable="true" allowChildren="true" cvIdentifierRef="MS" />
         </CvMappingRule>
 
@@ -171,11 +171,11 @@
             <CvTerm termAccession="MS:1001471" useTermName="false" useTerm="false" termName="peptide modification details" isRepeatable="false" allowChildren="true" cvIdentifierRef="MS" />
         </CvMappingRule>
 
-        <CvMappingRule id="PeptideConsensusList_rule" cvElementPath="/MzQuantML/PeptideConsensusList/cvParam/@accession" requirementLevel="MAY" scopePath="" cvTermsCombinationLogic="OR">
+        <CvMappingRule id="PeptideConsensusList_rule" cvElementPath="/MzQuantML/peptideConsensusList/cvParam/@accession" requirementLevel="MAY" scopePath="/MzQuantML/peptideConsensusList" cvTermsCombinationLogic="OR">
             <CvTerm termAccession="MS:1002115" useTermName="false" useTerm="false" termName="peptide consensus list attribute" isRepeatable="false" allowChildren="true" cvIdentifierRef="MS" />
         </CvMappingRule>
 
-        <CvMappingRule id="PeptideConsensus_rule" cvElementPath="/MzQuantML/PeptideConsensusList/PeptideConsensus/cvParam/@accession" requirementLevel="MAY"  scopePath="" cvTermsCombinationLogic="OR">
+        <CvMappingRule id="PeptideConsensus_rule" cvElementPath="/MzQuantML/PeptideConsensusList/peptideConsensus/cvParam/@accession" requirementLevel="MAY"  scopePath="/MzQuantML/PeptideConsensusList/peptideConsensus" cvTermsCombinationLogic="OR">
             <CvTerm termAccession="MS:1002116" useTermName="false" useTerm="false" termName="peptide consensus attribute" isRepeatable="false" allowChildren="true" cvIdentifierRef="MS" />
         </CvMappingRule>
 
@@ -199,11 +199,11 @@
             <CvTerm termAccession="MS:1001405" useTermName="false" useTerm="false" termName="spectrum identification result details" isRepeatable="false" allowChildren="true" cvIdentifierRef="MS" />
         </CvMappingRule>
 
-        <CvMappingRule id="SmallMoleculeList_rule" cvElementPath="/MzQuantML/SmallMoleculeList/cvParam/@accession" requirementLevel="MAY" scopePath="/MzQuantML/SmallMoleculeList" cvTermsCombinationLogic="OR">
+        <CvMappingRule id="SmallMoleculeList_rule" cvElementPath="/MzQuantML/smallMoleculeList/cvParam/@accession" requirementLevel="MAY" scopePath="/MzQuantML/smallMoleculeList" cvTermsCombinationLogic="OR">
             <CvTerm termAccession="MS:1002117" useTermName="false" useTerm="false" termName="small molecule list attribute" isRepeatable="false" allowChildren="true" cvIdentifierRef="MS" />
         </CvMappingRule>
 
-        <CvMappingRule id="SmallMolecule_rule" cvElementPath="/MzQuantML/SmallMoleculeList/SmallMolecule/cvParam/@accession" requirementLevel="MAY"  scopePath="/MzQuantML/SmallMoleculeList/SmallMolecule" cvTermsCombinationLogic="OR">
+        <CvMappingRule id="SmallMolecule_rule" cvElementPath="/MzQuantML/SmallMoleculeList/smallMolecule/cvParam/@accession" requirementLevel="MAY"  scopePath="/MzQuantML/SmallMoleculeList/smallMolecule" cvTermsCombinationLogic="OR">
             <CvTerm termAccession="MS:1002118" useTermName="false" useTerm="false" termName="small molecule attribute" isRepeatable="false" allowChildren="true" cvIdentifierRef="MS" />
         </CvMappingRule>
 		
@@ -259,8 +259,9 @@
             <CvTerm termAccession="MS:1001405" useTermName="false" useTerm="false" termName="spectrum identification result details" isRepeatable="false" allowChildren="true" cvIdentifierRef="MS" />
         </CvMappingRule>
 		
-        <CvMappingRule id="Software_rule_1" cvElementPath="/MzQuantML/SoftwareList/Software/cvParam/@accession" requirementLevel="MUST" scopePath="/MzQuantML/SoftwareList/Software" cvTermsCombinationLogic="AND">
+        <CvMappingRule id="Software_rule_1" cvElementPath="/MzQuantML/SoftwareList/Software/cvParam/@accession" requirementLevel="MUST" scopePath="/MzQuantML/SoftwareList/Software" cvTermsCombinationLogic="OR">
             <CvTerm termAccession="MS:1001139" useTermName="false" useTerm="false" termName="quantitation software name" isRepeatable="false" allowChildren="true" cvIdentifierRef="MS" />
+            <CvTerm termAccession="MS:1001456" useTermName="false" useTerm="false" termName="analysis software" isRepeatable="false" allowChildren="true" cvIdentifierRef="MS" />
         </CvMappingRule>
 
         <CvMappingRule id="Software_rule_2" cvElementPath="/MzQuantML/SoftwareList/Software/cvParam/@accession" requirementLevel="MAY" scopePath="/MzQuantML/SoftwareList/Software" cvTermsCombinationLogic="AND">
