@@ -22,7 +22,9 @@ import uk.ac.liv.mzquantml.validator.utils.Message;
 
 /**
  *
- * @author Da Qi @time 10:28:09 14-Mar-2012 @institution University of Liverpool
+ * @author Da Qi
+ * @time 10:28:09 14-Mar-2012
+ * @institution University of Liverpool
  */
 public class MzQuantMLValidator {
 
@@ -80,7 +82,6 @@ public class MzQuantMLValidator {
                 unmarsh.setSchema(schema);
 
                 ValidationEventHandler veh = new ValidationEventHandler() {
-
                     @Override
                     public boolean handleEvent(ValidationEvent event) {
                         //ignore warnings
@@ -116,7 +117,6 @@ public class MzQuantMLValidator {
                 unmarsh.setSchema(schema);
 
                 ValidationEventHandler veh = new ValidationEventHandler() {
-
                     @Override
                     public boolean handleEvent(ValidationEvent event) {
                         //ignore warnings
@@ -951,10 +951,12 @@ public class MzQuantMLValidator {
         List<AbstractParam> paramGroups = proteinGroup.getParamGroup();
         checkParamGroups(targetClassId, paramGroups);
 
-        List<Object> protRefs = proteinGroup.getProteinRefs();
-        if (!protRefs.isEmpty()) {
-            for (Object ref : protRefs) {
-                msgs.addAll(checkObjectRef(targetClassId, ref, uk.ac.liv.jmzqml.model.mzqml.Protein.class));
+        //Todo: re-coded in consistent manner
+        List<ProteinRef> proteinRefs = proteinGroup.getProteinRef();
+        if (proteinRefs != null) {
+            for (ProteinRef proteinRef : proteinRefs) {
+                Object protRef = proteinRef.getProteinRef();
+                msgs.addAll(checkObjectRef(targetClassId, protRef, uk.ac.liv.jmzqml.model.mzqml.Protein.class));
             }
         }
 

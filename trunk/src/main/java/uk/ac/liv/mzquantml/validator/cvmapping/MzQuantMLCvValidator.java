@@ -208,7 +208,7 @@ public class MzQuantMLCvValidator extends Validator {
                 if (rawFileList != null) {
                     for (RawFile rawFile : rawFileList) {
 
-                        // check RawFilesGroup_rule
+                        // check RawFile_rule
                         cvMappingResult = this.checkCvMapping(rawFile, "/MzQuantML/InputFiles/RawFilesGroup/rawFile");
                         addMessages(cvMappingResult, this.msgL);
 
@@ -290,18 +290,24 @@ public class MzQuantMLCvValidator extends Validator {
             }
         }
 
-        // check AssayLabelModification_rule
+
         AssayList assayList = this.mzq.getAssayList();
         if (assayList != null) {
             List<Assay> assays = assayList.getAssay();
             for (Assay assay : assays) {
-                Label label = assay.getLabel();
-                if (label != null) {
-                    List<ModParam> modParams = label.getModification();
-                    if (modParams != null || !modParams.isEmpty()) {
-                        for (ModParam modParam : modParams) {
-                            cvMappingResult = this.checkCvMapping(modParam, "/MzQuantML/AssayList/Assay/Label/Modification");
-                            addMessages(cvMappingResult, this.msgL);
+                // check Assay_rule
+                if (assay != null) {
+                    cvMappingResult = this.checkCvMapping(assay, "/MzQuantML/AssayList/assay");
+                    addMessages(cvMappingResult, this.msgL);
+                    Label label = assay.getLabel();
+                    if (label != null) {
+                        // check AssayLabelModification_rule
+                        List<ModParam> modParams = label.getModification();
+                        if (modParams != null || !modParams.isEmpty()) {
+                            for (ModParam modParam : modParams) {
+                                cvMappingResult = this.checkCvMapping(modParam, "/MzQuantML/AssayList/Assay/Label/Modification");
+                                addMessages(cvMappingResult, this.msgL);
+                            }
                         }
                     }
                 }
@@ -319,6 +325,7 @@ public class MzQuantMLCvValidator extends Validator {
         }
 
         // check AnalysisSummary_rule
+        // TODO: already hardcoded, but may need to move back in future
 //        ParamList analysisSummary = this.mzq.getAnalysisSummary();
 //        if (analysisSummary != null) {
 //            cvMappingResult = this.checkCvMapping(analysisSummary, "/MzQuantML/AnalysisSummary");
@@ -369,9 +376,31 @@ public class MzQuantMLCvValidator extends Validator {
          *
          * ***********************
          */
-        // check ProteinGroupGlobalQuantLayer_rule
         ProteinGroupList pgList = this.mzq.getProteinGroupList();
         if (pgList != null) {
+            //check ProteinGroupList_rule
+            cvMappingResult = this.checkCvMapping(pgList, "/MzQuantML/proteinGroupList");
+            addMessages(cvMappingResult, this.msgL);
+
+            //check ProteinGroup_rule
+            List<ProteinGroup> proteinGroups = pgList.getProteinGroup();
+            if (proteinGroups != null) {
+                for (ProteinGroup pg : proteinGroups) {
+                    cvMappingResult = this.checkCvMapping(pg, "/MzQuantML/ProteinGroupList/proteinGroup");
+                    addMessages(cvMappingResult, this.msgL);
+
+                    // check ProteinGroupProteinRef_rule
+                    List<ProteinRef> protRefs = pg.getProteinRef();
+                    if (protRefs != null) {
+                        for (ProteinRef protRef : protRefs) {
+                            cvMappingResult = this.checkCvMapping(protRef, "/MzQuantML/ProteinGroupList/ProteinGroup/ProteinRef");
+                            addMessages(cvMappingResult, this.msgL);
+                        }
+                    }
+                }
+            }
+
+            // check ProteinGroupGlobalQuantLayer_rule
             List<GlobalQuantLayer> pgGlobalQuantLayers = pgList.getGlobalQuantLayer();
             if (pgGlobalQuantLayers != null) {
                 for (GlobalQuantLayer pgGQL : pgGlobalQuantLayers) {
@@ -424,12 +453,25 @@ public class MzQuantMLCvValidator extends Validator {
          *
          * *************************
          */
-        // check ProteinGlobalQuantLayer_rule
         ProteinList protList = this.mzq.getProteinList();
         if (protList != null) {
+            // check ProteinList_rule
+            cvMappingResult = this.checkCvMapping(protList, "/MzQuantML/proteinList");
+            addMessages(cvMappingResult, this.msgL);
+
+            // check Protein_rule
+            List<Protein> proteins = protList.getProtein();
+            if (proteins != null) {
+                for (Protein protein : proteins) {
+                    cvMappingResult = this.checkCvMapping(protein, "/MzQuantML/ProteinList/protein");
+                    addMessages(cvMappingResult, this.msgL);
+                }
+            }
+
             List<GlobalQuantLayer> protGlobalQuantLayers = protList.getGlobalQuantLayer();
             if (protGlobalQuantLayers != null) {
                 for (GlobalQuantLayer protGQL : protGlobalQuantLayers) {
+                    // check ProteinGlobalQuantLayer_rule
                     if (protGQL.getColumnDefinition() != null) {
                         List<Column> columns = protGQL.getColumnDefinition().getColumn();
                         if (columns != null) {
@@ -484,6 +526,18 @@ public class MzQuantMLCvValidator extends Validator {
             for (PeptideConsensusList pepList : pepLists) {
 
                 if (pepList != null) {
+                    // check PeptideConsensusList_rule
+                    cvMappingResult = this.checkCvMapping(pepList, "/MzQuantML/peptideConsensusList");
+                    addMessages(cvMappingResult, this.msgL);
+
+                    // check PeptideConsensus_rule
+                    List<PeptideConsensus> peptides = pepList.getPeptideConsensus();
+                    if (peptides != null) {
+                        for (PeptideConsensus peptide : peptides) {
+                            cvMappingResult = this.checkCvMapping(peptide, "/MzQuantML/PeptideConsensusList/peptideConsensus");
+                            addMessages(cvMappingResult, this.msgL);
+                        }
+                    }
 
                     // check PeptideConsensusGlobalQuantLayer_rule
                     List<GlobalQuantLayer> pepGlobalQuantLayers = pepList.getGlobalQuantLayer();
@@ -551,11 +605,31 @@ public class MzQuantMLCvValidator extends Validator {
          *
          * ******************************
          */
-        // check SmallMoleculeGlobalQuantLayer_rule
         SmallMoleculeList smList = this.mzq.getSmallMoleculeList();
         if (smList != null) {
+            // check SmallMoleculeList_rule
+            cvMappingResult = this.checkCvMapping(smList, "/MzQuantML/smallMoleculeList");
+            addMessages(cvMappingResult, this.msgL);
+
+            // check SmallMolecule_rule
+            List<SmallMolecule> smallMols = smList.getSmallMolecule();
+            if (smallMols != null) {
+                for (SmallMolecule smallMol : smallMols) {
+                    cvMappingResult = this.checkCvMapping(smallMol, "/MzQuantML/SmallMoleculeList/smallMolecule");
+                    addMessages(cvMappingResult, this.msgL);
+
+                    // check SmallMoleculeModification_rule
+                    List<SmallMolModification> smallMolMods = smallMol.getModification();
+                    if (smallMolMods != null) {
+                        cvMappingResult = this.checkCvMapping(smallMolMods, "/MzQuantML/SmallMoleculeList/SmallMolecule/Modification");
+                        addMessages(cvMappingResult, this.msgL);
+                    }
+                }
+            }
+
             List<GlobalQuantLayer> smGlobalQuantLayers = smList.getGlobalQuantLayer();
             if (smGlobalQuantLayers != null) {
+                // check SmallMoleculeGlobalQuantLayer_rule
                 for (GlobalQuantLayer smGQL : smGlobalQuantLayers) {
                     if (smGQL.getColumnDefinition() != null) {
                         List<Column> columns = smGQL.getColumnDefinition().getColumn();
@@ -679,6 +753,7 @@ public class MzQuantMLCvValidator extends Validator {
          * ********************************
          */
 
+        // check Software_rule_1 and Software_rule_2
         SoftwareList softwareList = this.mzq.getSoftwareList();
         if (softwareList != null) {
             List<Software> softwares = softwareList.getSoftware();
@@ -698,6 +773,7 @@ public class MzQuantMLCvValidator extends Validator {
          * *****************************
          */
 
+        // check DataProcessing_rule
         DataProcessingList dpList = this.mzq.getDataProcessingList();
         if (dpList != null) {
             List<DataProcessing> dps = dpList.getDataProcessing();
