@@ -841,6 +841,11 @@ public class MzQuantMLValidator {
             if (!evidenceRefs.isEmpty()) {
                 for (EvidenceRef evidenceRef : evidenceRefs) {
                     checkEvidenceRef(targetClassId, evidenceRef);
+
+                    //check EvidenceRefRule
+                    EvidenceRefRule eRefRule = new EvidenceRefRule(peptideConsensus, evidenceRef);
+                    eRefRule.check();
+                    msgs.addAll(eRefRule.getMsgs());
                 }
             }
         }
@@ -1088,8 +1093,8 @@ public class MzQuantMLValidator {
             msgs.addAll(numeratorDenominatorRule.getMsgs());
         }
     }
-    
-        static public void checkRatioQuantLayer(RatioQuantLayer ratioQuantLayer) {
+
+    static public void checkRatioQuantLayer(RatioQuantLayer ratioQuantLayer) {
 
         if (ratioQuantLayer != null) {
             //TODO: need to figure out what  does columnIndex refer to 
