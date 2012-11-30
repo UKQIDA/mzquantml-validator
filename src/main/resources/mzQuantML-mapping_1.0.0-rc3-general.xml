@@ -52,7 +52,7 @@
             <CvTerm termAccession="MS:1001040" useTermName="false" useTerm="false" termName="intermediate analysis format" isRepeatable="false" allowChildren="true" cvIdentifierRef="MS" />
         </CvMappingRule>
 
-        <CvMappingRule id="MethodFileFormat_rule" cvElementPath="/MzQuantML/InputFiles/MethodFiles/MethodFile/fileFormat/cvParam/@accession" requirementLevel="MUST" scopePath="/MzQuantML/InputFiles/MethodFiles/MethodFile/fileFormat" cvTermsCombinationLogic="OR">
+        <CvMappingRule id="MethodFileFormat_rule" cvElementPath="/MzQuantML/InputFiles/MethodFiles/MethodFile/fileFormat/cvParam/@accession" requirementLevel="MAY" scopePath="/MzQuantML/InputFiles/MethodFiles/MethodFile/fileFormat" cvTermsCombinationLogic="OR">
             <CvTerm termAccession="MS:1002128" useTermName="false" useTerm="false" termName="method file format attribute" isRepeatable="false" allowChildren="true" cvIdentifierRef="MS" />
         </CvMappingRule>
 		
@@ -131,11 +131,6 @@
             <CvTerm termAccession="MS:1001805" useTermName="false" useTerm="false" termName="quantification datatype" isRepeatable="false" allowChildren="true" cvIdentifierRef="MS" />
             <CvTerm termAccession="MS:1001405" useTermName="false" useTerm="false" termName="spectrum identification result details" isRepeatable="false" allowChildren="true" cvIdentifierRef="MS" />
         </CvMappingRule>
-		
-        <CvMappingRule id="ProteinGroupRatioQuantLayer_rule" cvElementPath="/MzQuantML/ProteinGroupList/RatioQuantLayer/dataType/cvParam/@accession" requirementLevel="MUST"  scopePath="/MzQuantML/ProteinGroupList/RatioQuantLayer/dataType" cvTermsCombinationLogic="OR">
-            <CvTerm termAccession="MS:1001805" useTermName="false" useTerm="false" termName="quantification datatype" isRepeatable="false" allowChildren="true" cvIdentifierRef="MS" />
-            <CvTerm termAccession="MS:1001405" useTermName="false" useTerm="false" termName="spectrum identification result details" isRepeatable="false" allowChildren="true" cvIdentifierRef="MS" />
-        </CvMappingRule>
 
         <CvMappingRule id="ProteinList_rule" cvElementPath="/MzQuantML/proteinList/cvParam/@accession" requirementLevel="MAY" scopePath="/MzQuantML/proteinList" cvTermsCombinationLogic="OR">
             <CvTerm termAccession="MS:1002114" useTermName="false" useTerm="false" termName="protein list attribute" isRepeatable="true" allowChildren="true" cvIdentifierRef="MS" />
@@ -156,11 +151,6 @@
         </CvMappingRule>
 
         <CvMappingRule id="ProteinStudyVariableQuantLayer_rule" cvElementPath="/MzQuantML/ProteinList/StudyVariableQuantLayer/dataType/cvParam/@accession" requirementLevel="MUST" scopePath="/MzQuantML/ProteinList/StudyVariableQuantLayer/dataType" cvTermsCombinationLogic="OR">
-            <CvTerm termAccession="MS:1001805" useTermName="false" useTerm="false" termName="quantification datatype" isRepeatable="false" allowChildren="true" cvIdentifierRef="MS" />
-            <CvTerm termAccession="MS:1001405" useTermName="false" useTerm="false" termName="spectrum identification result details" isRepeatable="false" allowChildren="true" cvIdentifierRef="MS" />
-        </CvMappingRule>
-		
-        <CvMappingRule id="ProteinRatioQuantLayer_rule" cvElementPath="/MzQuantML/ProteinList/RatioQuantLayer/dataType/cvParam/@accession" requirementLevel="MUST" scopePath="/MzQuantML/ProteinList/RatioQuantLayer/dataType" cvTermsCombinationLogic="OR">
             <CvTerm termAccession="MS:1001805" useTermName="false" useTerm="false" termName="quantification datatype" isRepeatable="false" allowChildren="true" cvIdentifierRef="MS" />
             <CvTerm termAccession="MS:1001405" useTermName="false" useTerm="false" termName="spectrum identification result details" isRepeatable="false" allowChildren="true" cvIdentifierRef="MS" />
         </CvMappingRule>
@@ -185,11 +175,6 @@
         </CvMappingRule>
 
         <CvMappingRule id="PeptideConsensusStudyVariableQuantLayer_rule" cvElementPath="/MzQuantML/PeptideConsensusList/StudyVariableQuantLayer/dataType/cvParam/@accession" requirementLevel="MUST"  scopePath="/MzQuantML/PeptideConsensusList/StudyVariableQuantLayer/dataType" cvTermsCombinationLogic="OR">
-            <CvTerm termAccession="MS:1001805" useTermName="false" useTerm="false" termName="quantification datatype" isRepeatable="false" allowChildren="true" cvIdentifierRef="MS" />
-            <CvTerm termAccession="MS:1001405" useTermName="false" useTerm="false" termName="spectrum identification result details" isRepeatable="false" allowChildren="true" cvIdentifierRef="MS" />
-        </CvMappingRule>
-		
-        <CvMappingRule id="PeptideConsensusRatioQuantLayer_rule" cvElementPath="/MzQuantML/PeptideConsensusList/RatioQuantLayer/dataType/cvParam/@accession" requirementLevel="MUST"  scopePath="/MzQuantML/PeptideConsensusList/RatioQuantLayer/dataType" cvTermsCombinationLogic="OR">
             <CvTerm termAccession="MS:1001805" useTermName="false" useTerm="false" termName="quantification datatype" isRepeatable="false" allowChildren="true" cvIdentifierRef="MS" />
             <CvTerm termAccession="MS:1001405" useTermName="false" useTerm="false" termName="spectrum identification result details" isRepeatable="false" allowChildren="true" cvIdentifierRef="MS" />
         </CvMappingRule>
@@ -220,11 +205,6 @@
             <CvTerm termAccession="MS:1001805" useTermName="false" useTerm="false" termName="quantification datatype" isRepeatable="false" allowChildren="true" cvIdentifierRef="MS" />
             <CvTerm termAccession="MS:1001405" useTermName="false" useTerm="false" termName="spectrum identification result details" isRepeatable="false" allowChildren="true" cvIdentifierRef="MS" />
         </CvMappingRule>
-		
-        <CvMappingRule id="SmallMoleculeRatioQuantLayer_rule" cvElementPath="/MzQuantML/SmallMoleculeList/RatioQuantLayer/dataType/cvParam/@accession" requirementLevel="MUST"  scopePath="/MzQuantML/SmallMoleculeList/RatioQuantLayer/dataType" cvTermsCombinationLogic="OR">
-            <CvTerm termAccession="MS:1001805" useTermName="false" useTerm="false" termName="quantification datatype" isRepeatable="false" allowChildren="true" cvIdentifierRef="MS" />
-            <CvTerm termAccession="MS:1001405" useTermName="false" useTerm="false" termName="spectrum identification result details" isRepeatable="false" allowChildren="true" cvIdentifierRef="MS" />
-        </CvMappingRule>
 
         <CvMappingRule id="SmallMoleculeGlobalQuantLayer_rule" cvElementPath="/MzQuantML/SmallMoleculeList/GlobalQuantLayer/ColumnDefinition/Column/dataType/cvParam/@accession" requirementLevel="MUST"  scopePath="/MzQuantML/SmallMoleculeList/GlobalQuantLayer/ColumnDefinition/Column/dataType" cvTermsCombinationLogic="OR">
             <CvTerm termAccession="MS:1001805" useTermName="false" useTerm="false" termName="quantification datatype" isRepeatable="false" allowChildren="true" cvIdentifierRef="MS" />
@@ -245,11 +225,6 @@
         </CvMappingRule>
 
         <CvMappingRule id="FeatureListMS2AssayQuantLayer_rule" cvElementPath="/MzQuantML/FeatureList/MS2AssayQuantLayer/dataType/cvParam/@accession" requirementLevel="MUST"  scopePath="/MzQuantML/FeatureList/MS2AssayQuantLayer/dataType" cvTermsCombinationLogic="OR">
-            <CvTerm termAccession="MS:1001805" useTermName="false" useTerm="false" termName="quantification datatype" isRepeatable="false" allowChildren="true" cvIdentifierRef="MS" />
-            <CvTerm termAccession="MS:1001405" useTermName="false" useTerm="false" termName="spectrum identification result details" isRepeatable="false" allowChildren="true" cvIdentifierRef="MS" />
-        </CvMappingRule>
-
-        <CvMappingRule id="FeatureListMS2RatioQuantLayer_rule" cvElementPath="/MzQuantML/FeatureList/MS2RatioQuantLayer/dataType/cvParam/@accession" requirementLevel="MUST"  scopePath="/MzQuantML/FeatureList/MS2RatioQuantLayer/dataType" cvTermsCombinationLogic="OR">
             <CvTerm termAccession="MS:1001805" useTermName="false" useTerm="false" termName="quantification datatype" isRepeatable="false" allowChildren="true" cvIdentifierRef="MS" />
             <CvTerm termAccession="MS:1001405" useTermName="false" useTerm="false" termName="spectrum identification result details" isRepeatable="false" allowChildren="true" cvIdentifierRef="MS" />
         </CvMappingRule>
