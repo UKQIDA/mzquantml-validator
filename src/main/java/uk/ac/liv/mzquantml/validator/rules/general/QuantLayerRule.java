@@ -257,10 +257,10 @@ public class QuantLayerRule {
                         msgs.add(new Message(ase.getName() + " = \"false\", "
                                 + "but there is a FeatureQuantLayer\n", Level.ERROR));
                     }
-                    if (isMS2QLExist(ftLst)) {
-                        msgs.add(new Message("There MUST not be any MS2QuantLayers for " + ase.getAnalysisType().getName(), Level.INFO));
-                        msgs.add(new Message("There is at least one MS2QuantLayer exist\n", Level.ERROR));
-                    }
+//                    if (isMS2QLExist(ftLst)) {
+//                        msgs.add(new Message("There MUST not be any MS2QuantLayers for " + ase.getAnalysisType().getName(), Level.INFO));
+//                        msgs.add(new Message("There is at least one MS2QuantLayer exist\n", Level.ERROR));
+//                    }
                 }
             }
         }
