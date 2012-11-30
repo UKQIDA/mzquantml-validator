@@ -44,8 +44,8 @@ public class EvidenceRefRule {
      * public methods
      */
     public void check() {
-        if ((this.evdRef.getIdRefs() == null && this.evdRef.getIdentificationFileRef() != null)
-                || (this.evdRef.getIdRefs() != null && this.evdRef.getIdentificationFileRef() == null)) {
+        if ((this.evdRef.getIdRefs().isEmpty() && this.evdRef.getIdentificationFileRef() != null)
+                || (!this.evdRef.getIdRefs().isEmpty() && this.evdRef.getIdentificationFileRef() == null)) {
             msgs.add(new Message("If one of EvidenceRef attributes identificationFileRef or id_refs is present, "
                     + "then they both MUST be present", Level.INFO));
             msgs.add(new Message("EvidenceRef in PeptideConsensus " + this.peptide.getId()
