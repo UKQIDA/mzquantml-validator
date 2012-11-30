@@ -436,14 +436,6 @@ public class MzQuantMLCvValidator extends Validator {
                     addMessages(cvMappingResult, this.msgL);
                 }
             }
-
-            // check ProteinGroupRatioQuantLayer_rule
-            QuantLayer pgRQL = pgList.getRatioQuantLayer();
-            if (pgRQL != null) {
-                CvParamRef pgcvParamRef = pgRQL.getDataType();
-                cvMappingResult = this.checkCvMapping(pgcvParamRef, "/MzQuantML/ProteinGroupList/RatioQuantLayer/dataType");
-                addMessages(cvMappingResult, this.msgL);
-            }
         }
 
         /**
@@ -503,14 +495,6 @@ public class MzQuantMLCvValidator extends Validator {
                     cvMappingResult = this.checkCvMapping(cvParamRef, "/MzQuantML/ProteinList/StudyVariableQuantLayer/dataType");
                     addMessages(cvMappingResult, this.msgL);
                 }
-            }
-
-            // check ProteinRatioQuantLayer_rule
-            QuantLayer protRQL = protList.getRatioQuantLayer();
-            if (protRQL != null) {
-                CvParamRef protcvParamRef = protRQL.getDataType();
-                cvMappingResult = this.checkCvMapping(protcvParamRef, "/MzQuantML/ProteinList/RatioQuantLayer/dataType");
-                addMessages(cvMappingResult, this.msgL);
             }
         }
 
@@ -574,14 +558,6 @@ public class MzQuantMLCvValidator extends Validator {
                             cvMappingResult = this.checkCvMapping(cvParamRef, "/MzQuantML/PeptideConsensusList/StudyVariableQuantLayer/dataType");
                             addMessages(cvMappingResult, this.msgL);
                         }
-                    }
-
-                    // check PeptideConsensusRatioQuantLayer_rule
-                    QuantLayer pepRQL = pepList.getRatioQuantLayer();
-                    if (pepRQL != null) {
-                        CvParamRef pepcvParamRef = pepRQL.getDataType();
-                        cvMappingResult = this.checkCvMapping(pepcvParamRef, "/MzQuantML/PeptideConsensusList/RatioQuantLayer/dataType");
-                        addMessages(cvMappingResult, this.msgL);
                     }
 
                     // check PeptideConsensusModification_rule
@@ -663,14 +639,6 @@ public class MzQuantMLCvValidator extends Validator {
                     addMessages(cvMappingResult, this.msgL);
                 }
             }
-
-            // check SmallMoleculeRatioQuantLayer_rule
-            QuantLayer smRQL = smList.getRatioQuantLayer();
-            if (smRQL != null) {
-                CvParamRef smcvParamRef = smRQL.getDataType();
-                cvMappingResult = this.checkCvMapping(smcvParamRef, "/MzQuantML/SmallMoleculeList/RatioQuantLayer/dataType");
-                addMessages(cvMappingResult, this.msgL);
-            }
         }
 
         /**
@@ -732,14 +700,6 @@ public class MzQuantMLCvValidator extends Validator {
                             cvMappingResult = this.checkCvMapping(cvParamRef, "/MzQuantML/FeatureList/MS2StudyVariableQuantLayer/dataType");
                             addMessages(cvMappingResult, this.msgL);
                         }
-                    }
-
-                    // check FeatureListMS2RatioQuantLayer_rule
-                    QuantLayer ftRQL = ftList.getMS2RatioQuantLayer();
-                    if (ftRQL != null) {
-                        CvParamRef ftcvParamRef = ftRQL.getDataType();
-                        cvMappingResult = this.checkCvMapping(ftcvParamRef, "/MzQuantML/FeatureList/MS2RatioQuantLayer/dataType");
-                        addMessages(cvMappingResult, this.msgL);
                     }
                 }
             }

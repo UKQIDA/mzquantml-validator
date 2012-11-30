@@ -628,8 +628,8 @@ public class MzQuantMLValidator {
                 List<QuantLayer> ms2AssayQuantLayers = featureList.getMS2AssayQuantLayer();
                 checkQuantLayers(ms2AssayQuantLayers);
 
-                QuantLayer ms2RatioQuantLayer = featureList.getMS2RatioQuantLayer();
-                checkQuantLayer(ms2RatioQuantLayer);
+                RatioQuantLayer ms2RatioQuantLayer = featureList.getMS2RatioQuantLayer();
+                checkRatioQuantLayer(ms2RatioQuantLayer);
 
                 List<QuantLayer> ms2StudyVariableQuantLayers = featureList.getMS2StudyVariableQuantLayer();
                 checkQuantLayers(ms2StudyVariableQuantLayers);
@@ -803,7 +803,7 @@ public class MzQuantMLValidator {
             String id = peptideConsensusList.getId();
             List<AbstractParam> paramGroups = peptideConsensusList.getParamGroup();
             List<PeptideConsensus> peptideConsensuses = peptideConsensusList.getPeptideConsensus();
-            QuantLayer ratioQuantLayer = peptideConsensusList.getRatioQuantLayer();
+            RatioQuantLayer ratioQuantLayer = peptideConsensusList.getRatioQuantLayer();
             List<QuantLayer> studyVariableQuantLayers = peptideConsensusList.getStudyVariableQuantLayer();
 
             checkQuantLayers(assayQuantLayers);
@@ -811,7 +811,7 @@ public class MzQuantMLValidator {
             String targetClassId = id;
             checkParamGroups(targetClassId, paramGroups);
             checkPeptideConsensuses(peptideConsensuses);
-            checkQuantLayer(ratioQuantLayer);
+            checkRatioQuantLayer(ratioQuantLayer);
             checkQuantLayers(studyVariableQuantLayers);
         }
     }
@@ -971,7 +971,7 @@ public class MzQuantMLValidator {
             String id = proteinGroupList.getId();
             List<AbstractParam> paramGroups = proteinGroupList.getParamGroup();
             List<ProteinGroup> proteinGroups = proteinGroupList.getProteinGroup();
-            QuantLayer ratioQuantLayer = proteinGroupList.getRatioQuantLayer();
+            RatioQuantLayer ratioQuantLayer = proteinGroupList.getRatioQuantLayer();
             List<QuantLayer> studyVariableQuantLayers = proteinGroupList.getStudyVariableQuantLayer();
 
             checkQuantLayers(assayQuantLayers);
@@ -979,7 +979,7 @@ public class MzQuantMLValidator {
             String targetClassId = id;
             checkParamGroups(targetClassId, paramGroups);
             checkProteinGroups(proteinGroups);
-            checkQuantLayer(ratioQuantLayer);
+            checkRatioQuantLayer(ratioQuantLayer);
             checkQuantLayers(studyVariableQuantLayers);
         }
     }
@@ -1002,7 +1002,7 @@ public class MzQuantMLValidator {
             String id = proteinList.getId();
             List<AbstractParam> paramGroups = proteinList.getParamGroup();
             List<Protein> proteins = proteinList.getProtein();
-            QuantLayer ratioQuantLayer = proteinList.getRatioQuantLayer();
+            RatioQuantLayer ratioQuantLayer = proteinList.getRatioQuantLayer();
             List<QuantLayer> studyVariableQuantLayers = proteinList.getStudyVariableQuantLayer();
 
             checkQuantLayers(assayQuantLayers);
@@ -1010,7 +1010,7 @@ public class MzQuantMLValidator {
             String targetClassId = id;
             checkParamGroups(targetClassId, paramGroups);
             checkProteins(proteins);
-            checkQuantLayer(ratioQuantLayer);
+            checkRatioQuantLayer(ratioQuantLayer);
             checkQuantLayers(studyVariableQuantLayers);
         }
     }
@@ -1086,6 +1086,24 @@ public class MzQuantMLValidator {
             NumeratorDenominatorRule numeratorDenominatorRule = new NumeratorDenominatorRule(ratioList);
             numeratorDenominatorRule.check();
             msgs.addAll(numeratorDenominatorRule.getMsgs());
+        }
+    }
+    
+        static public void checkRatioQuantLayer(RatioQuantLayer ratioQuantLayer) {
+
+        if (ratioQuantLayer != null) {
+            //TODO: need to figure out what  does columnIndex refer to 
+            List<Object> columnIndex = ratioQuantLayer.getColumnIndex();
+
+            String id = ratioQuantLayer.getId();
+            String targetClassId = id;
+
+            DataMatrix dataMatrix = ratioQuantLayer.getDataMatrix();
+            checkDataMatrix(dataMatrix);
+
+            ColIndRowValNumMatchRule colIndRowValNumMatchRule = new ColIndRowValNumMatchRule();
+            colIndRowValNumMatchRule.check(ratioQuantLayer);
+            msgs.addAll(colIndRowValNumMatchRule.getMessage());
         }
     }
 
@@ -1210,7 +1228,7 @@ public class MzQuantMLValidator {
         List<GlobalQuantLayer> globalQuantLayers = smallMoleculeList.getGlobalQuantLayer();
         String id = smallMoleculeList.getId();
         List<AbstractParam> paramGroups = smallMoleculeList.getParamGroup();
-        QuantLayer ratioQuantLayer = smallMoleculeList.getRatioQuantLayer();
+        RatioQuantLayer ratioQuantLayer = smallMoleculeList.getRatioQuantLayer();
         List<SmallMolecule> smallMolecules = smallMoleculeList.getSmallMolecule();
         List<QuantLayer> studyVariableQuantLayers = smallMoleculeList.getStudyVariableQuantLayer();
 
@@ -1219,7 +1237,7 @@ public class MzQuantMLValidator {
         String targetClassId = id;
         checkParamGroups(targetClassId, paramGroups);
         checkSmallMolecules(smallMolecules);
-        checkQuantLayer(ratioQuantLayer);
+        checkRatioQuantLayer(ratioQuantLayer);
         checkQuantLayers(studyVariableQuantLayers);
     }
 

@@ -10,6 +10,7 @@ import org.apache.log4j.Level;
 import uk.ac.liv.jmzqml.model.mzqml.DataMatrix;
 import uk.ac.liv.jmzqml.model.mzqml.GlobalQuantLayer;
 import uk.ac.liv.jmzqml.model.mzqml.QuantLayer;
+import uk.ac.liv.jmzqml.model.mzqml.RatioQuantLayer;
 import uk.ac.liv.jmzqml.model.mzqml.Row;
 import uk.ac.liv.mzquantml.validator.utils.Message;
 
@@ -49,14 +50,29 @@ public class ColIndRowValNumMatchRule {
         for (Row row : rows) {
             int colNum = row.getValue().size();
             if (colNum != indexNum) {
-                msgs.add(new Message("The number of data values in every Row of a QuantLayer "
+                msgs.add(new Message("The number of data values in every Row of a GlobalQuantLayer "
                         + "MUST be equal to number of items in <ColumnDefinition>", Level.INFO));
                 msgs.add(new Message(("Row \"" + row.getObjectRef().toString()
                         + "\" has different numbers of value from column indices\n"), Level.ERROR));
             }
         }
     }
-
+    
+    public void check(RatioQuantLayer quantLayer) {
+        int indexNum = quantLayer.getColumnIndex().size();
+        DataMatrix dm = quantLayer.getDataMatrix();
+        List<Row> rows = dm.getRow();
+        for (Row row : rows) {
+            int colNum = row.getValue().size();
+            if (colNum != indexNum) {
+                msgs.add(new Message("The number of data values in every Row of a RatioQuantLayer "
+                        + "MUST be equal to number of items in <ColumnIndex>", Level.INFO));
+                msgs.add(new Message(("Row \"" + row.getObjectRef().toString()
+                        + "\" has different numbers of value from column indices\n"), Level.ERROR));
+            }
+        }
+    }    
+    
     public ArrayList<Message> getMessage() {
         return msgs;
     }
