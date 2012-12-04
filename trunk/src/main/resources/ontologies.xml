@@ -6,4 +6,6 @@
     <cvSource source="file" uri="classpath:psi-mod.obo" format="OBO" name="MOD" identifier="MOD" version="1.010.7"/>
     <cvSource source="file" uri="classpath:unimod.obo" format="OBO" name="UNIMOD" identifier="UNIMOD" version=""/>
     <cvSource source="file" uri="classpath:unit.obo" format="OBO" name="UO" identifier="UO" version=""/>
+    <!--<cvSource source="psidev.psi.tools.ontology_manager.impl.ols.OlsOntology" uri="http://psidev.cvs.sourceforge.net/viewvc/*checkout*/psidev/psi/psi-ms/mzML/controlledVocabulary/psi-ms.obo" format="OBO" name="PSI-MS" identifier="MS" version="3.42.0"/>
+    -->
 </cvSourceList>
