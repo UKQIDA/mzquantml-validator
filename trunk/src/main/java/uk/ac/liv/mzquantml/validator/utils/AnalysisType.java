@@ -6,8 +6,8 @@ package uk.ac.liv.mzquantml.validator.utils;
 
 import java.util.List;
 import uk.ac.liv.jmzqml.model.mzqml.AbstractParam;
+import uk.ac.liv.jmzqml.model.mzqml.AnalysisSummary;
 import uk.ac.liv.jmzqml.model.mzqml.CvParam;
-import uk.ac.liv.jmzqml.model.mzqml.ParamList;
 
 /**
  *
@@ -47,7 +47,7 @@ public class AnalysisType {
     };
     AnalTp at;
 
-    public AnalysisType(ParamList analysisSummary) {
+    public AnalysisType(AnalysisSummary analysisSummary) {
         /*
          * This can not deal with the situation when two valid cv terms are
          * present.

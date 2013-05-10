@@ -9,11 +9,10 @@ import java.util.HashMap;
 import java.util.List;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+import uk.ac.liv.jmzqml.model.mzqml.AnalysisSummary;
 import uk.ac.liv.jmzqml.model.mzqml.CvParam;
-import uk.ac.liv.jmzqml.model.mzqml.ParamList;
 import uk.ac.liv.mzquantml.validator.utils.AnalysisSummaryElement;
 import uk.ac.liv.mzquantml.validator.utils.AnalysisType;
-import uk.ac.liv.mzquantml.validator.utils.AnalysisType.AnalTp;
 import uk.ac.liv.mzquantml.validator.utils.Message;
 
 /**
@@ -23,7 +22,7 @@ import uk.ac.liv.mzquantml.validator.utils.Message;
 public class AnalysisSummaryRule {
 
     private static final Logger logger = Logger.getLogger(AssayLabelRule.class);
-    private ParamList anlaysisSummary;
+    private AnalysisSummary anlaysisSummary;
     private AnalysisType at;
     private HashMap<String, AnalysisSummaryElement> cvTermMap;
     List<Message> msgs = new ArrayList<Message>();
@@ -31,7 +30,7 @@ public class AnalysisSummaryRule {
     /*
      * constructor
      */
-    public AnalysisSummaryRule(ParamList analysisSummary) {
+    public AnalysisSummaryRule(AnalysisSummary analysisSummary) {
         this.anlaysisSummary = analysisSummary;
         this.at = new AnalysisType(analysisSummary);
     }

@@ -7,6 +7,7 @@ package uk.ac.liv.mzquantml.validator.rules.general;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.log4j.Level;
+import uk.ac.liv.jmzqml.model.mzqml.IdOnly;
 import uk.ac.liv.mzquantml.validator.utils.Message;
 
 /**
@@ -15,14 +16,14 @@ import uk.ac.liv.mzquantml.validator.utils.Message;
  */
 public class InOutputObjectRefsRule {
 
-    List<Object> objRefs;
+    List<IdOnly> objRefs;
     String targetClassId;
     ArrayList<Message> msgs = new ArrayList<Message>();
 
     /*
      * constructor
      */
-    public InOutputObjectRefsRule(List<Object> objectRefs, String tarClsId) {
+    public InOutputObjectRefsRule(List<IdOnly> objectRefs, String tarClsId) {
         this.objRefs = objectRefs;
         this.targetClassId = tarClsId;
     }

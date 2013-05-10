@@ -154,7 +154,7 @@ public class MzQuantMLValidator {
         /*
          * get all mzQuantML elements
          */
-        ParamList analysisSummary = mzq.getAnalysisSummary();
+        AnalysisSummary analysisSummary = mzq.getAnalysisSummary();
         AssayList assayList = mzq.getAssayList();
         AuditCollection auditCollection = mzq.getAuditCollection();
         List<BibliographicReference> bibliographicReferences = mzq.getBibliographicReference();
@@ -396,7 +396,7 @@ public class MzQuantMLValidator {
      *
      * ***************************************
      */
-    static public void checkAnalysisSummary(ParamList analysisSummary) {
+    static public void checkAnalysisSummary(AnalysisSummary analysisSummary) {
 //        analysisSummaryMap = new EnumMap<AnalysisSummaryElement, Boolean>(AnalysisSummaryElement.class);
 
         List<AbstractParam> paramGroups = analysisSummary.getParamGroup();
@@ -563,8 +563,8 @@ public class MzQuantMLValidator {
             for (DataProcessing dataProcessing : dataProcessings) {
                 String targetClassId = dataProcessing.getId();
 
-                List<Object> inputObjectRefs = dataProcessing.getInputObjectRefs();
-                List<Object> outputObjectRefs = dataProcessing.getOutputObjectRefs();
+                List<IdOnly> inputObjectRefs = dataProcessing.getInputObjects();
+                List<IdOnly> outputObjectRefs = dataProcessing.getOutputObjects();
 
                 InOutputObjectRefsRule inputRule = new InOutputObjectRefsRule(inputObjectRefs, targetClassId);
                 inputRule.check();
@@ -593,7 +593,7 @@ public class MzQuantMLValidator {
     }
 
     static public void checkEvidenceRef(String tarClsId, EvidenceRef evidenceRef) {
-        List<Object> assayRefs = evidenceRef.getAssayRefs();
+        List<Assay> assayRefs = evidenceRef.getAssays();
         if (assayRefs != null) {
             for (Object assayRef : assayRefs) {
                 String targetClassId = tarClsId;
@@ -935,7 +935,7 @@ public class MzQuantMLValidator {
         List<AbstractParam> paramGroups = protein.getParamGroup();
         checkParamGroups(targetClassId, paramGroups);
 
-        List<Object> pepRefs = protein.getPeptideConsensusRefs();
+        List<PeptideConsensus> pepRefs = protein.getPeptideConsensuses();
         if (pepRefs != null) {
             for (Object ref : pepRefs) {
                 msgs.addAll(checkObjectRef(targetClassId, ref, uk.ac.liv.jmzqml.model.mzqml.PeptideConsensus.class));
@@ -1029,7 +1029,7 @@ public class MzQuantMLValidator {
     }
 
     static public void checkProvider(Provider provider) {
-        Object analysisSoftwareRef = provider.getAnalysisSoftwareRef();
+        Object analysisSoftwareRef = provider.getSoftware();
         String targetClassId = provider.getId();
         msgs.addAll(checkObjectRef(targetClassId, analysisSoftwareRef, uk.ac.liv.jmzqml.model.mzqml.Software.class));
 
@@ -1052,7 +1052,7 @@ public class MzQuantMLValidator {
 
         if (quantLayer != null) {
             //TODO: need to figure out what  does columnIndex refer to 
-            List<Object> columnIndex = quantLayer.getColumnIndex();
+            List<String> columnIndex = quantLayer.getColumnIndex();
 
             String id = quantLayer.getId();
             String targetClassId = id;
@@ -1098,7 +1098,7 @@ public class MzQuantMLValidator {
 
         if (ratioQuantLayer != null) {
             //TODO: need to figure out what  does columnIndex refer to 
-            List<Object> columnIndex = ratioQuantLayer.getColumnIndex();
+            List<String> columnIndex = ratioQuantLayer.getColumnIndex();
 
             String id = ratioQuantLayer.getId();
             String targetClassId = id;
@@ -1190,7 +1190,7 @@ public class MzQuantMLValidator {
             }
         }
 
-        List<Object> ftRefs = smallMolecule.getFeatureRefs();
+        List<Feature> ftRefs = smallMolecule.getFeatures();
         if (ftRefs != null) {
             for (Object ref : ftRefs) {
                 msgs.addAll(checkObjectRef(targetClassId, ref, uk.ac.liv.jmzqml.model.mzqml.Feature.class));
@@ -1289,7 +1289,7 @@ public class MzQuantMLValidator {
                 String id = studyVariable.getId();
                 String targetClassId = id;
 
-                List<Object> assayRefs = studyVariable.getAssayRefs();
+                List<Assay> assayRefs = studyVariable.getAssays();
                 if (assayRefs != null) {
                     for (Object assayRef : assayRefs) {
                         msgs.addAll(checkObjectRef(targetClassId, assayRef, uk.ac.liv.jmzqml.model.mzqml.Assay.class));
@@ -1332,7 +1332,7 @@ public class MzQuantMLValidator {
     /*
      * private methods
      */
-    private void getAnalysisSummaryMap(ParamList analysisSummary) {
+    private void getAnalysisSummaryMap(AnalysisSummary analysisSummary) {
         analysisSummaryMap = new EnumMap<AnalysisSummaryElement, Boolean>(AnalysisSummaryElement.class);
 
         List<AbstractParam> paramGroups = analysisSummary.getParamGroup();
