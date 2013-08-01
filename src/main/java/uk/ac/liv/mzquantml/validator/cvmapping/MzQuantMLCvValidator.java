@@ -2,6 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
+
 package uk.ac.liv.mzquantml.validator.cvmapping;
 
 import java.io.*;
@@ -12,6 +13,7 @@ import psidev.psi.tools.validator.*;
 import psidev.psi.tools.validator.rules.cvmapping.CvRule;
 import uk.ac.liv.jmzqml.MzQuantMLElement;
 import uk.ac.liv.jmzqml.model.mzqml.*;
+import uk.ac.liv.jmzqml.xml.io.MzQuantMLUnmarshaller;
 
 /**
  *
@@ -25,27 +27,32 @@ public class MzQuantMLCvValidator extends Validator {
     private MessageLevel msgL = MessageLevel.WARN;
     //private MessageLevel msgL = MessageLevel.INFO;
     private HashMap<String, List<ValidatorMessage>> msgs = null;
-    private MzQuantML mzq = null;
+    private MzQuantMLUnmarshaller unmarshaller;
+    //private MzQuantML mzq = null;
     private long uniqId = 0;
 
     public MzQuantMLCvValidator(InputStream ontoConfig,
                                 InputStream cvRuleConfig,
-                                InputStream objectRuleConfig) throws ValidatorException, OntologyLoaderException {
+                                InputStream objectRuleConfig)
+            throws ValidatorException, OntologyLoaderException {
         super(ontoConfig, cvRuleConfig, objectRuleConfig);
         validatorInit();
     }
 
     public MzQuantMLCvValidator(InputStream ontoConfig,
-                                InputStream cvRuleConfig) throws ValidatorException, OntologyLoaderException {
+                                InputStream cvRuleConfig)
+            throws ValidatorException, OntologyLoaderException {
         super(ontoConfig, cvRuleConfig);
         validatorInit();
     }
 
-    public MzQuantMLCvValidator(InputStream ontoConfig) throws OntologyLoaderException {
+    public MzQuantMLCvValidator(InputStream ontoConfig)
+            throws OntologyLoaderException {
         super(ontoConfig);
     }
 
-    private void validatorInit() throws ValidatorException {
+    private void validatorInit()
+            throws ValidatorException {
 
         // Initialized the messages
         msgs = new HashMap<String, List<ValidatorMessage>>();
@@ -64,13 +71,12 @@ public class MzQuantMLCvValidator extends Validator {
      * turned off), validation against the CV-mapping rules and validation
      * against the registered ObjectRules.
      *
-     * @param xmlFile the PRIDE XML file to validate.
+     * @param xmlFile the mzq file to validate.
      *
      * @return a Collection of ValidatorMessages documenting the validation
-     * result.
+     *         result.
      */
-    public Collection<ValidatorMessage> startValidation(String xmlFile,
-                                                        MzQuantML mzq) {
+    public Collection<ValidatorMessage> startValidation(String xmlFile) {
         if (logger.isInfoEnabled()) {
             logger.info("\nStarting new Cv validation, input file: " + new File(xmlFile).getAbsolutePath());
         }
@@ -78,9 +84,9 @@ public class MzQuantMLCvValidator extends Validator {
         super.resetCvRuleStatus();
 
         try {
-//            this.unmarshaller = new MzQuantMLUnmarshaller(xmlFile);
+            this.unmarshaller = new MzQuantMLUnmarshaller(new File(xmlFile));
 //            this.mzq = (MzQuantML) unmarshaller.unmarshall();
-            this.mzq = mzq;
+            //this.mzq = mzq;
             addMessages(this.checkCvMappingRules(), this.msgL);
             // See if the mapping makes sense.
             if (!this.msgs.isEmpty()) {
@@ -99,11 +105,12 @@ public class MzQuantMLCvValidator extends Validator {
 
 
             // Cv mapping rules.
-            if (this.mzq != null) {
-                applyCvMappingRules();
-            }
+            //if (this.mzq != null) {
+            applyCvMappingRules();
+            //}
 
-        } catch (ValidatorException ve) {
+        }
+        catch (ValidatorException ve) {
             logger.error("Exceptions during validation!", ve);
             ve.printStackTrace();
         }
@@ -126,7 +133,8 @@ public class MzQuantMLCvValidator extends Validator {
             if (aNewMessage.getLevel().isHigher(aLevel) || aNewMessage.getLevel().isSame(aLevel)) {
                 if (aNewMessage.getRule() != null) {
                     addValidatorMessage(aNewMessage.getRule().getId(), aNewMessage, this.msgL);
-                } else {
+                }
+                else {
                     addValidatorMessage("unknown", aNewMessage, this.msgL);
                 }
             }
@@ -139,7 +147,8 @@ public class MzQuantMLCvValidator extends Validator {
         if (validatorMessage.getLevel().isHigher(msgLevel) || validatorMessage.getLevel().isSame(msgLevel)) {
             if (this.msgs.containsKey(ruleId)) {
                 this.msgs.get(ruleId).add(validatorMessage);
-            } else {
+            }
+            else {
                 List<ValidatorMessage> list = new ArrayList<ValidatorMessage>();
                 list.add(validatorMessage);
                 this.msgs.put(ruleId, list);
@@ -147,11 +156,13 @@ public class MzQuantMLCvValidator extends Validator {
         }
     }
 
-    private void applyCvMappingRules() throws ValidatorException {
+    private void applyCvMappingRules()
+            throws ValidatorException {
         logger.debug("Validating against the Cv mapping Rules...");
 
         //check ProviderContactRole_rule
-        Provider provider = this.mzq.getProvider();
+        //Provider provider = this.mzq.getProvider();  //jmzquantml 1.0.0-rc3-1.0.5
+        Provider provider = unmarshaller.unmarshal(MzQuantMLElement.Provider);
 
         Collection<ValidatorMessage> cvMappingResult = new ArrayList<ValidatorMessage>();
         if (provider != null) {
@@ -160,7 +171,8 @@ public class MzQuantMLCvValidator extends Validator {
         }
 
         //check AuditCollectionPerson_rule and AuditCollectionOrganization_rule
-        AuditCollection auditCollection = this.mzq.getAuditCollection();
+        //AuditCollection auditCollection = this.mzq.getAuditCollection();
+        AuditCollection auditCollection = unmarshaller.unmarshal(MzQuantMLElement.AuditCollection);
         if (auditCollection != null) {
             List<Person> persons = auditCollection.getPerson();
             if (persons != null) {
@@ -186,7 +198,8 @@ public class MzQuantMLCvValidator extends Validator {
          *
          * ************************
          */
-        InputFiles inputFiles = this.mzq.getInputFiles();
+        //InputFiles inputFiles = this.mzq.getInputFiles();
+        InputFiles inputFiles = unmarshaller.unmarshal(MzQuantMLElement.InputFiles);
 //        Collection toValidate = new ArrayList();
 //        if (inputFiles != null) {
 //            toValidate.add(inputFiles);
@@ -291,7 +304,8 @@ public class MzQuantMLCvValidator extends Validator {
         }
 
 
-        AssayList assayList = this.mzq.getAssayList();
+        //AssayList assayList = this.mzq.getAssayList(); //jmzquantml 1.0.0-rc3-1.0.5
+        AssayList assayList = unmarshaller.unmarshal(MzQuantMLElement.AssayList);
         if (assayList != null) {
             List<Assay> assays = assayList.getAssay();
             for (Assay assay : assays) {
@@ -315,7 +329,8 @@ public class MzQuantMLCvValidator extends Validator {
         }
 
         // check StudyVariable_rule
-        StudyVariableList studyVariables = this.mzq.getStudyVariableList();
+        //StudyVariableList studyVariables = this.mzq.getStudyVariableList(); //jmzquantml 1.0.0-rc3-1.0.5
+        StudyVariableList studyVariables = unmarshaller.unmarshal(MzQuantMLElement.StudyVariableList);
         List<StudyVariable> studyVariableList = studyVariables.getStudyVariable();
         if (studyVariableList != null) {
             for (StudyVariable studyVariable : studyVariableList) {
@@ -339,7 +354,8 @@ public class MzQuantMLCvValidator extends Validator {
          *
          * ************************
          */
-        RatioList ratioList = this.mzq.getRatioList();
+        //RatioList ratioList = this.mzq.getRatioList(); //jmzquantml 1.0.0-rc3-1.0.5
+        RatioList ratioList = unmarshaller.unmarshal(MzQuantMLElement.RatioList);
         if (ratioList != null) {
             List<Ratio> ratios = ratioList.getRatio();
             if (!ratios.isEmpty()) {
@@ -376,7 +392,8 @@ public class MzQuantMLCvValidator extends Validator {
          *
          * ***********************
          */
-        ProteinGroupList pgList = this.mzq.getProteinGroupList();
+        //ProteinGroupList pgList = this.mzq.getProteinGroupList(); //jmzquantml 1.0.0-rc3-1.0.5
+        ProteinGroupList pgList = unmarshaller.unmarshal(MzQuantMLElement.ProteinGroupList);
         if (pgList != null) {
             //check ProteinGroupList_rule
             cvMappingResult = this.checkCvMapping(pgList, "/MzQuantML/proteinGroupList");
@@ -445,7 +462,8 @@ public class MzQuantMLCvValidator extends Validator {
          *
          * *************************
          */
-        ProteinList protList = this.mzq.getProteinList();
+        //ProteinList protList = this.mzq.getProteinList(); //jmzquantml 1.0.0-rc3-1.0.5
+        ProteinList protList = unmarshaller.unmarshal(MzQuantMLElement.ProteinList);
         if (protList != null) {
             // check ProteinList_rule
             cvMappingResult = this.checkCvMapping(protList, "/MzQuantML/proteinList");
@@ -505,10 +523,12 @@ public class MzQuantMLCvValidator extends Validator {
          *
          * ******************************
          */
-        List<PeptideConsensusList> pepLists = this.mzq.getPeptideConsensusList();
+        //List<PeptideConsensusList> pepLists = this.mzq.getPeptideConsensusList(); //jmzquantml 1.0.0-rc3-1.0.5
+        Iterator<PeptideConsensusList> pepLists = unmarshaller.unmarshalCollectionFromXpath(MzQuantMLElement.PeptideConsensusList);
         if (pepLists != null) {
-            for (PeptideConsensusList pepList : pepLists) {
-
+            //for (PeptideConsensusList pepList : pepLists) { //jmzquantml 1.0.0-rc3-1.0.5
+            while (pepLists.hasNext()) {
+                PeptideConsensusList pepList = pepLists.next();
                 if (pepList != null) {
                     // check PeptideConsensusList_rule
                     cvMappingResult = this.checkCvMapping(pepList, "/MzQuantML/peptideConsensusList");
@@ -581,7 +601,8 @@ public class MzQuantMLCvValidator extends Validator {
          *
          * ******************************
          */
-        SmallMoleculeList smList = this.mzq.getSmallMoleculeList();
+        //SmallMoleculeList smList = this.mzq.getSmallMoleculeList(); //jmzquantml 1.0.0-rc3-1.0.5
+        SmallMoleculeList smList = unmarshaller.unmarshal(MzQuantMLElement.SmallMoleculeList);
         if (smList != null) {
             // check SmallMoleculeList_rule
             cvMappingResult = this.checkCvMapping(smList, "/MzQuantML/smallMoleculeList");
@@ -648,9 +669,12 @@ public class MzQuantMLCvValidator extends Validator {
          *
          * ******************************
          */
-        List<FeatureList> featureLists = this.mzq.getFeatureList();
+        //List<FeatureList> featureLists = this.mzq.getFeatureList(); //jmzquantml 1.0.0-rc3-1.0.5
+        Iterator<FeatureList> featureLists = unmarshaller.unmarshalCollectionFromXpath(MzQuantMLElement.FeatureList);
         if (featureLists != null) {
-            for (FeatureList ftList : featureLists) {
+            //for (FeatureList ftList : featureLists) { //jmzquantml 1.0.0-rc3-1.0.5
+            while (featureLists.hasNext()) {
+                FeatureList ftList = featureLists.next();
                 if (ftList != null) {
                     // check FeatureList_rule
                     cvMappingResult = this.checkCvMapping(ftList, "/MzQuantML/featureList");
@@ -714,7 +738,8 @@ public class MzQuantMLCvValidator extends Validator {
          */
 
         // check Software_rule_1 and Software_rule_2
-        SoftwareList softwareList = this.mzq.getSoftwareList();
+        //SoftwareList softwareList = this.mzq.getSoftwareList(); //jmzquantml 1.0.0-rc3-1.0.5
+        SoftwareList softwareList = unmarshaller.unmarshal(MzQuantMLElement.SoftwareList);
         if (softwareList != null) {
             List<Software> softwares = softwareList.getSoftware();
             if (softwares != null) {
@@ -734,7 +759,8 @@ public class MzQuantMLCvValidator extends Validator {
          */
 
         // check DataProcessing_rule
-        DataProcessingList dpList = this.mzq.getDataProcessingList();
+        //DataProcessingList dpList = this.mzq.getDataProcessingList(); //jmzquantml 1.0.0-rc3-1.0.5
+        DataProcessingList dpList = unmarshaller.unmarshal(MzQuantMLElement.DataProcessingList);
         if (dpList != null) {
             List<DataProcessing> dps = dpList.getDataProcessing();
             if (dps != null) {
@@ -767,10 +793,12 @@ public class MzQuantMLCvValidator extends Validator {
      * @param is the input stream to store.
      *
      * @return a File descriptor describing a temporary file storing the content
-     * of the given input stream.
+     *         of the given input stream.
+     *
      * @throws IOException if an IO error occur.
      */
-    private File storeAsTemporaryFile(InputStream is) throws IOException {
+    private File storeAsTemporaryFile(InputStream is)
+            throws IOException {
 
         if (is == null) {
             throw new IllegalArgumentException("You must give a non null InputStream");
@@ -832,7 +860,8 @@ public class MzQuantMLCvValidator extends Validator {
 //    }
     @Override
     public Collection<ValidatorMessage> checkCvMapping(Collection<?> collection,
-                                                       String xPath) throws ValidatorException {
+                                                       String xPath)
+            throws ValidatorException {
         Collection messages = new ArrayList();
 
         if (this.getCvRuleManager() != null) {
@@ -844,7 +873,8 @@ public class MzQuantMLCvValidator extends Validator {
                     }
                 }
             }
-        } else {
+        }
+        else {
             logger.error("The CvRuleManager has not been set up yet.");
         }
         return messages;
@@ -898,4 +928,5 @@ public class MzQuantMLCvValidator extends Validator {
         }
         return null;
     }
+
 }
