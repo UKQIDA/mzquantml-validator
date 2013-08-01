@@ -81,12 +81,13 @@ public class ValidatorView extends javax.swing.JFrame {
         jbValidate = new javax.swing.JButton();
         jtfSchema = new javax.swing.JTextField();
         jbSchema = new javax.swing.JButton();
+        jCheckBox1 = new javax.swing.JCheckBox();
         jPanel2 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jtaValidationResults = new javax.swing.JTextArea();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("MzQuantML file semantic validator --- Beta Version");
+        setTitle("MzQuantML file validator -- v 1.0.0");
         setMinimumSize(new java.awt.Dimension(661, 416));
         setResizable(false);
 
@@ -106,12 +107,17 @@ public class ValidatorView extends javax.swing.JFrame {
             }
         });
 
+        jtfSchema.setEnabled(false);
+
         jbSchema.setText("Schema");
+        jbSchema.setEnabled(false);
         jbSchema.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jbSchemaActionPerformed(evt);
             }
         });
+
+        jCheckBox1.setText("Schema validation");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -120,17 +126,18 @@ public class ValidatorView extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jtfFileName, javax.swing.GroupLayout.DEFAULT_SIZE, 630, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jbFileSelector))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addComponent(jCheckBox1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jbValidate))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jtfSchema, javax.swing.GroupLayout.DEFAULT_SIZE, 606, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jtfFileName)
+                            .addComponent(jtfSchema, javax.swing.GroupLayout.DEFAULT_SIZE, 606, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jbSchema)))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jbSchema, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jbFileSelector, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -145,7 +152,9 @@ public class ValidatorView extends javax.swing.JFrame {
                     .addComponent(jtfSchema, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jbSchema))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jbValidate)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jbValidate)
+                    .addComponent(jCheckBox1))
                 .addContainerGap())
         );
 
@@ -189,18 +198,18 @@ public class ValidatorView extends javax.swing.JFrame {
     private void jbValidateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbValidateActionPerformed
 
         try {
-            if (!this.jtfFileName.getText().isEmpty() && !this.jtfSchema.getText().isEmpty()) {
+            //if (!this.jtfFileName.getText().isEmpty() && !this.jtfSchema.getText().isEmpty()) {
                 this.jtaValidationResults.setText("INFO: Starting validation process......\nINFO: Loading MzQuantML file......\n");
                 this.update(this.getGraphics());
                 String fileName = this.jtfFileName.getText();
-                MzQuantMLValidator mzqValidator = new MzQuantMLValidator(fileName, true, this.jtfSchema.getText());
-                List<Message> results = mzqValidator.validate(fileName, true, this.jtfSchema.getText());
+                MzQuantMLValidator mzqValidator = new MzQuantMLValidator(fileName, false, this.jtfSchema.getText());
+                List<Message> results = mzqValidator.validate(fileName, false, this.jtfSchema.getText());
                 this.jtaValidationResults.setLineWrap(true);
                 String results_mod = results.toString();
                 this.jtaValidationResults.append(results_mod.substring(2, results_mod.length() - 1));
-            } else {
-                JOptionPane.showMessageDialog(this.jPanel2, "Missing mzq file or schema file!");
-            }
+            //} else {
+            //    JOptionPane.showMessageDialog(this.jPanel2, "Missing mzq file or schema file!");
+            //}
         } catch (FileNotFoundException ex) {
             Logger.getLogger(ValidatorView.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -284,6 +293,7 @@ public class ValidatorView extends javax.swing.JFrame {
         });
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;

@@ -2,9 +2,11 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
+
 package uk.ac.liv.mzquantml.validator.rules.general;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import org.apache.log4j.Level;
 import uk.ac.liv.jmzqml.model.mzqml.*;
@@ -24,8 +26,8 @@ public class ListsRule {
     InputFiles infls;
     ProteinGroupList protGrpLst;
     ProteinList protLst;
-    List<PeptideConsensusList> pepCnsLsts;
-    List<FeatureList> ftLsts;
+    Iterator<PeptideConsensusList> pepCnsLsts;
+    Iterator<FeatureList> ftLsts;
     List<Message> msgs = new ArrayList<Message>();
 
     /*
@@ -33,8 +35,8 @@ public class ListsRule {
      */
     public ListsRule(AnalysisType analysisType, InputFiles inputFiles,
                      ProteinGroupList proteinGroupList, ProteinList proteinList,
-                     List<PeptideConsensusList> peptideConsensusLists,
-                     List<FeatureList> featureLists) {
+                     Iterator<PeptideConsensusList> peptideConsensusLists,
+                     Iterator<FeatureList> featureLists) {
         this.at = analysisType;
         this.infls = inputFiles;
         this.protGrpLst = proteinGroupList;
@@ -69,11 +71,14 @@ public class ListsRule {
 
         if (this.at.getAnalysisType() == AnalTp.SpectralCounting) {
             checkSC();
-        } else if (this.at.getAnalysisType() == AnalTp.LabelFree) {
+        }
+        else if (this.at.getAnalysisType() == AnalTp.LabelFree) {
             checkLCMS();
-        } else if (this.at.getAnalysisType() == AnalTp.MS1LabelBased) {
+        }
+        else if (this.at.getAnalysisType() == AnalTp.MS1LabelBased) {
             checkMS1();
-        } else if (this.at.getAnalysisType() == AnalTp.MS2TagBased) {
+        }
+        else if (this.at.getAnalysisType() == AnalTp.MS2TagBased) {
             checkMS2();
         }
     }
@@ -92,7 +97,9 @@ public class ListsRule {
         }
 
         if (this.ftLsts != null) {
-            for (FeatureList featureList : ftLsts) {
+            //for (FeatureList featureList : ftLsts) {
+            while (ftLsts.hasNext()) {
+                FeatureList featureList = ftLsts.next();
                 if (!featureList.getFeatureQuantLayer().isEmpty()) {
                     msgs.add(new Message("There SHOULD NOT be a FeatureQuantLayer", Level.INFO));
                     msgs.add(new Message("FeatureQuantLayer found in FeatrueList "
@@ -127,8 +134,11 @@ public class ListsRule {
             msgs.add(new Message(("If PeptideConsensusList is present there MUST be a FeatureList present and "
                     + "there MUST be a MS2AssayQuantLayer present"), Level.INFO));
             msgs.add(new Message("There is no FeatureList\n", Level.ERROR));
-        } else {
-            for (FeatureList ftLst : this.ftLsts) {
+        }
+        else {
+            //for (FeatureList ftLst : this.ftLsts) {
+            while (ftLsts.hasNext()) {
+                FeatureList ftLst = ftLsts.next();
                 if (ftLst.getMS2AssayQuantLayer() == null) {
                     msgs.add(new Message(("If PeptideConsensusList is present there MUST be a FeatureList present and "
                             + "there MUST be a MS2AssayQuantLayer present"), Level.INFO));
@@ -137,4 +147,5 @@ public class ListsRule {
             }
         }
     }
+
 }

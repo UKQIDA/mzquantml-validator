@@ -1,3 +1,4 @@
+
 package uk.ac.liv.mzquantml.validator;
 
 import java.io.*;
@@ -12,7 +13,9 @@ import org.xml.sax.SAXException;
 import psidev.psi.tools.ontology_manager.impl.local.OntologyLoaderException;
 import psidev.psi.tools.validator.ValidatorException;
 import psidev.psi.tools.validator.ValidatorMessage;
+import uk.ac.liv.jmzqml.MzQuantMLElement;
 import uk.ac.liv.jmzqml.model.mzqml.*;
+import uk.ac.liv.jmzqml.xml.io.MzQuantMLUnmarshaller;
 import uk.ac.liv.mzquantml.validator.cvmapping.MzQuantMLCvValidator;
 import uk.ac.liv.mzquantml.validator.rules.general.*;
 import uk.ac.liv.mzquantml.validator.utils.AnalysisSummaryElement;
@@ -34,19 +37,22 @@ public class MzQuantMLValidator {
     private String fileName;
     private boolean schemaValidating;
     private String schemaFn;
+    private MzQuantMLUnmarshaller unmarshaller;
 
     public MzQuantMLValidator(String fileName, boolean schemaValidating,
                               String schemaFn) {
         this.fileName = fileName;
         this.schemaValidating = schemaValidating;
         this.schemaFn = schemaFn;
+        this.unmarshaller = new MzQuantMLUnmarshaller(new File(this.fileName));
     }
 
     /**
      * @param args the command line arguments
      */
     public List<Message> validate(String fileName, boolean schemaValidating,
-                                  String schemaFn) throws FileNotFoundException {
+                                  String schemaFn)
+            throws FileNotFoundException {
 
         msgs.clear();
 //        msgs.add(new Message("Starting validation process......", Level.INFO));
@@ -82,6 +88,7 @@ public class MzQuantMLValidator {
                 unmarsh.setSchema(schema);
 
                 ValidationEventHandler veh = new ValidationEventHandler() {
+
                     @Override
                     public boolean handleEvent(ValidationEvent event) {
                         //ignore warnings
@@ -96,27 +103,32 @@ public class MzQuantMLValidator {
                         }
                         return true;
                     }
+
                 };
                 unmarsh.setEventHandler(veh);
                 mzq = (MzQuantML) unmarsh.unmarshal(new FileReader(fileName));
-            } catch (JAXBException ex) {
+            }
+            catch (JAXBException ex) {
                 Logger.getLogger(MzQuantMLValidator.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-            } catch (SAXException ex) {
+            }
+            catch (SAXException ex) {
                 ex.printStackTrace();
             }
-        } else {
+        }
+        else {
 
             try {
                 JAXBContext context = JAXBContext.newInstance(new Class[]{MzQuantML.class
                         });
                 unmarsh = context.createUnmarshaller();
                 SchemaFactory sf = SchemaFactory.newInstance(W3C_XML_SCHEMA_NS_URI);
-                File schemaFile = new File(getClass().getClassLoader().getResource("mzQuantML_1_0_0-rc3.xsd").getFile());
+                File schemaFile = new File(getClass().getClassLoader().getResource("mzQuantML_1_0_0.xsd").getFile());
                 //File schemaFile = new File("mzQuantML_1_0_0-rc2.xsd");
                 Schema schema = sf.newSchema(schemaFile);
                 unmarsh.setSchema(schema);
 
                 ValidationEventHandler veh = new ValidationEventHandler() {
+
                     @Override
                     public boolean handleEvent(ValidationEvent event) {
                         //ignore warnings
@@ -131,12 +143,15 @@ public class MzQuantMLValidator {
                         }
                         return true;
                     }
+
                 };
                 unmarsh.setEventHandler(veh);
                 mzq = (MzQuantML) unmarsh.unmarshal(new FileReader(fileName));
-            } catch (JAXBException ex) {
+            }
+            catch (JAXBException ex) {
                 Logger.getLogger(MzQuantMLValidator.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-            } catch (SAXException ex) {
+            }
+            catch (SAXException ex) {
                 ex.printStackTrace();
             }
         }
@@ -154,25 +169,25 @@ public class MzQuantMLValidator {
         /*
          * get all mzQuantML elements
          */
-        AnalysisSummary analysisSummary = mzq.getAnalysisSummary();
-        AssayList assayList = mzq.getAssayList();
-        AuditCollection auditCollection = mzq.getAuditCollection();
-        List<BibliographicReference> bibliographicReferences = mzq.getBibliographicReference();
-        Calendar creationDate = mzq.getCreationDate();
-        CvList cvList = mzq.getCvList();
-        DataProcessingList dataProcessingList = mzq.getDataProcessingList();
-        List<FeatureList> featureLists = mzq.getFeatureList();
-        InputFiles inputFiles = mzq.getInputFiles();
-        List<PeptideConsensusList> peptideConsensusLists = mzq.getPeptideConsensusList();
-        ProteinGroupList proteinGroupList = mzq.getProteinGroupList();
-        ProteinList proteinList = mzq.getProteinList();
-        Provider provider = mzq.getProvider();
-        RatioList ratioList = mzq.getRatioList();
-        SmallMoleculeList smallMoleculeList = mzq.getSmallMoleculeList();
-        SoftwareList softwareList = mzq.getSoftwareList();
-        StudyVariableList studyVariableList = mzq.getStudyVariableList();
-        String version = mzq.getVersion();
-
+        // jmzquantml 1.0.0-rc3-1.0.5
+//        AnalysisSummary analysisSummary = mzq.getAnalysisSummary();
+//        AssayList assayList = mzq.getAssayList();
+//        AuditCollection auditCollection = mzq.getAuditCollection();
+//        List<BibliographicReference> bibliographicReferences = mzq.getBibliographicReference();
+//        Calendar creationDate = mzq.getCreationDate();
+//        CvList cvList = mzq.getCvList();
+//        DataProcessingList dataProcessingList = mzq.getDataProcessingList();
+//        List<FeatureList> featureLists = mzq.getFeatureList();
+//        InputFiles inputFiles = mzq.getInputFiles();
+//        List<PeptideConsensusList> peptideConsensusLists = mzq.getPeptideConsensusList();
+//        ProteinGroupList proteinGroupList = mzq.getProteinGroupList();
+//        ProteinList proteinList = mzq.getProteinList();
+//        Provider provider = mzq.getProvider();
+//        RatioList ratioList = mzq.getRatioList();
+//        SmallMoleculeList smallMoleculeList = mzq.getSmallMoleculeList();
+//        SoftwareList softwareList = mzq.getSoftwareList();
+//        StudyVariableList studyVariableList = mzq.getStudyVariableList();
+//        String version = mzq.getVersion();
         /**
          * ********************************
          * Start checking the schema rule These rules are manually written
@@ -186,6 +201,7 @@ public class MzQuantMLValidator {
         /*
          * check all mzQuantML elements one by one
          */
+        AnalysisSummary analysisSummary = unmarshaller.unmarshal(MzQuantMLElement.AnalysisSummary);
         if (analysisSummary != null) {
             at = new AnalysisType(analysisSummary);
             if (at.getAnalysisType() != AnalTp.InvalidAnalysisType) {
@@ -200,7 +216,8 @@ public class MzQuantMLValidator {
                 }
 
                 msgs.addAll(asr.getMsgs());
-            } /**
+            }
+            /**
              * If the mzq file doesn't contain valid cv term for
              * AnalysisSummary, validator will not continue to validate other cv
              * terms or user terms in it.
@@ -214,110 +231,146 @@ public class MzQuantMLValidator {
                         + "\"" + AnalTp.MS2TagBased.toString() + "\"\n"
                         + "\"" + AnalTp.SpectralCounting.toString() + "\"\n", Level.ERROR));
             }
-        } else {
+        }
+        else {
             // message there is no AnalysisSummary which is not acceptable
         }
 
+        AssayList assayList = unmarshaller.unmarshal(MzQuantMLElement.AssayList);
         if (assayList != null) {
             checkAssayList(assayList);
-        } else {
+        }
+        else {
             // message there is no AssayList which is not acceptable
         }
 
 
+        AuditCollection auditCollection = unmarshaller.unmarshal(MzQuantMLElement.AuditCollection);
         if (auditCollection != null) {
             checkAuditCollection(auditCollection);
-        } else {
+        }
+        else {
             // message
         }
 
+        Iterator<BibliographicReference> bibliographicReferences = unmarshaller.unmarshalCollectionFromXpath(MzQuantMLElement.BibliographicReference);
         if (bibliographicReferences != null) {
             checkBibliographicReference(bibliographicReferences);
-        } else {
+        }
+        else {
             // message
         }
 
-        if (creationDate != null) {
-            checkCreationDate(creationDate);
-        } else {
-            // message
-        }
 
+//        if (creationDate != null) {
+//            checkCreationDate(creationDate);
+//        }
+//        else {
+//            // message
+//        }
+
+        CvList cvList = unmarshaller.unmarshal(MzQuantMLElement.CvList);
         if (cvList != null) {
             checkCvList(cvList);
-        } else {
+        }
+        else {
             // message
         }
 
+        DataProcessingList dataProcessingList = unmarshaller.unmarshal(MzQuantMLElement.DataProcessingList);
         if (dataProcessingList != null) {
             checkDataProcessingList(dataProcessingList);
-        } else {
+        }
+        else {
             // message
         }
 
+        Iterator<FeatureList> featureLists = unmarshaller.unmarshalCollectionFromXpath(MzQuantMLElement.FeatureList);
         if (featureLists != null) {
             checkFeatureLists(featureLists);
-        } else {
+        }
+        else {
             // messages
         }
 
+        InputFiles inputFiles = unmarshaller.unmarshal(MzQuantMLElement.InputFiles);
         if (inputFiles != null) {
             checkInputFiles(inputFiles);
-        } else {
+        }
+        else {
             // message there is no inputFiles which is not acceptable
         }
 
+        Iterator<PeptideConsensusList> peptideConsensusLists = unmarshaller.unmarshalCollectionFromXpath(MzQuantMLElement.PeptideConsensusList);
         if (peptideConsensusLists != null) {
             checkPeptideConsensusLists(peptideConsensusLists);
-        } else {
+        }
+        else {
             // some message
         }
 
+
+        ProteinGroupList proteinGroupList = unmarshaller.unmarshal(MzQuantMLElement.ProteinGroupList);
         if (proteinGroupList != null) {
             checkProteinGroupList(proteinGroupList);
-        } else {
+        }
+        else {
             // message
         }
 
+        ProteinList proteinList = unmarshaller.unmarshal(MzQuantMLElement.ProteinList);
         if (proteinList != null) {
             checkProteinList(proteinList);
-        } else {
+        }
+        else {
             // message
         }
 
+        Provider provider = unmarshaller.unmarshal(MzQuantMLElement.Provider);
         if (provider != null) {
             checkProvider(provider);
-        } else {
+        }
+        else {
             // message
         }
 
+        RatioList ratioList = unmarshaller.unmarshal(MzQuantMLElement.RatioList);
         if (ratioList != null) {
             checkRatioList(ratioList);
-        } else {
+        }
+        else {
             // message
         }
 
+        SmallMoleculeList smallMoleculeList = unmarshaller.unmarshal(MzQuantMLElement.SmallMoleculeList);
         if (smallMoleculeList != null) {
             checkSmallMoleculeList(smallMoleculeList);
-        } else {
+        }
+        else {
             // message
         }
 
+        SoftwareList softwareList = unmarshaller.unmarshal(MzQuantMLElement.SoftwareList);
         if (softwareList != null) {
             checkSoftwareList(softwareList);
-        } else {
+        }
+        else {
             // message
         }
 
+        StudyVariableList studyVariableList = unmarshaller.unmarshal(MzQuantMLElement.StudyVariableList);
         if (studyVariableList != null) {
             checkStudyVariableList(studyVariableList);
-        } else {
+        }
+        else {
             // message
         }
 
+        String version = unmarshaller.getMzQuantMLVersion();
         if (version != null) {
             checkVersion(version);
-        } else {
+        }
+        else {
             // message
         }
 
@@ -326,7 +379,7 @@ public class MzQuantMLValidator {
          */
         if (inputFiles != null) {
             ListsRule listsRule = new ListsRule(at, inputFiles, proteinGroupList, proteinList,
-                    peptideConsensusLists, featureLists);
+                                                peptideConsensusLists, featureLists);
             listsRule.check();
             msgs.addAll(listsRule.getMsgs());
         }
@@ -361,16 +414,18 @@ public class MzQuantMLValidator {
         MzQuantMLCvValidator cvValidator;
         try {
             cvValidator = new MzQuantMLCvValidator(ontology, mappingRule);
-            final Collection<ValidatorMessage> validationResult = cvValidator.startValidation(fileName, mzq);
+            final Collection<ValidatorMessage> validationResult = cvValidator.startValidation(fileName);
 
             for (ValidatorMessage vMsg : validationResult) {
                 // convert MessageLevel to log4j Level
                 Level lev = Level.toLevel(vMsg.getLevel().toString());
                 msgs.add(new Message(vMsg.getRule().toString() + vMsg.getMessage(), lev));
             }
-        } catch (ValidatorException ex) {
+        }
+        catch (ValidatorException ex) {
             Logger.getLogger(MzQuantMLValidator.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (OntologyLoaderException ex) {
+        }
+        catch (OntologyLoaderException ex) {
             Logger.getLogger(MzQuantMLValidator.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
 //        } else {
@@ -396,37 +451,34 @@ public class MzQuantMLValidator {
      *
      * ***************************************
      */
-    static public void checkAnalysisSummary(AnalysisSummary analysisSummary) {
+    private void checkAnalysisSummary(AnalysisSummary analysisSummary) {
 //        analysisSummaryMap = new EnumMap<AnalysisSummaryElement, Boolean>(AnalysisSummaryElement.class);
 
         List<AbstractParam> paramGroups = analysisSummary.getParamGroup();
         for (AbstractParam param : paramGroups) {
             if (param instanceof CvParam) {
-                CvParam cv = (CvParam) param;
-                String name = cv.getName();
-                String value = cv.getValue();
-                String accession = cv.getAccession();
+                    CvParam cp = (CvParam) param;
+                    String name = cp.getName();
+                    String value = cp.getValue();
+                    String accession = cp.getAccession();
 
-                String targetClassId = "AnalysisSummary";
-                Object cvRef = cv.getCvRef();
-                msgs.addAll(checkObjectRef(targetClassId, cvRef,
-                        uk.ac.liv.jmzqml.model.mzqml.Cv.class));
+                    String targetClassId = "AnalysisSummary";
+                    //Object cvRef = cp.getCvRef();
+                    String cvRef = cp.getCvRef();
+                    
+                    msgs.addAll(checkObjectRef(targetClassId, cvRef,
+                                               uk.ac.liv.jmzqml.model.mzqml.Cv.class, this.unmarshaller));
 
-                String unitAccession = cv.getUnitAccession();
-                String unitCvRef = cv.getUnitCvRef();
-                String unitName = cv.getUnitName();
-
-//                AnalysisSummaryElement key = AnalysisSummaryElement.getType(name);
-//                if (key != null) {
-//                    analysisSummaryMap.put(key, Boolean.valueOf(value));
-//                }
+                    String unitAccession = cp.getUnitAccession();
+                    String unitCvRef = cp.getUnitCvRef();
+                    String unitName = cp.getUnitName();           
             }
         }
         String targetClassId = "AnalysisSummary";
         checkParamGroups(targetClassId, paramGroups);
     }
 
-    static public void checkAssayList(AssayList assayList) {
+    private void checkAssayList(AssayList assayList) {
         List<Assay> assays = assayList.getAssay();
         String id = assayList.getId();
 
@@ -438,34 +490,36 @@ public class MzQuantMLValidator {
         msgs.addAll(alr.getMsgs());
     }
 
-    static public void checkAssays(List<Assay> assays) {
+    private void checkAssays(List<Assay> assays) {
         if (assays != null) {
             for (Assay assay : assays) {
                 String targetClassId = assay.getId();
 
-                List<Object> identificationFileRefs = assay.getIdentificationFileRefs();
-                if (identificationFileRefs != null) {
-                    for (Object ref : identificationFileRefs) {
-                        msgs.addAll(checkObjectRef(targetClassId, ref,
-                                uk.ac.liv.jmzqml.model.mzqml.IdentificationFile.class));
-                    }
-                }
+                //TODO: this is temporary turned off. turn the checking on later
+                
+//                List<Object> identificationFileRefs = assay.getIdentificationFileRefs();
+//                if (identificationFileRefs != null) {
+//                    for (Object ref : identificationFileRefs) {
+//                        msgs.addAll(checkObjectRef(targetClassId, ref,
+//                                                   uk.ac.liv.jmzqml.model.mzqml.IdentificationFile.class, this.unmarshaller));
+//                    }
+//                }
 
                 List<AbstractParam> paramGroups = assay.getParamGroup();
                 checkParamGroups(targetClassId, paramGroups);
 
-                Object rawFilesGroupRef = assay.getRawFilesGroupRef();
+                String rawFilesGroupRef = assay.getRawFilesGroupRef();
 
                 if (rawFilesGroupRef != null) {
                     msgs.addAll(checkObjectRef(targetClassId, rawFilesGroupRef,
-                            uk.ac.liv.jmzqml.model.mzqml.RawFilesGroup.class));
+                                               uk.ac.liv.jmzqml.model.mzqml.RawFilesGroup.class, this.unmarshaller));
                 }
 
             }
         }
     }
 
-    static public void checkAuditCollection(AuditCollection auditCollection) {
+    private void checkAuditCollection(AuditCollection auditCollection) {
 //        List<AbstractContact> personOrOrganizations = auditCollection.getPersonOrOrganization();
         List<Person> persons = auditCollection.getPerson();
         List<Organization> orgs = auditCollection.getOrganization();
@@ -474,10 +528,12 @@ public class MzQuantMLValidator {
 //        checkPersonOrOrganizations(orgs);
     }
 
-    static public void checkBibliographicReference(
-            List<BibliographicReference> bibliographicReferences) {
+    private void checkBibliographicReference(
+            Iterator<BibliographicReference> bibliographicReferences) {
         if (bibliographicReferences != null) {
-            for (BibliographicReference bibRef : bibliographicReferences) {
+            //for (BibliographicReference bibRef : bibliographicReferences) {
+            while (bibliographicReferences.hasNext()) {
+                BibliographicReference bibRef = bibliographicReferences.next();
                 bibRef.getAuthors();
                 bibRef.getDoi();
                 bibRef.getEditor();
@@ -492,7 +548,7 @@ public class MzQuantMLValidator {
         }
     }
 
-    static public void checkColumnDefinition(String targetClassId,
+    private void checkColumnDefinition(String targetClassId,
                                              ColumnDefinition columnDefinition) {
         List<Column> columns = columnDefinition.getColumn();
         if (columns != null) {
@@ -504,34 +560,33 @@ public class MzQuantMLValidator {
         }
     }
 
-    static public void checkContactRole(String tarClsId, ContactRole contactRole) {
-        Object ref = contactRole.getContactRef();
-        msgs.addAll(checkObjectRef(tarClsId, ref, uk.ac.liv.jmzqml.model.mzqml.AbstractContact.class));
+    private void checkContactRole(String tarClsId, ContactRole contactRole) {
+        String ref = contactRole.getContactRef();
+        msgs.addAll(checkObjectRef(tarClsId, ref, uk.ac.liv.jmzqml.model.mzqml.AbstractContact.class, this.unmarshaller));
 
         Role role = contactRole.getRole();
         CvParam cvParam = role.getCvParam();
         checkCvParam(tarClsId, cvParam);
     }
 
-    static public void checkCreationDate(Calendar creationDate1) {
-    }
-
-    static public void checkCvList(CvList cvList) {
+//    static public void checkCreationDate(Calendar creationDate1) {
+//    }
+    private void checkCvList(CvList cvList) {
         List<Cv> cvs = cvList.getCv();
 
         checkCvs(cvs);
     }
 
-    static public void checkCvParam(String tarClsId, CvParam cvParam) {
-        Object cvRef = cvParam.getCvRef();
+    private void checkCvParam(String tarClsId, CvParam cvParam) {
+        String cvRef = cvParam.getCvRef();
         if (cvRef != null) {
-            msgs.addAll(checkObjectRef(tarClsId, cvRef, uk.ac.liv.jmzqml.model.mzqml.Cv.class));
+            msgs.addAll(checkObjectRef(tarClsId, cvRef, uk.ac.liv.jmzqml.model.mzqml.Cv.class, this.unmarshaller));
         }
 
         String accession = cvParam.getAccession();
     }
 
-    static public void checkCvs(List<Cv> cvs) {
+    private void checkCvs(List<Cv> cvs) {
         if (cvs != null) {
             for (Cv cv : cvs) {
                 cv.getFullName();
@@ -542,7 +597,7 @@ public class MzQuantMLValidator {
         }
     }
 
-    static public void checkDataMatrix(DataMatrix dataMatrix) {
+    private void checkDataMatrix(DataMatrix dataMatrix) {
         List<Row> rows = dataMatrix.getRow();
         if (rows != null) {
             for (Row row : rows) {
@@ -551,14 +606,14 @@ public class MzQuantMLValidator {
         }
     }
 
-    static public void checkDataProcessingList(
+    private void checkDataProcessingList(
             DataProcessingList dataProcessingList) {
         List<DataProcessing> dataProcessings = dataProcessingList.getDataProcessing();
 
         checkDataProcessings(dataProcessings);
     }
 
-    static public void checkDataProcessings(List<DataProcessing> dataProcessings) {
+    private void checkDataProcessings(List<DataProcessing> dataProcessings) {
         if (dataProcessings != null) {
             for (DataProcessing dataProcessing : dataProcessings) {
                 String targetClassId = dataProcessing.getId();
@@ -574,8 +629,8 @@ public class MzQuantMLValidator {
                 outputRule.check();
                 msgs.addAll(outputRule.getMsgs());
 
-                Object softwareRef = dataProcessing.getSoftwareRef();
-                msgs.addAll(checkObjectRef(targetClassId, softwareRef, uk.ac.liv.jmzqml.model.mzqml.Software.class));
+                String softwareRef = dataProcessing.getSoftwareRef();
+                msgs.addAll(checkObjectRef(targetClassId, softwareRef, uk.ac.liv.jmzqml.model.mzqml.Software.class, this.unmarshaller));
 
                 dataProcessing.getOrder();
 
@@ -586,27 +641,27 @@ public class MzQuantMLValidator {
         }
     }
 
-    static public void checkDBIdentificationRef(String tarClsId,
+    private void checkDBIdentificationRef(String tarClsId,
                                                 DBIdentificationRef dBidRef) {
-        Object ref = dBidRef.getSearchDatabaseRef();
-        checkObjectRef(tarClsId, ref, uk.ac.liv.jmzqml.model.mzqml.SearchDatabase.class);
+        String ref = dBidRef.getSearchDatabaseRef();
+        checkObjectRef(tarClsId, ref, uk.ac.liv.jmzqml.model.mzqml.SearchDatabase.class, this.unmarshaller);
     }
 
-    static public void checkEvidenceRef(String tarClsId, EvidenceRef evidenceRef) {
-        List<Assay> assayRefs = evidenceRef.getAssays();
+    private void checkEvidenceRef(String tarClsId, EvidenceRef evidenceRef) {
+        List<String> assayRefs = evidenceRef.getAssayRefs();
         if (assayRefs != null) {
-            for (Object assayRef : assayRefs) {
+            for (String assayRef : assayRefs) {
                 String targetClassId = tarClsId;
-                msgs.addAll(checkObjectRef(targetClassId, assayRef, uk.ac.liv.jmzqml.model.mzqml.Assay.class));
+                msgs.addAll(checkObjectRef(targetClassId, assayRef, uk.ac.liv.jmzqml.model.mzqml.Assay.class, this.unmarshaller));
             }
         }
 
-        Object ftRef = evidenceRef.getFeatureRef();
+        String ftRef = evidenceRef.getFeatureRef();
         String targetClassId = tarClsId;
-        msgs.addAll(checkObjectRef(targetClassId, ftRef, uk.ac.liv.jmzqml.model.mzqml.Feature.class));
+        msgs.addAll(checkObjectRef(targetClassId, ftRef, uk.ac.liv.jmzqml.model.mzqml.Feature.class, this.unmarshaller));
 
-        Object idFileRef = evidenceRef.getIdentificationFileRef();
-        msgs.addAll(checkObjectRef(targetClassId, idFileRef, uk.ac.liv.jmzqml.model.mzqml.IdentificationFile.class));
+        String idFileRef = evidenceRef.getIdentificationFileRef();
+        msgs.addAll(checkObjectRef(targetClassId, idFileRef, uk.ac.liv.jmzqml.model.mzqml.IdentificationFile.class, this.unmarshaller));
 
         evidenceRef.getIdRefs();
     }
@@ -614,9 +669,12 @@ public class MzQuantMLValidator {
     /*
      * validate FeatureList
      */
-    static public void checkFeatureLists(List<FeatureList> featureLists) {
+    private void checkFeatureLists(Iterator<FeatureList> featureLists) {
         if (featureLists != null) {
-            for (FeatureList featureList : featureLists) {
+            //for (FeatureList featureList : featureLists) {
+            while (featureLists.hasNext()) {
+                FeatureList featureList = featureLists.next();
+
                 List<Feature> features = featureList.getFeature();
                 checkFeatures(features);
 
@@ -639,13 +697,13 @@ public class MzQuantMLValidator {
                 List<AbstractParam> paramGroups = featureList.getParamGroup();
                 checkParamGroups(targetClassId, paramGroups);
 
-                Object rawFileGroupRef = featureList.getRawFilesGroupRef();
-                msgs.addAll(checkObjectRef(targetClassId, rawFileGroupRef, uk.ac.liv.jmzqml.model.mzqml.RawFilesGroup.class));
+                String rawFileGroupRef = featureList.getRawFilesGroupRef();
+                msgs.addAll(checkObjectRef(targetClassId, rawFileGroupRef, uk.ac.liv.jmzqml.model.mzqml.RawFilesGroup.class, this.unmarshaller));
             }
         }
     }
 
-    static public void checkFeatures(List<Feature> features) {
+    private void checkFeatures(List<Feature> features) {
         if (features != null) {
             for (Feature feature : features) {
                 feature.getChromatogramRefs();
@@ -658,14 +716,14 @@ public class MzQuantMLValidator {
         }
     }
 
-    static public void checkFileFormat(String tarClsId, FileFormat fileFormat) {
+    private void checkFileFormat(String tarClsId, FileFormat fileFormat) {
         if (fileFormat != null) {
             CvParam cvParam = fileFormat.getCvParam();
             checkCvParam(tarClsId, cvParam);
         }
     }
 
-    static public void checkGlobalQuantLayers(
+    private void checkGlobalQuantLayers(
             List<GlobalQuantLayer> globalQuantLayers) {
         if (globalQuantLayers != null) {
             for (GlobalQuantLayer globalQuantLayer : globalQuantLayers) {
@@ -684,27 +742,27 @@ public class MzQuantMLValidator {
         }
     }
 
-    static public void checkIdentificationFile(
+    private void checkIdentificationFile(
             IdentificationFile identificationFile) {
         List<AbstractParam> paramGroups = identificationFile.getParamGroup();
         String targetClassId = identificationFile.getId();
         checkParamGroups(targetClassId, paramGroups);
 
-        Object searchDatabaseRef = identificationFile.getSearchDatabaseRef();
-        checkObjectRef(targetClassId, searchDatabaseRef, uk.ac.liv.jmzqml.model.mzqml.SearchDatabase.class);
+        String searchDatabaseRef = identificationFile.getSearchDatabaseRef();
+        checkObjectRef(targetClassId, searchDatabaseRef, uk.ac.liv.jmzqml.model.mzqml.SearchDatabase.class, this.unmarshaller);
     }
 
-    static public void checkIdentificationRefs(String tarClsId,
+    private void checkIdentificationRefs(String tarClsId,
                                                List<IdentificationRef> identificationRefs) {
         if (identificationRefs != null) {
             for (IdentificationRef idRef : identificationRefs) {
-                Object idFileRef = idRef.getIdentificationFileRef();
-                msgs.addAll(checkObjectRef(tarClsId, idFileRef, uk.ac.liv.jmzqml.model.mzqml.IdentificationFile.class));
+                String idFileRef = idRef.getIdentificationFileRef(); 
+                msgs.addAll(checkObjectRef(tarClsId, idFileRef, uk.ac.liv.jmzqml.model.mzqml.IdentificationFile.class, this.unmarshaller));
             }
         }
     }
 
-    static public void checkInputFiles(InputFiles inputFiles) {
+    private void checkInputFiles(InputFiles inputFiles) {
         /*
          * RawFileRule start here
          */
@@ -744,7 +802,7 @@ public class MzQuantMLValidator {
         checkSourceFiles(sourceFiles);
     }
 
-    static public void checkModification(String tarClsId,
+    private void checkModification(String tarClsId,
                                          Modification modification) {
         List<CvParam> cvParams = modification.getCvParam();
         if (cvParams != null) {
@@ -764,30 +822,32 @@ public class MzQuantMLValidator {
 
     }
 
-    static public <T> ArrayList<Message> checkObjectRef(String tarClsId,
-                                                        Object objRef,
-                                                        Class<T> cls) {
-        ObjectRefTypeMatchRule objectRefMatchRule = new ObjectRefTypeMatchRule(tarClsId, objRef, cls);
+    private <T> ArrayList<Message> checkObjectRef(String tarClsId,
+                                                        String ref,
+                                                        Class<T> cls,
+                                                        MzQuantMLUnmarshaller um) {
+        ObjectRefTypeMatchRule objectRefMatchRule = new ObjectRefTypeMatchRule(tarClsId, ref, cls, um);
         objectRefMatchRule.check();
         return objectRefMatchRule.getMessage();
     }
 
-    static public void checkOrganization(Organization organization) {
+    private void checkOrganization(Organization organization) {
         ParentOrganization parentOrg = organization.getParentOrganization();
         String targetClassId = organization.getId();
-        Object parentOrgRef = parentOrg.getOrganizationRef();
-        msgs.addAll(checkObjectRef(targetClassId, parentOrgRef, uk.ac.liv.jmzqml.model.mzqml.ParentOrganization.class));
+        String parentOrgRef = parentOrg.getOrganizationRef();
+        msgs.addAll(checkObjectRef(targetClassId, parentOrgRef, uk.ac.liv.jmzqml.model.mzqml.ParentOrganization.class, this.unmarshaller));
     }
 
-    static public void checkParamGroups(String tarClsId,
+    private void checkParamGroups(String tarClsId,
                                         List<AbstractParam> paramGroups) {
         for (AbstractParam param : paramGroups) {
             if (param.getClass().isInstance(uk.ac.liv.jmzqml.model.mzqml.CvParam.class)) {
                 CvParam cv = (CvParam) param;
                 cv.getAccession();
-                Object cvRef = cv.getCvRef();
-                msgs.addAll(checkObjectRef(tarClsId, cvRef, uk.ac.liv.jmzqml.model.mzqml.Cv.class));
-            } else if (param.getClass().isInstance(uk.ac.liv.jmzqml.model.mzqml.UserParam.class)) {
+                String cvRef = cv.getCvRef();
+                msgs.addAll(checkObjectRef(tarClsId, cvRef, uk.ac.liv.jmzqml.model.mzqml.Cv.class, this.unmarshaller));
+            }
+            else if (param.getClass().isInstance(uk.ac.liv.jmzqml.model.mzqml.UserParam.class)) {
                 UserParam userParam = (UserParam) param;
                 userParam.getType();
             }
@@ -795,7 +855,7 @@ public class MzQuantMLValidator {
         }
     }
 
-    static public void checkPeptideConsensusList(
+    private void checkPeptideConsensusList(
             PeptideConsensusList peptideConsensusList) {
         if (peptideConsensusList != null) {
             List<QuantLayer> assayQuantLayers = peptideConsensusList.getAssayQuantLayer();
@@ -816,7 +876,7 @@ public class MzQuantMLValidator {
         }
     }
 
-    static public void checkPeptideConsensus(PeptideConsensus peptideConsensus) {
+    private void checkPeptideConsensus(PeptideConsensus peptideConsensus) {
         if (peptideConsensus != null) {
             List<String> charges = peptideConsensus.getCharge();
 
@@ -834,8 +894,8 @@ public class MzQuantMLValidator {
 
             String sequence = peptideConsensus.getPeptideSequence();
 
-            Object searchDBRef = peptideConsensus.getSearchDatabaseRef();
-            msgs.addAll(checkObjectRef(targetClassId, searchDBRef, uk.ac.liv.jmzqml.model.mzqml.SearchDatabase.class));
+            String searchDBRef = peptideConsensus.getSearchDatabaseRef();
+            msgs.addAll(checkObjectRef(targetClassId, searchDBRef, uk.ac.liv.jmzqml.model.mzqml.SearchDatabase.class, this.unmarshaller));
 
             List<EvidenceRef> evidenceRefs = peptideConsensus.getEvidenceRef();
             if (evidenceRefs != null) {
@@ -851,7 +911,7 @@ public class MzQuantMLValidator {
         }
     }
 
-    static public void checkPeptideConsensuses(
+    private void checkPeptideConsensuses(
             List<PeptideConsensus> peptideConsensuses) {
         if (peptideConsensuses != null) {
             for (PeptideConsensus peptideConsensus : peptideConsensuses) {
@@ -863,8 +923,8 @@ public class MzQuantMLValidator {
     /*
      * validate PeptideConsensusList
      */
-    static public void checkPeptideConsensusLists(
-            List<PeptideConsensusList> peptideConsensusLists) {
+    private void checkPeptideConsensusLists(
+            Iterator<PeptideConsensusList> peptideConsensusLists) {
         if (peptideConsensusLists != null) {
             /*
              * FinalResultRule start here
@@ -873,26 +933,28 @@ public class MzQuantMLValidator {
             frr.check();
             msgs.addAll(frr.getMsgs());
 
-            for (PeptideConsensusList peptideConsensusList : peptideConsensusLists) {
+            //for (PeptideConsensusList peptideConsensusList : peptideConsensusLists) {
+            while (peptideConsensusLists.hasNext()) {
+                PeptideConsensusList peptideConsensusList = peptideConsensusLists.next();
                 checkPeptideConsensusList(peptideConsensusList);
             }
         }
 
     }
 
-    static public void checkPerson(Person person) {
+    private void checkPerson(Person person) {
         List<Affiliation> affiliations = person.getAffiliation();
         String id = person.getId();
         String targetClassId = id;
         if (affiliations != null) {
             for (Affiliation affiliation : affiliations) {
-                Object orgRef = affiliation.getOrganizationRef();
-                msgs.addAll(checkObjectRef(targetClassId, orgRef, uk.ac.liv.jmzqml.model.mzqml.Organization.class));
+                String orgRef = affiliation.getOrganizationRef();
+                msgs.addAll(checkObjectRef(targetClassId, orgRef, uk.ac.liv.jmzqml.model.mzqml.Organization.class, this.unmarshaller));
             }
         }
     }
 
-    static public void checkPersonOrOrganizations(
+    private void checkPersonOrOrganizations(
             List<AbstractContact> personOrOrganizations) {
         if (personOrOrganizations != null) {
             for (AbstractContact personOrOrganization : personOrOrganizations) {
@@ -914,7 +976,7 @@ public class MzQuantMLValidator {
         }
     }
 
-    static public void checkProcessingMethods(String tarClsId,
+    private void checkProcessingMethods(String tarClsId,
                                               List<ProcessingMethod> processingMethods) {
         if (processingMethods != null) {
             for (ProcessingMethod processingMethod : processingMethods) {
@@ -926,7 +988,7 @@ public class MzQuantMLValidator {
         }
     }
 
-    static public void checkProtein(Protein protein) {
+    private void checkProtein(Protein protein) {
         String id = protein.getId();
         String targetClassId = id;
         List<IdentificationRef> identificationRefs = protein.getIdentificationRef();
@@ -935,18 +997,18 @@ public class MzQuantMLValidator {
         List<AbstractParam> paramGroups = protein.getParamGroup();
         checkParamGroups(targetClassId, paramGroups);
 
-        List<PeptideConsensus> pepRefs = protein.getPeptideConsensuses();
+        List<String> pepRefs = protein.getPeptideConsensusRefs();
         if (pepRefs != null) {
-            for (Object ref : pepRefs) {
-                msgs.addAll(checkObjectRef(targetClassId, ref, uk.ac.liv.jmzqml.model.mzqml.PeptideConsensus.class));
+            for (String ref : pepRefs) {
+                msgs.addAll(checkObjectRef(targetClassId, ref, uk.ac.liv.jmzqml.model.mzqml.PeptideConsensus.class, this.unmarshaller));
             }
         }
 
-        Object searchDBRef = protein.getSearchDatabaseRef();
-        msgs.addAll(checkObjectRef(targetClassId, searchDBRef, uk.ac.liv.jmzqml.model.mzqml.SearchDatabase.class));
+        String searchDBRef = protein.getSearchDatabaseRef();
+        msgs.addAll(checkObjectRef(targetClassId, searchDBRef, uk.ac.liv.jmzqml.model.mzqml.SearchDatabase.class, this.unmarshaller));
     }
 
-    static public void checkProteinGroup(ProteinGroup proteinGroup) {
+    private void checkProteinGroup(ProteinGroup proteinGroup) {
         String id = proteinGroup.getId();
         String targetClassId = id;
 
@@ -956,20 +1018,20 @@ public class MzQuantMLValidator {
         List<AbstractParam> paramGroups = proteinGroup.getParamGroup();
         checkParamGroups(targetClassId, paramGroups);
 
-        //Todo: re-coded in consistent manner
-        List<ProteinRef> proteinRefs = proteinGroup.getProteinRef();
-        if (proteinRefs != null) {
-            for (ProteinRef proteinRef : proteinRefs) {
-                Object protRef = proteinRef.getProteinRef();
-                msgs.addAll(checkObjectRef(targetClassId, protRef, uk.ac.liv.jmzqml.model.mzqml.Protein.class));
-            }
-        }
+        //TODO: re-coded in consistent manner
+//        List<ProteinRef> proteinRefs = proteinGroup.getProteinRef();
+//        if (proteinRefs != null) {
+//            for (ProteinRef proteinRef : proteinRefs) {
+//                Object protRef = proteinRef.getProteinRef();
+//                msgs.addAll(checkObjectRef(targetClassId, protRef, uk.ac.liv.jmzqml.model.mzqml.Protein.class, this.unmarshaller));
+//            }
+//        }
 
-        Object searchDBRef = proteinGroup.getSearchDatabaseRef();
-        msgs.addAll(checkObjectRef(targetClassId, searchDBRef, uk.ac.liv.jmzqml.model.mzqml.SearchDatabase.class));
+        String searchDBRef = proteinGroup.getSearchDatabaseRef();
+        msgs.addAll(checkObjectRef(targetClassId, searchDBRef, uk.ac.liv.jmzqml.model.mzqml.SearchDatabase.class, this.unmarshaller));
     }
 
-    static public void checkProteinGroupList(ProteinGroupList proteinGroupList) {
+    private void checkProteinGroupList(ProteinGroupList proteinGroupList) {
         if (proteinGroupList != null) {
             List<QuantLayer> assayQuantLayers = proteinGroupList.getAssayQuantLayer();
             List<GlobalQuantLayer> globalQuantLayers = proteinGroupList.getGlobalQuantLayer();
@@ -989,7 +1051,7 @@ public class MzQuantMLValidator {
         }
     }
 
-    static public void checkProteinGroups(List<ProteinGroup> proteinGroups) {
+    private void checkProteinGroups(List<ProteinGroup> proteinGroups) {
         if (proteinGroups != null) {
             for (ProteinGroup proteinGroup : proteinGroups) {
                 checkProteinGroup(proteinGroup);
@@ -1000,7 +1062,7 @@ public class MzQuantMLValidator {
     /*
      * validate ProteinList
      */
-    static public void checkProteinList(ProteinList proteinList) {
+    private void checkProteinList(ProteinList proteinList) {
         if (proteinList != null) {
             List<QuantLayer> assayQuantLayers = proteinList.getAssayQuantLayer();
             List<GlobalQuantLayer> globalQuantLayers = proteinList.getGlobalQuantLayer();
@@ -1020,7 +1082,7 @@ public class MzQuantMLValidator {
         }
     }
 
-    static public void checkProteins(List<Protein> proteins) {
+    private void checkProteins(List<Protein> proteins) {
         if (proteins != null) {
             for (Protein protein : proteins) {
                 checkProtein(protein);
@@ -1028,10 +1090,10 @@ public class MzQuantMLValidator {
         }
     }
 
-    static public void checkProvider(Provider provider) {
-        Object analysisSoftwareRef = provider.getSoftware();
+    private void checkProvider(Provider provider) {
+        String analysisSoftwareRef = provider.getSoftwareRef();
         String targetClassId = provider.getId();
-        msgs.addAll(checkObjectRef(targetClassId, analysisSoftwareRef, uk.ac.liv.jmzqml.model.mzqml.Software.class));
+        msgs.addAll(checkObjectRef(targetClassId, analysisSoftwareRef, uk.ac.liv.jmzqml.model.mzqml.Software.class, this.unmarshaller));
 
         ContactRole contactRole = provider.getContactRole();
         checkContactRole(targetClassId, contactRole);
@@ -1039,7 +1101,7 @@ public class MzQuantMLValidator {
         String name = provider.getName();
     }
 
-    static public void checkQuantLayers(List<QuantLayer> quantLayers) {
+    private void checkQuantLayers(List<QuantLayer> quantLayers) {
         if (quantLayers != null) {
             for (QuantLayer quantLayer : quantLayers) {
 
@@ -1048,7 +1110,7 @@ public class MzQuantMLValidator {
         }
     }
 
-    static public void checkQuantLayer(QuantLayer quantLayer) {
+    private void checkQuantLayer(QuantLayer quantLayer) {
 
         if (quantLayer != null) {
             //TODO: need to figure out what  does columnIndex refer to 
@@ -1073,7 +1135,7 @@ public class MzQuantMLValidator {
     /*
      * Validate RatioList
      */
-    static public void checkRatio(Ratio ratio) {
+    private void checkRatio(Ratio ratio) {
         String id = ratio.getId();
         String targetClassId = id;
         ParamList ratioCalParamList = ratio.getRatioCalculation();
@@ -1083,7 +1145,7 @@ public class MzQuantMLValidator {
         }
     }
 
-    static public void checkRatioList(RatioList ratioList) {
+    private void checkRatioList(RatioList ratioList) {
         if (ratioList != null) {
             List<Ratio> ratios = ratioList.getRatio();
             checkRatios(ratios);
@@ -1094,7 +1156,7 @@ public class MzQuantMLValidator {
         }
     }
 
-    static public void checkRatioQuantLayer(RatioQuantLayer ratioQuantLayer) {
+    private void checkRatioQuantLayer(RatioQuantLayer ratioQuantLayer) {
 
         if (ratioQuantLayer != null) {
             //TODO: need to figure out what  does columnIndex refer to 
@@ -1112,7 +1174,7 @@ public class MzQuantMLValidator {
         }
     }
 
-    static public void checkRatios(List<Ratio> ratios) {
+    private void checkRatios(List<Ratio> ratios) {
         if (ratios != null) {
             for (Ratio ratio : ratios) {
                 checkRatio(ratio);
@@ -1120,14 +1182,14 @@ public class MzQuantMLValidator {
         }
     }
 
-    static public void checkRawFiles(List<RawFile> rawFiles) {
+    private void checkRawFiles(List<RawFile> rawFiles) {
         if (rawFiles != null) {
             for (RawFile rawFile : rawFiles) {
                 String id = rawFile.getId();
                 String targetClassId = id;
 
-                Object methodFileRef = rawFile.getMethodFileRef();
-                msgs.addAll(checkObjectRef(targetClassId, methodFileRef, uk.ac.liv.jmzqml.model.mzqml.MethodFile.class));
+                String methodFileRef = rawFile.getMethodFileRef();
+                msgs.addAll(checkObjectRef(targetClassId, methodFileRef, uk.ac.liv.jmzqml.model.mzqml.MethodFile.class, this.unmarshaller));
 
                 List<AbstractParam> paramGroups = rawFile.getParamGroup();
                 checkParamGroups(targetClassId, paramGroups);
@@ -1138,7 +1200,7 @@ public class MzQuantMLValidator {
         }
     }
 
-    static public void checkRawFilesGroups(List<RawFilesGroup> rawFilesGroups) {
+    private void checkRawFilesGroups(List<RawFilesGroup> rawFilesGroups) {
         if (rawFilesGroups != null) {
             for (RawFilesGroup rawFilesGroup : rawFilesGroups) {
                 String targetClassId = rawFilesGroup.getId();
@@ -1151,11 +1213,11 @@ public class MzQuantMLValidator {
         }
     }
 
-    static public void checkRow(Row row) {
+    private void checkRow(Row row) {
         row.getObjectRef();
     }
 
-    static public void checkSearchDatabases(List<SearchDatabase> searchDatabases) {
+    private void checkSearchDatabases(List<SearchDatabase> searchDatabases) {
         if (searchDatabases != null) {
             for (SearchDatabase searchDatabase : searchDatabases) {
                 List<CvParam> cvParams = searchDatabase.getCvParam();
@@ -1179,7 +1241,7 @@ public class MzQuantMLValidator {
         }
     }
 
-    static public void checkSmallMolecule(SmallMolecule smallMolecule) {
+    private void checkSmallMolecule(SmallMolecule smallMolecule) {
         String id = smallMolecule.getId();
         String targetClassId = id;
 
@@ -1190,10 +1252,10 @@ public class MzQuantMLValidator {
             }
         }
 
-        List<Feature> ftRefs = smallMolecule.getFeatures();
+        List<String> ftRefs = smallMolecule.getFeatureRefs();
         if (ftRefs != null) {
-            for (Object ref : ftRefs) {
-                msgs.addAll(checkObjectRef(targetClassId, ref, uk.ac.liv.jmzqml.model.mzqml.Feature.class));
+            for (String ref : ftRefs) {
+                msgs.addAll(checkObjectRef(targetClassId, ref, uk.ac.liv.jmzqml.model.mzqml.Feature.class, this.unmarshaller));
             }
         }
 
@@ -1205,7 +1267,7 @@ public class MzQuantMLValidator {
 
     }
 
-    static public void checkSmallMolModifications(String tarClsId,
+    private void checkSmallMolModifications(String tarClsId,
                                                   List<SmallMolModification> smallMolModifications) {
         if (smallMolModifications != null) {
             for (SmallMolModification smallMolMod : smallMolModifications) {
@@ -1219,7 +1281,7 @@ public class MzQuantMLValidator {
         }
     }
 
-    static public void checkSmallMolecules(List<SmallMolecule> smallMolecules) {
+    private void checkSmallMolecules(List<SmallMolecule> smallMolecules) {
         if (smallMolecules != null) {
             for (SmallMolecule smallMol : smallMolecules) {
                 checkSmallMolecule(smallMol);
@@ -1227,7 +1289,7 @@ public class MzQuantMLValidator {
         }
     }
 
-    static public void checkSmallMoleculeList(
+    private void checkSmallMoleculeList(
             SmallMoleculeList smallMoleculeList) {
         List<QuantLayer> assayQuantLayers = smallMoleculeList.getAssayQuantLayer();
         List<GlobalQuantLayer> globalQuantLayers = smallMoleculeList.getGlobalQuantLayer();
@@ -1246,7 +1308,7 @@ public class MzQuantMLValidator {
         checkQuantLayers(studyVariableQuantLayers);
     }
 
-    static public void checkSoftwares(List<Software> softwares) {
+    private void checkSoftwares(List<Software> softwares) {
         if (softwares != null) {
             for (Software software : softwares) {
                 String id = software.getId();
@@ -1258,14 +1320,14 @@ public class MzQuantMLValidator {
         }
     }
 
-    static public void checkSoftwareList(SoftwareList softwareList) {
+    private void checkSoftwareList(SoftwareList softwareList) {
         if (softwareList != null) {
             List<Software> softwares = softwareList.getSoftware();
             checkSoftwares(softwares);
         }
     }
 
-    static public void checkSourceFiles(List<SourceFile> sourceFiles) {
+    private void checkSourceFiles(List<SourceFile> sourceFiles) {
         if (sourceFiles != null) {
             for (SourceFile sourceFile : sourceFiles) {
                 String targetClassId = sourceFile.getId();
@@ -1275,7 +1337,7 @@ public class MzQuantMLValidator {
         }
     }
 
-    static public void checkStudyVariableList(
+    private void checkStudyVariableList(
             StudyVariableList studyVariableList) {
         if (studyVariableList != null) {
             List<StudyVariable> studyVariables = studyVariableList.getStudyVariable();
@@ -1283,16 +1345,16 @@ public class MzQuantMLValidator {
         }
     }
 
-    static public void checkStudyVariables(List<StudyVariable> studyVariables) {
+    private void checkStudyVariables(List<StudyVariable> studyVariables) {
         if (studyVariables != null) {
             for (StudyVariable studyVariable : studyVariables) {
                 String id = studyVariable.getId();
                 String targetClassId = id;
 
-                List<Assay> assayRefs = studyVariable.getAssays();
+                List<String> assayRefs = studyVariable.getAssayRefs();
                 if (assayRefs != null) {
-                    for (Object assayRef : assayRefs) {
-                        msgs.addAll(checkObjectRef(targetClassId, assayRef, uk.ac.liv.jmzqml.model.mzqml.Assay.class));
+                    for (String assayRef : assayRefs) {
+                        msgs.addAll(checkObjectRef(targetClassId, assayRef, uk.ac.liv.jmzqml.model.mzqml.Assay.class, this.unmarshaller));
                     }
                 }
 
@@ -1302,13 +1364,14 @@ public class MzQuantMLValidator {
         }
     }
 
-    static public void checkVersion(String version) {
+    private void checkVersion(String version) {
     }
 
     /*
      * protected methods
      */
-    protected InputStream getOntologiesFileInputStream() throws FileNotFoundException {
+    protected InputStream getOntologiesFileInputStream()
+            throws FileNotFoundException {
 
         File file = new File(getClass().getClassLoader().getResource("ontologies.xml").getFile());
         if (!file.exists()) {
@@ -1318,7 +1381,8 @@ public class MzQuantMLValidator {
         return new FileInputStream(file);
     }
 
-    protected InputStream getGeneralMappingRuleInputStream() throws FileNotFoundException {
+    protected InputStream getGeneralMappingRuleInputStream()
+            throws FileNotFoundException {
         String mappingRuleFile = getClass().getClassLoader().
                 getResource("mzQuantML-mapping_1.0.0-rc3-general.xml").getFile();
         File file = new File(mappingRuleFile);
@@ -1349,4 +1413,5 @@ public class MzQuantMLValidator {
         }
 
     }
+
 }

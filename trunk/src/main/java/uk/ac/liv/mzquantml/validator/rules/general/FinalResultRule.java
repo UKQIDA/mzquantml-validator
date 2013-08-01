@@ -2,9 +2,11 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
+
 package uk.ac.liv.mzquantml.validator.rules.general;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import org.apache.log4j.Level;
 import uk.ac.liv.jmzqml.model.mzqml.PeptideConsensusList;
@@ -18,7 +20,7 @@ import uk.ac.liv.mzquantml.validator.utils.Message;
  */
 public class FinalResultRule {
 
-    List<PeptideConsensusList> pepCnsLsts;
+    Iterator<PeptideConsensusList> pepCnsLsts;
     ArrayList<Message> msgs = new ArrayList<Message>();
 
     /*
@@ -28,7 +30,7 @@ public class FinalResultRule {
         this.pepCnsLsts = null;
     }
 
-    public FinalResultRule(List<PeptideConsensusList> peptideConsensusLists) {
+    public FinalResultRule(Iterator<PeptideConsensusList> peptideConsensusLists) {
         this.pepCnsLsts = peptideConsensusLists;
     }
 
@@ -37,8 +39,10 @@ public class FinalResultRule {
      */
     public void check() {
         int count = 0;
-        if (!this.pepCnsLsts.isEmpty()) {
-            for (PeptideConsensusList peptideConsensusList : this.pepCnsLsts) {
+        if (this.pepCnsLsts != null) {
+            //for (PeptideConsensusList peptideConsensusList : this.pepCnsLsts) {
+            while (this.pepCnsLsts.hasNext()) {
+                PeptideConsensusList peptideConsensusList = this.pepCnsLsts.next();
                 if (peptideConsensusList.isFinalResult()) {
                     count++;
                 }
@@ -55,4 +59,5 @@ public class FinalResultRule {
     public List<Message> getMsgs() {
         return msgs;
     }
+
 }
