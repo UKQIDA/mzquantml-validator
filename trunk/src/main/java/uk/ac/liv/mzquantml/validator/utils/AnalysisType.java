@@ -2,10 +2,10 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
+
 package uk.ac.liv.mzquantml.validator.utils;
 
 import java.util.List;
-import uk.ac.liv.jmzqml.model.mzqml.AbstractParam;
 import uk.ac.liv.jmzqml.model.mzqml.AnalysisSummary;
 import uk.ac.liv.jmzqml.model.mzqml.CvParam;
 
@@ -23,6 +23,7 @@ public class AnalysisType {
         SpectralCounting("spectral counting quantitation analysis", "MS:1001836"),
         MS1LabelBased("MS1 label-based analysis", "MS:1002018"),
         MS2TagBased("MS2 tag-based analysis", "MS:1002023"),
+        SRM("SRM quantitation analysis", "MS:1001838"),
         InvalidAnalysisType("invalid name", "invalid accession");
         private final String name;
         private final String accession;
@@ -44,37 +45,42 @@ public class AnalysisType {
         public String toString() {
             return (this.getAccession() + ": " + this.getName());
         }
+
     };
+
     AnalTp at;
 
     public AnalysisType(AnalysisSummary analysisSummary) {
         /*
-         * This can not deal with the situation when two valid cv terms are
-         * present.
+         * This can not deal with the situation when two valid cv terms are present.
          * In reality, one experiment can only be from one techniqe.
          * The type of techinque for mzq file will be decided by the first valid
          * cv term.
          */
-        List<AbstractParam> paramGroups = analysisSummary.getParamGroup();
-        for (AbstractParam param : paramGroups) {
-            //Technique tech = new Technique(param.getName());
-            if (param instanceof CvParam) {
-                CvParam cvParam = (CvParam) param;
+        List<CvParam> paramGroups = analysisSummary.getCvParam();
 
-                if (cvParam.getAccession().equals(AnalTp.LabelFree.getAccession())) {
-                    at = AnalTp.LabelFree;
-                } else if (cvParam.getAccession().equals(AnalTp.SpectralCounting.getAccession())) {
-                    at = AnalTp.SpectralCounting;
-                } else if (cvParam.getAccession().equals(AnalTp.MS1LabelBased.getAccession())) {
-                    at = AnalTp.MS1LabelBased;
-                } else if (cvParam.getAccession().equals(AnalTp.MS2TagBased.getAccession())) {
-                    at = AnalTp.MS2TagBased;
-                } else {
-                    at = AnalTp.InvalidAnalysisType;
-                }
-                if (at != null) {
-                    break;
-                }
+        for (CvParam cvParam : paramGroups) {
+
+            if (cvParam.getAccession().equals(AnalTp.LabelFree.getAccession())) {
+                at = AnalTp.LabelFree;
+            }
+            else if (cvParam.getAccession().equals(AnalTp.SpectralCounting.getAccession())) {
+                at = AnalTp.SpectralCounting;
+            }
+            else if (cvParam.getAccession().equals(AnalTp.MS1LabelBased.getAccession())) {
+                at = AnalTp.MS1LabelBased;
+            }
+            else if (cvParam.getAccession().equals(AnalTp.MS2TagBased.getAccession())) {
+                at = AnalTp.MS2TagBased;
+            }
+            else if (cvParam.getAccession().equals(AnalTp.SRM.getAccession())) {
+                at = AnalTp.SRM;
+            }
+            else {
+                at = AnalTp.InvalidAnalysisType;
+            }
+            if (at != null) {
+                break;
             }
         }
     }
@@ -86,4 +92,5 @@ public class AnalysisType {
     public AnalTp getAnalysisType() {
         return this.at;
     }
+
 }
