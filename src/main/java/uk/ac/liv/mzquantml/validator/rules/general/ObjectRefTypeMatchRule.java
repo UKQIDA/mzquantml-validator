@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.logging.Logger;
 import javax.xml.bind.JAXBException;
 import org.apache.log4j.Level;
-import uk.ac.liv.jmzqml.model.mzqml.*;
 import uk.ac.liv.jmzqml.xml.io.MzQuantMLUnmarshaller;
 import uk.ac.liv.mzquantml.validator.utils.Message;
 

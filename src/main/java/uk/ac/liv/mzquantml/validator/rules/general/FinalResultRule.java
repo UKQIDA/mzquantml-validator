@@ -20,18 +20,18 @@ import uk.ac.liv.mzquantml.validator.utils.Message;
  */
 public class FinalResultRule {
 
-    Iterator<PeptideConsensusList> pepCnsLsts;
+    Iterator<PeptideConsensusList> pepCnsLstIt;
     ArrayList<Message> msgs = new ArrayList<Message>();
 
     /*
      * constructor
      */
     public FinalResultRule() {
-        this.pepCnsLsts = null;
+        this.pepCnsLstIt = null;
     }
 
-    public FinalResultRule(Iterator<PeptideConsensusList> peptideConsensusLists) {
-        this.pepCnsLsts = peptideConsensusLists;
+    public FinalResultRule(Iterator<PeptideConsensusList> peptideConsensusListIter) {
+        this.pepCnsLstIt = peptideConsensusListIter;
     }
 
     /*
@@ -39,10 +39,11 @@ public class FinalResultRule {
      */
     public void check() {
         int count = 0;
-        if (this.pepCnsLsts != null) {
-            //for (PeptideConsensusList peptideConsensusList : this.pepCnsLsts) {
-            while (this.pepCnsLsts.hasNext()) {
-                PeptideConsensusList peptideConsensusList = this.pepCnsLsts.next();
+        //when the pepCnsListIt is empty, skip the checking
+        if (this.pepCnsLstIt != null && this.pepCnsLstIt.hasNext()) {
+         
+            while (this.pepCnsLstIt.hasNext()) {
+                PeptideConsensusList peptideConsensusList = this.pepCnsLstIt.next();
                 if (peptideConsensusList.isFinalResult()) {
                     count++;
                 }
