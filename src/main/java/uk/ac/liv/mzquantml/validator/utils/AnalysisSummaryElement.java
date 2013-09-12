@@ -2,6 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
+
 package uk.ac.liv.mzquantml.validator.utils;
 
 import java.util.ArrayList;
@@ -31,7 +32,11 @@ public enum AnalysisSummaryElement {
     MS2Ft(AnalTp.MS2TagBased, FeatureList.class, "MS:1002024", "MS2 tag-based feature level quantitation"),
     MS2Pep(AnalTp.MS2TagBased, PeptideConsensusList.class, "MS:1002025", "MS2 tag-based peptide level quantitation"),
     MS2Prot(AnalTp.MS2TagBased, ProteinList.class, "MS:1002026", "MS2 tag-based protein level quantitation"),
-    MS2ProtG(AnalTp.MS2TagBased, ProteinGroupList.class, "MS:1002027", "MS2 tag-based proteingroup level quantitation");
+    MS2ProtG(AnalTp.MS2TagBased, ProteinGroupList.class, "MS:1002027", "MS2 tag-based proteingroup level quantitation"),
+    SRMPep(AnalTp.SRM, PeptideConsensusList.class, "MS:1002282", "SRM peptide level quantitation"),
+    SRMProt(AnalTp.SRM, ProteinList.class, "MS:1002284", "SRM protein level quantitation"),
+    SRMProtG(AnalTp.SRM, ProteinGroupList.class, "MS:1002284", "SRM proteingroup level quantitation"),
+    SRMFt(AnalTp.SRM, FeatureList.class, "MS:100281", "SRM feature level quantitation");
     private AnalysisType.AnalTp at;
     private Class cls;
     private String accession;
@@ -69,14 +74,15 @@ public enum AnalysisSummaryElement {
         }
         return null;
     }
-    
-    public static ArrayList<AnalysisSummaryElement> valuesByType(AnalysisType at){
+
+    public static ArrayList<AnalysisSummaryElement> valuesByType(AnalysisType at) {
         ArrayList<AnalysisSummaryElement> aseList = new ArrayList<AnalysisSummaryElement>();
-        for (AnalysisSummaryElement ase: AnalysisSummaryElement.values()){
-            if (ase.getAnalysisType()==at.getAnalysisType()){
+        for (AnalysisSummaryElement ase : AnalysisSummaryElement.values()) {
+            if (ase.getAnalysisType() == at.getAnalysisType()) {
                 aseList.add(ase);
             }
         }
         return aseList;
     }
+
 }
