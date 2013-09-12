@@ -331,11 +331,13 @@ public class MzQuantMLCvValidator extends Validator {
         // check StudyVariable_rule
         //StudyVariableList studyVariables = this.mzq.getStudyVariableList(); //jmzquantml 1.0.0-rc3-1.0.5
         StudyVariableList studyVariables = unmarshaller.unmarshal(MzQuantMLElement.StudyVariableList);
-        List<StudyVariable> studyVariableList = studyVariables.getStudyVariable();
-        if (studyVariableList != null) {
-            for (StudyVariable studyVariable : studyVariableList) {
-                cvMappingResult = this.checkCvMapping(studyVariable, "/MzQuantML/StudyVariableList/studyVariable");
-                addMessages(cvMappingResult, this.msgL);
+        if (studyVariables != null) {
+            List<StudyVariable> studyVariableList = studyVariables.getStudyVariable();
+            if (studyVariableList != null) {
+                for (StudyVariable studyVariable : studyVariableList) {
+                    cvMappingResult = this.checkCvMapping(studyVariable, "/MzQuantML/StudyVariableList/studyVariable");
+                    addMessages(cvMappingResult, this.msgL);
+                }
             }
         }
 

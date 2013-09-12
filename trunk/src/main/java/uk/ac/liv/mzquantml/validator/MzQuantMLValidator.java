@@ -29,6 +29,9 @@ import uk.ac.liv.mzquantml.validator.utils.Message;
  * @time 10:28:09 14-Mar-2012
  * @institution University of Liverpool
  */
+//TODO: 1. schema validation on/off switch
+//TODO: 2. if schema validation is off, catch JAXBException when unmarshalling fails
+//TODO: 3. capture numerator and determinator class 
 public class MzQuantMLValidator {
 
     private static AnalysisType at = new AnalysisType();
@@ -116,44 +119,43 @@ public class MzQuantMLValidator {
             }
         }
         else {
-
-            try {
-                JAXBContext context = JAXBContext.newInstance(new Class[]{MzQuantML.class
-                        });
-                unmarsh = context.createUnmarshaller();
-                SchemaFactory sf = SchemaFactory.newInstance(W3C_XML_SCHEMA_NS_URI);
-                File schemaFile = new File(getClass().getClassLoader().getResource("mzQuantML_1_0_0.xsd").getFile());
-                //File schemaFile = new File("mzQuantML_1_0_0-rc2.xsd");
-                Schema schema = sf.newSchema(schemaFile);
-                unmarsh.setSchema(schema);
-
-                ValidationEventHandler veh = new ValidationEventHandler() {
-
-                    @Override
-                    public boolean handleEvent(ValidationEvent event) {
-                        //ignore warnings
-                        if (event.getSeverity() != ValidationEvent.WARNING) {
-                            ValidationEventLocator vel = event.getLocator();
-//                            System.out.println("Line:Col[" + vel.getLineNumber()
+//            try {
+//                JAXBContext context = JAXBContext.newInstance(new Class[]{MzQuantML.class
+//                        });
+//                unmarsh = context.createUnmarshaller();
+//                SchemaFactory sf = SchemaFactory.newInstance(W3C_XML_SCHEMA_NS_URI);
+//                File schemaFile = new File(getClass().getClassLoader().getResource("mzQuantML_1_0_0.xsd").getFile());
+//                //File schemaFile = new File("mzQuantML_1_0_0-rc2.xsd");
+//                Schema schema = sf.newSchema(schemaFile);
+//                unmarsh.setSchema(schema);
+//
+//                ValidationEventHandler veh = new ValidationEventHandler() {
+//
+//                    @Override
+//                    public boolean handleEvent(ValidationEvent event) {
+//                        //ignore warnings
+//                        if (event.getSeverity() != ValidationEvent.WARNING) {
+//                            ValidationEventLocator vel = event.getLocator();
+////                            System.out.println("Line:Col[" + vel.getLineNumber()
+////                                    + ":" + vel.getColumnNumber()
+////                                    + "]:" + event.getMessage());
+//                            msgs.add(new Message("Line:Col[" + vel.getLineNumber()
 //                                    + ":" + vel.getColumnNumber()
-//                                    + "]:" + event.getMessage());
-                            msgs.add(new Message("Line:Col[" + vel.getLineNumber()
-                                    + ":" + vel.getColumnNumber()
-                                    + "]:" + event.getMessage()));
-                        }
-                        return true;
-                    }
-
-                };
-                unmarsh.setEventHandler(veh);
-                mzq = (MzQuantML) unmarsh.unmarshal(new FileReader(fileName));
-            }
-            catch (JAXBException ex) {
-                Logger.getLogger(MzQuantMLValidator.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-            }
-            catch (SAXException ex) {
-                ex.printStackTrace();
-            }
+//                                    + "]:" + event.getMessage()));
+//                        }
+//                        return true;
+//                    }
+//
+//                };
+//                unmarsh.setEventHandler(veh);
+//                mzq = (MzQuantML) unmarsh.unmarshal(new FileReader(fileName));
+//            }
+//            catch (JAXBException ex) {
+//                Logger.getLogger(MzQuantMLValidator.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//            }
+//            catch (SAXException ex) {
+//                ex.printStackTrace();
+//            }
         }
 
 //        if (unmarshaller.getExceptionalMessages().isEmpty()) {
@@ -206,9 +208,10 @@ public class MzQuantMLValidator {
             at = new AnalysisType(analysisSummary);
             if (at.getAnalysisType() != AnalTp.InvalidAnalysisType) {
                 /**
-                 * check AnalsisSummaryRule first check() return a boolean value
-                 * return ture when there is no cv term missing return false
-                 * when at least one cv term is missing
+                 * check AnalsisSummaryRule first
+                 * check() return a boolean value
+                 * return ture when there is no CV term is missing
+                 * return false when one or more CV terms are missing
                  */
                 AnalysisSummaryRule asr = new AnalysisSummaryRule(analysisSummary);
                 if (asr.check()) {
@@ -218,9 +221,9 @@ public class MzQuantMLValidator {
                 msgs.addAll(asr.getMsgs());
             }
             /**
-             * If the mzq file doesn't contain valid cv term for
-             * AnalysisSummary, validator will not continue to validate other cv
-             * terms or user terms in it.
+             * If the mzq file doesn't contain valid CV term for
+             * AnalysisSummary, validator will not continue to check the rest
+             * CV terms or user terms.
              */
             else {
                 msgs.add(new Message("Missing cv term accession for specific technique in AnalysisSummary. "
@@ -229,7 +232,8 @@ public class MzQuantMLValidator {
                         + "\"" + AnalTp.LabelFree.toString() + "\"\n"
                         + "\"" + AnalTp.MS1LabelBased.toString() + "\"\n"
                         + "\"" + AnalTp.MS2TagBased.toString() + "\"\n"
-                        + "\"" + AnalTp.SpectralCounting.toString() + "\"\n", Level.ERROR));
+                        + "\"" + AnalTp.SpectralCounting.toString() + "\"\n"
+                        + "\"" + AnalTp.SRM.toString() + "\"\n", Level.ERROR));
             }
         }
         else {
@@ -457,21 +461,21 @@ public class MzQuantMLValidator {
         List<AbstractParam> paramGroups = analysisSummary.getParamGroup();
         for (AbstractParam param : paramGroups) {
             if (param instanceof CvParam) {
-                    CvParam cp = (CvParam) param;
-                    String name = cp.getName();
-                    String value = cp.getValue();
-                    String accession = cp.getAccession();
+                CvParam cp = (CvParam) param;
+                String name = cp.getName();
+                String value = cp.getValue();
+                String accession = cp.getAccession();
 
-                    String targetClassId = "AnalysisSummary";
-                    //Object cvRef = cp.getCvRef();
-                    String cvRef = cp.getCvRef();
-                    
-                    msgs.addAll(checkObjectRef(targetClassId, cvRef,
-                                               uk.ac.liv.jmzqml.model.mzqml.Cv.class, this.unmarshaller));
+                String targetClassId = "AnalysisSummary";
+                //Object cvRef = cp.getCvRef();
+                String cvRef = cp.getCvRef();
 
-                    String unitAccession = cp.getUnitAccession();
-                    String unitCvRef = cp.getUnitCvRef();
-                    String unitName = cp.getUnitName();           
+                msgs.addAll(checkObjectRef(targetClassId, cvRef,
+                                           uk.ac.liv.jmzqml.model.mzqml.Cv.class, this.unmarshaller));
+
+                String unitAccession = cp.getUnitAccession();
+                String unitCvRef = cp.getUnitCvRef();
+                String unitName = cp.getUnitName();
             }
         }
         String targetClassId = "AnalysisSummary";
@@ -495,15 +499,13 @@ public class MzQuantMLValidator {
             for (Assay assay : assays) {
                 String targetClassId = assay.getId();
 
-                //TODO: this is temporary turned off. turn the checking on later
-                
-//                List<Object> identificationFileRefs = assay.getIdentificationFileRefs();
-//                if (identificationFileRefs != null) {
-//                    for (Object ref : identificationFileRefs) {
-//                        msgs.addAll(checkObjectRef(targetClassId, ref,
-//                                                   uk.ac.liv.jmzqml.model.mzqml.IdentificationFile.class, this.unmarshaller));
-//                    }
-//                }
+                List<String> identificationFileRefs = assay.getIdentificationFileRefs();
+                if (identificationFileRefs != null) {
+                    for (String ref : identificationFileRefs) {
+                        msgs.addAll(checkObjectRef(targetClassId, ref,
+                                                   uk.ac.liv.jmzqml.model.mzqml.IdentificationFile.class, this.unmarshaller));
+                    }
+                }
 
                 List<AbstractParam> paramGroups = assay.getParamGroup();
                 checkParamGroups(targetClassId, paramGroups);
@@ -549,7 +551,7 @@ public class MzQuantMLValidator {
     }
 
     private void checkColumnDefinition(String targetClassId,
-                                             ColumnDefinition columnDefinition) {
+                                       ColumnDefinition columnDefinition) {
         List<Column> columns = columnDefinition.getColumn();
         if (columns != null) {
             for (Column column : columns) {
@@ -562,8 +564,12 @@ public class MzQuantMLValidator {
 
     private void checkContactRole(String tarClsId, ContactRole contactRole) {
         String ref = contactRole.getContactRef();
-        msgs.addAll(checkObjectRef(tarClsId, ref, uk.ac.liv.jmzqml.model.mzqml.AbstractContact.class, this.unmarshaller));
-
+        if (contactRole.getOrganization() != null) {
+            msgs.addAll(checkObjectRef(tarClsId, ref, uk.ac.liv.jmzqml.model.mzqml.Organization.class, this.unmarshaller));
+        }
+        if (contactRole.getPerson() != null) {
+            msgs.addAll(checkObjectRef(tarClsId, ref, uk.ac.liv.jmzqml.model.mzqml.Person.class, this.unmarshaller));
+        }
         Role role = contactRole.getRole();
         CvParam cvParam = role.getCvParam();
         checkCvParam(tarClsId, cvParam);
@@ -642,7 +648,7 @@ public class MzQuantMLValidator {
     }
 
     private void checkDBIdentificationRef(String tarClsId,
-                                                DBIdentificationRef dBidRef) {
+                                          DBIdentificationRef dBidRef) {
         String ref = dBidRef.getSearchDatabaseRef();
         checkObjectRef(tarClsId, ref, uk.ac.liv.jmzqml.model.mzqml.SearchDatabase.class, this.unmarshaller);
     }
@@ -706,6 +712,14 @@ public class MzQuantMLValidator {
     private void checkFeatures(List<Feature> features) {
         if (features != null) {
             for (Feature feature : features) {
+                /*
+                 * FeatureRule
+                 */
+
+                FeatureRule ftRule = new FeatureRule(at, feature);
+                ftRule.check();
+                addLevelMessage(ftRule.getMsgs(), Level.WARN);
+
                 feature.getChromatogramRefs();
                 feature.getSpectrumRefs();
 
@@ -753,11 +767,21 @@ public class MzQuantMLValidator {
     }
 
     private void checkIdentificationRefs(String tarClsId,
-                                               List<IdentificationRef> identificationRefs) {
+                                         List<IdentificationRef> identificationRefs) {
         if (identificationRefs != null) {
             for (IdentificationRef idRef : identificationRefs) {
-                String idFileRef = idRef.getIdentificationFileRef(); 
+                String idFileRef = idRef.getIdentificationFileRef();
                 msgs.addAll(checkObjectRef(tarClsId, idFileRef, uk.ac.liv.jmzqml.model.mzqml.IdentificationFile.class, this.unmarshaller));
+            }
+        }
+    }
+
+    private void checkProteinRefs(String tarClsId,
+                                  List<ProteinRef> proteinRefs) {
+        if (proteinRefs != null) {
+            for (ProteinRef objectRef : proteinRefs) {
+                String protRef = objectRef.getProteinRef();
+                msgs.addAll(checkObjectRef(tarClsId, protRef, uk.ac.liv.jmzqml.model.mzqml.IdentificationFile.class, this.unmarshaller));
             }
         }
     }
@@ -803,7 +827,7 @@ public class MzQuantMLValidator {
     }
 
     private void checkModification(String tarClsId,
-                                         Modification modification) {
+                                   Modification modification) {
         List<CvParam> cvParams = modification.getCvParam();
         if (cvParams != null) {
             for (CvParam cvParam : cvParams) {
@@ -823,9 +847,9 @@ public class MzQuantMLValidator {
     }
 
     private <T> ArrayList<Message> checkObjectRef(String tarClsId,
-                                                        String ref,
-                                                        Class<T> cls,
-                                                        MzQuantMLUnmarshaller um) {
+                                                  String ref,
+                                                  Class<T> cls,
+                                                  MzQuantMLUnmarshaller um) {
         ObjectRefTypeMatchRule objectRefMatchRule = new ObjectRefTypeMatchRule(tarClsId, ref, cls, um);
         objectRefMatchRule.check();
         return objectRefMatchRule.getMessage();
@@ -839,7 +863,7 @@ public class MzQuantMLValidator {
     }
 
     private void checkParamGroups(String tarClsId,
-                                        List<AbstractParam> paramGroups) {
+                                  List<AbstractParam> paramGroups) {
         for (AbstractParam param : paramGroups) {
             if (param.getClass().isInstance(uk.ac.liv.jmzqml.model.mzqml.CvParam.class)) {
                 CvParam cv = (CvParam) param;
@@ -924,18 +948,18 @@ public class MzQuantMLValidator {
      * validate PeptideConsensusList
      */
     private void checkPeptideConsensusLists(
-            Iterator<PeptideConsensusList> peptideConsensusLists) {
-        if (peptideConsensusLists != null) {
+            Iterator<PeptideConsensusList> peptideConsensusListIter) {
+        if (peptideConsensusListIter != null) {
             /*
              * FinalResultRule start here
              */
-            FinalResultRule frr = new FinalResultRule(peptideConsensusLists);
+            FinalResultRule frr = new FinalResultRule(peptideConsensusListIter);
             frr.check();
             msgs.addAll(frr.getMsgs());
 
             //for (PeptideConsensusList peptideConsensusList : peptideConsensusLists) {
-            while (peptideConsensusLists.hasNext()) {
-                PeptideConsensusList peptideConsensusList = peptideConsensusLists.next();
+            while (peptideConsensusListIter.hasNext()) {
+                PeptideConsensusList peptideConsensusList = peptideConsensusListIter.next();
                 checkPeptideConsensusList(peptideConsensusList);
             }
         }
@@ -977,7 +1001,7 @@ public class MzQuantMLValidator {
     }
 
     private void checkProcessingMethods(String tarClsId,
-                                              List<ProcessingMethod> processingMethods) {
+                                        List<ProcessingMethod> processingMethods) {
         if (processingMethods != null) {
             for (ProcessingMethod processingMethod : processingMethods) {
                 processingMethod.getOrder();
@@ -1018,14 +1042,8 @@ public class MzQuantMLValidator {
         List<AbstractParam> paramGroups = proteinGroup.getParamGroup();
         checkParamGroups(targetClassId, paramGroups);
 
-        //TODO: re-coded in consistent manner
-//        List<ProteinRef> proteinRefs = proteinGroup.getProteinRef();
-//        if (proteinRefs != null) {
-//            for (ProteinRef proteinRef : proteinRefs) {
-//                Object protRef = proteinRef.getProteinRef();
-//                msgs.addAll(checkObjectRef(targetClassId, protRef, uk.ac.liv.jmzqml.model.mzqml.Protein.class, this.unmarshaller));
-//            }
-//        }
+        List<ProteinRef> proteinRefs = proteinGroup.getProteinRef();
+        checkProteinRefs(targetClassId, proteinRefs);
 
         String searchDBRef = proteinGroup.getSearchDatabaseRef();
         msgs.addAll(checkObjectRef(targetClassId, searchDBRef, uk.ac.liv.jmzqml.model.mzqml.SearchDatabase.class, this.unmarshaller));
@@ -1150,7 +1168,7 @@ public class MzQuantMLValidator {
             List<Ratio> ratios = ratioList.getRatio();
             checkRatios(ratios);
 
-            NumeratorDenominatorRule numeratorDenominatorRule = new NumeratorDenominatorRule(ratioList);
+            NumeratorDenominatorRule numeratorDenominatorRule = new NumeratorDenominatorRule(ratioList, this.unmarshaller);
             numeratorDenominatorRule.check();
             msgs.addAll(numeratorDenominatorRule.getMsgs());
         }
@@ -1268,7 +1286,7 @@ public class MzQuantMLValidator {
     }
 
     private void checkSmallMolModifications(String tarClsId,
-                                                  List<SmallMolModification> smallMolModifications) {
+                                            List<SmallMolModification> smallMolModifications) {
         if (smallMolModifications != null) {
             for (SmallMolModification smallMolMod : smallMolModifications) {
                 List<CvParam> cvParams = smallMolMod.getCvParam();
@@ -1384,11 +1402,11 @@ public class MzQuantMLValidator {
     protected InputStream getGeneralMappingRuleInputStream()
             throws FileNotFoundException {
         String mappingRuleFile = getClass().getClassLoader().
-                getResource("mzQuantML-mapping_1.0.0-rc3-general.xml").getFile();
+                getResource("mzQuantML-mapping_1.0.0.xml").getFile();
         File file = new File(mappingRuleFile);
         if (!file.exists()) {
             ClassLoader cl = this.getClass().getClassLoader();
-            return cl.getResourceAsStream("mzQuantML-mapping_1.0.0-rc3-general.xml");
+            return cl.getResourceAsStream("mzQuantML-mapping_1.0.0.xml");
         }
         return new FileInputStream(file);
     }
@@ -1411,7 +1429,14 @@ public class MzQuantMLValidator {
                 }
             }
         }
+    }
 
+    private void addLevelMessage(List<Message> ruleMsgs, Level l) {
+        for (Message msg : ruleMsgs) {
+            if (msg.getLevel().isGreaterOrEqual(l)) {
+                msgs.add(msg);
+            }
+        }
     }
 
 }

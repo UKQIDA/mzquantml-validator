@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
-import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -41,13 +40,17 @@ public class ValidatorView extends javax.swing.JFrame {
         //... Setting standard look and feel ...//
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (ClassNotFoundException ex) {
+        }
+        catch (ClassNotFoundException ex) {
             System.out.println(ex.getStackTrace());
-        } catch (InstantiationException ex) {
+        }
+        catch (InstantiationException ex) {
             System.out.println(ex.getStackTrace());
-        } catch (IllegalAccessException ex) {
+        }
+        catch (IllegalAccessException ex) {
             System.out.println(ex.getStackTrace());
-        } catch (UnsupportedLookAndFeelException ex) {
+        }
+        catch (UnsupportedLookAndFeelException ex) {
             System.out.println(ex.getStackTrace());
         }
 
@@ -199,18 +202,19 @@ public class ValidatorView extends javax.swing.JFrame {
 
         try {
             //if (!this.jtfFileName.getText().isEmpty() && !this.jtfSchema.getText().isEmpty()) {
-                this.jtaValidationResults.setText("INFO: Starting validation process......\nINFO: Loading MzQuantML file......\n");
-                this.update(this.getGraphics());
-                String fileName = this.jtfFileName.getText();
-                MzQuantMLValidator mzqValidator = new MzQuantMLValidator(fileName, false, this.jtfSchema.getText());
-                List<Message> results = mzqValidator.validate(fileName, false, this.jtfSchema.getText());
-                this.jtaValidationResults.setLineWrap(true);
-                String results_mod = results.toString();
-                this.jtaValidationResults.append(results_mod.substring(2, results_mod.length() - 1));
+            this.jtaValidationResults.setText("INFO: Starting validation process......\nINFO: Loading MzQuantML file......\n");
+            this.update(this.getGraphics());
+            String fileName = this.jtfFileName.getText();
+            MzQuantMLValidator mzqValidator = new MzQuantMLValidator(fileName, false, this.jtfSchema.getText());
+            List<Message> results = mzqValidator.validate(fileName, false, this.jtfSchema.getText());
+            this.jtaValidationResults.setLineWrap(true);
+            String results_mod = results.toString();
+            this.jtaValidationResults.append(results_mod.substring(2, results_mod.length() - 1));
             //} else {
             //    JOptionPane.showMessageDialog(this.jPanel2, "Missing mzq file or schema file!");
             //}
-        } catch (FileNotFoundException ex) {
+        }
+        catch (FileNotFoundException ex) {
             Logger.getLogger(ValidatorView.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_jbValidateActionPerformed
@@ -234,7 +238,7 @@ public class ValidatorView extends javax.swing.JFrame {
     }//GEN-LAST:event_jbFileSelectorActionPerformed
 
     private void jbSchemaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbSchemaActionPerformed
-        // TODO add your handling code here:
+
         JFileChooser fileChooser = new javax.swing.JFileChooser("user.home");
         fileChooser.setDialogTitle("Select a MzQuantML schema file");
         fileChooser.setCurrentDirectory(currentDirectory);
@@ -271,13 +275,17 @@ public class ValidatorView extends javax.swing.JFrame {
                     break;
                 }
             }
-        } catch (ClassNotFoundException ex) {
+        }
+        catch (ClassNotFoundException ex) {
             java.util.logging.Logger.getLogger(ValidatorView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
+        }
+        catch (InstantiationException ex) {
             java.util.logging.Logger.getLogger(ValidatorView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
+        }
+        catch (IllegalAccessException ex) {
             java.util.logging.Logger.getLogger(ValidatorView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+        }
+        catch (javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(ValidatorView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
@@ -290,6 +298,7 @@ public class ValidatorView extends javax.swing.JFrame {
             public void run() {
                 new ValidatorView().setVisible(true);
             }
+
         });
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
