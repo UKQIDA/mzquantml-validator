@@ -12,7 +12,6 @@ import org.apache.log4j.Logger;
 import uk.ac.liv.jmzqml.model.mzqml.Assay;
 import uk.ac.liv.jmzqml.model.mzqml.AssayList;
 import uk.ac.liv.jmzqml.model.mzqml.ModParam;
-import uk.ac.liv.jmzqml.model.mzqml.RawFilesGroup;
 import uk.ac.liv.mzquantml.validator.utils.AnalysisType;
 import uk.ac.liv.mzquantml.validator.utils.AnalysisType.AnalTp;
 import uk.ac.liv.mzquantml.validator.utils.Message;
@@ -118,54 +117,55 @@ public class AssayLabelRule {
     }
 
     private void checkMS1() {
-        HashMap<Object, ArrayList<Assay>> rawfilegrouprefAssayMap =
-                getRawfilegrouprefAssayMap(this.assyLst.getAssay());
+        //build the reference map from RawFileGroup to Assay
+        HashMap<String, ArrayList<Assay>> rawfilegrouprefAssayMap =
+                getRawfilegroupRefAssayMap(this.assyLst.getAssay());
         checkRawfilegrouprefAssayMap(rawfilegrouprefAssayMap);
     }
 
-    private HashMap<Object, ArrayList<Assay>> getRawfilegrouprefAssayMap(
+    private HashMap<String, ArrayList<Assay>> getRawfilegroupRefAssayMap(
             List<Assay> assays) {
-        HashMap<Object, ArrayList<Assay>> rawfilegrouprefAssayMap =
-                new HashMap<Object, ArrayList<Assay>>();
+        HashMap<String, ArrayList<Assay>> rawfilegroupRefAssayMap =
+                new HashMap<String, ArrayList<Assay>>();
         for (Assay assay : assays) {
-            Object rawfilegroupRef = assay.getRawFilesGroupRef();
-            ArrayList<Assay> manyAssay = rawfilegrouprefAssayMap.get(rawfilegroupRef);
+            String rawfilegroupRef = assay.getRawFilesGroupRef();
+            ArrayList<Assay> manyAssay = rawfilegroupRefAssayMap.get(rawfilegroupRef);
             if (manyAssay == null) {
                 manyAssay = new ArrayList<Assay>();
-                rawfilegrouprefAssayMap.put(rawfilegroupRef, manyAssay);
+                rawfilegroupRefAssayMap.put(rawfilegroupRef, manyAssay);
             }
             manyAssay.add(assay);
         }
-        return rawfilegrouprefAssayMap;
+        return rawfilegroupRefAssayMap;
     }
 
     private void checkRawfilegrouprefAssayMap(
-            HashMap<Object, ArrayList<Assay>> rawfilegrouprefAssayMap) {
+            HashMap<String, ArrayList<Assay>> rawfilegrouprefAssayMap) {
 
         // check MS1 label base rule MUST No. 3:
         // The file MUST contain two or more assays references to the same rawFileGroup
-        for (Object ref : rawfilegrouprefAssayMap.keySet()) {
-            RawFilesGroup rawFileGroup = (RawFilesGroup) ref;
+        for (String ref : rawfilegrouprefAssayMap.keySet()) {
+            //RawFilesGroup rawFileGroup = (RawFilesGroup) ref;
             ArrayList<Assay> assays = rawfilegrouprefAssayMap.get(ref);
             if (assays.size() < 2) {
                 msgs.add(new Message("The file MUST contain two or more "
                         + "assays references to the same rawFileGroup", Level.INFO));
                 msgs.add(new Message("Only one assay reference to the rawFileGroup ("
-                        + rawFileGroup.getId() + ")\n", Level.ERROR));
+                        + ref + ")\n", Level.ERROR));
             }
         }
 
         // check MS1 label base rule MUST No. 4:
         // At least one of the grouped assays that reference to a common rawFileGroup MUST have the "Label" element
-        for (Object ref : rawfilegrouprefAssayMap.keySet()) {
-            RawFilesGroup rawFileGroup = (RawFilesGroup) ref;
+        for (String ref : rawfilegrouprefAssayMap.keySet()) {
+            //RawFilesGroup rawFileGroup = (RawFilesGroup) ref;
             ArrayList<Assay> assays = rawfilegrouprefAssayMap.get(ref);
             if (assays.size() > 1) {
                 if (!haveAssayLabel(assays)) {
                     msgs.add(new Message("At least one of the grouped assays that "
                             + "reference to a common rawFileGroup MUST hae the \"Label\" element", Level.INFO));
                     msgs.add(new Message("Assays with a common rawFileGroupRef ("
-                            + rawFileGroup.getId() + ") do not have \"Lable\" element\n", Level.ERROR));
+                            + ref + ") do not have \"Lable\" element\n", Level.ERROR));
                 }
             }
         }
