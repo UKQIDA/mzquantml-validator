@@ -40,16 +40,19 @@ public class NumeratorDenominatorRule {
     }
 
     public void check() {
-        boolean numIsAssay = false;
-        boolean numIsStudy = false;
-        boolean denIsAssay = false;
-        boolean denIsStudy = false;
-        String numId;
-        String denId;
+        boolean numIsAssay;
+        boolean numIsStudy;
+        boolean denIsAssay;
+        boolean denIsStudy;
 
         List<Ratio> ratioes = this.ratioList.getRatio();
         if (!ratioes.isEmpty()) {
+
             for (Ratio ratio : ratioes) {
+                numIsAssay = false;
+                numIsStudy = false;
+                denIsAssay = false;
+                denIsStudy = false;
                 String numRef = ratio.getNumeratorRef();
                 String denRef = ratio.getDenominatorRef();
 
@@ -58,7 +61,6 @@ public class NumeratorDenominatorRule {
                     Assay numAssay = this.unmarshaller.unmarshal(uk.ac.liv.jmzqml.model.mzqml.Assay.class, numRef);
 
                     if (numAssay != null) {
-                        numId = numAssay.getId();
                         numIsAssay = true;
                     }
 
@@ -75,7 +77,6 @@ public class NumeratorDenominatorRule {
                     Assay denAssay = this.unmarshaller.unmarshal(uk.ac.liv.jmzqml.model.mzqml.Assay.class, denRef);
 
                     if (denAssay != null) {
-                        denId = denAssay.getId();
                         denIsAssay = true;
                     }
                 }
@@ -92,7 +93,6 @@ public class NumeratorDenominatorRule {
                     StudyVariable numStudy = this.unmarshaller.unmarshal(uk.ac.liv.jmzqml.model.mzqml.StudyVariable.class, numRef);
 
                     if (numStudy != null) {
-                        numId = numStudy.getId();
                         numIsStudy = true;
                     }
                 }
@@ -108,7 +108,6 @@ public class NumeratorDenominatorRule {
                     StudyVariable denStudy = this.unmarshaller.unmarshal(uk.ac.liv.jmzqml.model.mzqml.StudyVariable.class, denRef);
 
                     if (denStudy != null) {
-                        denId = denStudy.getId();
                         denIsStudy = true;
                     }
                 }
