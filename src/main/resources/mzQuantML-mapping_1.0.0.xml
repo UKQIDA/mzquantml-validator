@@ -15,7 +15,7 @@
     </CvReferenceList>
 
     <CvMappingRuleList>
-        <CvMappingRule id="ProviderContactRole_rule" cvElementPath="/MzQuantML/Provider/ContactRole/Role/cvParam/@accession" requirementLevel="MUST"  scopePath="/MzQuantML/Provider/ContactRole/Role" cvTermsCombinationLogic="OR">
+        <CvMappingRule id="ProviderContactRole_rule" cvElementPath="/MzQuantML/Provider/contactRole/role/cvParam/@accession" requirementLevel="MUST"  scopePath="/MzQuantML/Provider/contactRole/role" cvTermsCombinationLogic="OR">
             <CvTerm termAccession="MS:1001266" useTermName="false" useTerm="false" termName="role type" isRepeatable="true" allowChildren="true" cvIdentifierRef="MS" />
         </CvMappingRule>
 
