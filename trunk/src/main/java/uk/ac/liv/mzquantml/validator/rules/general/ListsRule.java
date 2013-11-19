@@ -52,20 +52,20 @@ public class ListsRule {
         if ((this.protLst != null) && (this.pepCnsLsts != null)) {
             // All proteins SHOULD have peptide_refs
             for (Protein protein : this.protLst.getProtein()) {
-                if (protein.getPeptideConsensusRefs() == null) {
+                if (protein.getPeptideConsensusRefs() == null || protein.getPeptideConsensusRefs().isEmpty()) {
                     msgs.add(new Message("If there is a ProteinList and "
-                            + "a PeptideConsensusList, all protein SHOULD have peptide_refs", Level.INFO));
-                    msgs.add(new Message("Protein "
-                            + protein.getId() + " does not have peptide_refs\n", Level.WARN));
+                            + "a PeptideConsensusList, all protein SHOULD have <PeptideConsensus_refs>.\n", Level.INFO));
+                    msgs.add(new Message("Protein \""
+                            + protein.getId() + "\" does not have <PeptideConsensus_refs>.\n", Level.WARN));
                 }
             }
         }
 
         if ((this.protGrpLst != null) || (this.protLst != null) || (this.pepCnsLsts != null)) {
-            if (this.infls.getSearchDatabase() == null) {
+            if (this.infls.getSearchDatabase() == null || this.infls.getSearchDatabase().isEmpty()) {
                 msgs.add(new Message("If there is a ProteinGroupList, ProteinList or "
-                        + "PeptideConsensusList, there SHOULD be SearchDatabase", Level.INFO));
-                msgs.add(new Message("There SHOULD be SearchDatabase\n", Level.WARN));
+                        + "PeptideConsensusList, there SHOULD be SearchDatabase.\n", Level.INFO));
+                msgs.add(new Message("There SHOULD be a SearchDatabase.\n", Level.WARN));
             }
         }
 
