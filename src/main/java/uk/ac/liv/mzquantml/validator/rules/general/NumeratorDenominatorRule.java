@@ -134,7 +134,7 @@ public class NumeratorDenominatorRule {
                     msgs.add(new Message("In the RatioList, if the numerator is referencing an Assay, "
                             + "the denominator MUST reference an Assay.\n", Level.INFO));
                     msgs.add(new Message("In Ratio \"" + ratio.getId() + "\", the numerator is referencing an Assay but "
-                            + "the denominator is referencing a StudyVariable.", Level.ERROR));
+                            + "the denominator is referencing a StudyVariable.\n", Level.ERROR));
                 }
 
                 if (numIsStudy && denIsAssay) {
@@ -143,7 +143,7 @@ public class NumeratorDenominatorRule {
                     msgs.add(new Message("In the RatioList, if the numerator is referencing an Assay, "
                             + "the denominator MUST reference an Assay.\n", Level.INFO));
                     msgs.add(new Message("In Ratio \"" + ratio.getId() + "\", the numerator is referencing a StudyVariable but "
-                            + "the denominator is referencing an Assay.", Level.ERROR));
+                            + "the denominator is referencing an Assay.\n", Level.ERROR));
                 }
             }
         }

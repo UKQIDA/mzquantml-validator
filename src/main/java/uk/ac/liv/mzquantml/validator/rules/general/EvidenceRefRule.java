@@ -2,6 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
+
 package uk.ac.liv.mzquantml.validator.rules.general;
 
 import java.util.ArrayList;
@@ -47,13 +48,14 @@ public class EvidenceRefRule {
         if ((this.evdRef.getIdRefs().isEmpty() && this.evdRef.getIdentificationFileRef() != null)
                 || (!this.evdRef.getIdRefs().isEmpty() && this.evdRef.getIdentificationFileRef() == null)) {
             msgs.add(new Message("If one of EvidenceRef attributes identificationFileRef or id_refs is present, "
-                    + "then they both MUST be present", Level.INFO));
-            msgs.add(new Message("EvidenceRef in PeptideConsensus " + this.peptide.getId()
-                    + " contains either id_refs or identificationFileRef only\n", Level.ERROR));
+                    + "then they both MUST be present.\n", Level.INFO));
+            msgs.add(new Message("EvidenceRef with feature_ref=\"" + this.evdRef.getFeatureRef() + "\" in PeptideConsensus \""
+                    + this.peptide.getId() + "\" contains either id_refs or identificationFileRef only.\n", Level.ERROR));
         }
     }
 
     public List<Message> getMsgs() {
         return msgs;
     }
+
 }

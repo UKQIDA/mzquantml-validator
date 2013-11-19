@@ -44,17 +44,19 @@ public class ObjectRefTypeMatchRule {
 
                 if (!(obj.getClass().equals(this.cls)) && !(this.cls.isAssignableFrom(obj.getClass()))) {
                     
-                    msgs.add(new Message("All object reference of type IDREFS or IDREF MUST match the correct object type", Level.INFO));
+                    msgs.add(new Message("All object reference of type IDREFS or IDREF MUST match the correct object type.\n", Level.INFO));
                     msgs.add(new Message("The object reference \""
                             + ref + "\" in \"" + this.targetClassId + "\" does not match the correct object type "
                             + cls.getName() + "\n", Level.ERROR));
                 }
             }
             catch (JAXBException ex) {
-                Logger.getLogger(ObjectRefTypeMatchRule.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+                msgs.add(new Message("JAXBException: All object reference of type IDREFS or IDREF MUST match the correct object type.\n", Level.INFO));
+                msgs.add(new Message(ex.getMessage()+"\n", Level.ERROR));
             }
             catch (IllegalArgumentException ilArEx) {
-                msgs.add(new Message(ilArEx.getMessage(), Level.ERROR));
+                msgs.add(new Message("IllegalArgumentException: All object reference of type IDREFS or IDREF MUST match the correct object type.\n", Level.INFO));
+                msgs.add(new Message(ilArEx.getMessage()+"\n", Level.ERROR));
             }
         }
     }
