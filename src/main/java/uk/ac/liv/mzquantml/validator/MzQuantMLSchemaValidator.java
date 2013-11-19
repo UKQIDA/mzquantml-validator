@@ -6,8 +6,14 @@
 package uk.ac.liv.mzquantml.validator;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import javax.xml.XMLConstants;
 import javax.xml.bind.*;
 import javax.xml.validation.Schema;
@@ -130,7 +136,43 @@ public class MzQuantMLSchemaValidator {
     }
 
     private File getSchemaFile() {
-        File file = new File(getClass().getClassLoader().getResource("mzQuantML_1_0_0.xsd").getFile());
+        InputStream is = null;
+        OutputStream os = null;
+        File file = null;
+        try {
+            //File file = new File(getClass().getClassLoader().getResource("mzQuantML_1_0_0.xsd").getFile());            
+            //is = new FileInputStream("mzQuantML_1_0_0.xsd");
+            is = getClass().getClassLoader().getResourceAsStream("mzQuantML_1_0_0.xsd");
+            file = File.createTempFile("tmp_" + new Random().toString(), ".xsd");
+            os = new FileOutputStream(file);
+            int read = 0;
+            byte[] bytes = new byte[1024];
+
+            while ((read = is.read(bytes)) != -1) {
+                os.write(bytes, 0, read);
+            }
+        }
+        catch (IOException ex) {
+            msgs.add(new Message("IOException in getSchemaFile, schema file not found" + ex.getMessage() + "\n"));
+        }
+        finally {
+            if (is != null) {
+                try {
+                    is.close();
+                }
+                catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+            }
+            if (os != null) {
+                try {
+                    os.close();
+                }
+                catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }
         return file;
     }
 

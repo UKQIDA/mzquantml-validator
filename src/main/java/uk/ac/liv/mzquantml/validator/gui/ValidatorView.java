@@ -10,15 +10,20 @@
  */
 package uk.ac.liv.mzquantml.validator.gui;
 
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.Toolkit;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Collection;
 import java.util.List;
+import java.util.Random;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
@@ -232,6 +237,7 @@ public class ValidatorView extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this.jPanel2, "Please input an mzQuantML file!");
         }
         else {
+            this.rootPane.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
             this.jtaValidationResults.setLineWrap(true);
             this.jtaValidationResults.setText("INFO: Starting validation process......\nINFO: Loading MzQuantML file......\n\n");
             this.update(this.getGraphics());
@@ -281,6 +287,8 @@ public class ValidatorView extends javax.swing.JFrame {
         if (mzqFn.endsWith(".gz")) {
             Gzipper.deleteFile(mzqFile);
         }
+
+        this.rootPane.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
     }//GEN-LAST:event_jbValidateActionPerformed
 
     private void jbFileSelectorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbFileSelectorActionPerformed
@@ -410,31 +418,25 @@ public class ValidatorView extends javax.swing.JFrame {
                 this.jtaValidationResults.append("Use default schema file mzQuantML_1_0_0.xsd.\n");
                 this.update(this.getGraphics());
             }
-            try {
-                File schemaFile = getSchemaFile();
+            File schemaFile = getSchemaFile();
 
-                this.jtaValidationResults.append("\nStart schema validation (Warning: this could take hours for large file)...... \n");
+            this.jtaValidationResults.append("\nStart schema validation (Warning: this could take hours for large file)...... \n");
+            this.update(this.getGraphics());
+
+            MzQuantMLSchemaValidator msv = new MzQuantMLSchemaValidator(mzqFile, schemaFile);
+            List<Message> svRes = msv.getValidateResult();
+
+            if (!svRes.isEmpty()) {
+                this.jtaValidationResults.append("\nSchema validation message(s): \n\n");
                 this.update(this.getGraphics());
-
-                MzQuantMLSchemaValidator msv = new MzQuantMLSchemaValidator(mzqFile, schemaFile);
-                List<Message> svRes = msv.getValidateResult();
-
-                if (!svRes.isEmpty()) {
-                    this.jtaValidationResults.append("\nSchema validation message(s): \n\n");
-                    this.update(this.getGraphics());
-                }
-                else {
-                    this.jtaValidationResults.append("\nDocument is schema valid.\n");
-                    this.update(this.getGraphics());
-                }
-
-                for (Message msg : svRes) {
-                    this.jtaValidationResults.append(msg.getMessage());
-                    this.update(this.getGraphics());
-                }
             }
-            catch (FileNotFoundException ex) {
-                this.jtaValidationResults.append("Can't find schema file mzQuantML_1_0_0.xsd! " + ex.getMessage() + "\n");
+            else {
+                this.jtaValidationResults.append("\nDocument is schema valid.\n");
+                this.update(this.getGraphics());
+            }
+
+            for (Message msg : svRes) {
+                this.jtaValidationResults.append(msg.getMessage());
                 this.update(this.getGraphics());
             }
         }
@@ -498,9 +500,45 @@ public class ValidatorView extends javax.swing.JFrame {
         }
     }
 
-    private File getSchemaFile()
-            throws FileNotFoundException {
-        File file = new File(getClass().getClassLoader().getResource("mzQuantML_1_0_0.xsd").getFile());
+    private File getSchemaFile() {
+        InputStream is = null;
+        OutputStream os = null;
+        File file = null;
+        try {
+            //File file = new File(getClass().getClassLoader().getResource("mzQuantML_1_0_0.xsd").getFile());            
+            //is = new FileInputStream("mzQuantML_1_0_0.xsd");
+            is = getClass().getClassLoader().getResourceAsStream("mzQuantML_1_0_0.xsd");
+            file = File.createTempFile("tmp_" + new Random().toString(), ".xsd");
+            os = new FileOutputStream(file);
+            int read = 0;
+            byte[] bytes = new byte[1024];
+
+            while ((read = is.read(bytes)) != -1) {
+                os.write(bytes, 0, read);
+            }
+        }
+        catch (IOException ex) {
+            this.jtaValidationResults.append("IOException in getSchemaFile, schema file not found" + ex.getMessage() + "\n");
+            this.update(this.getGraphics());
+        }
+        finally {
+            if (is != null) {
+                try {
+                    is.close();
+                }
+                catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+            }
+            if (os != null) {
+                try {
+                    os.close();
+                }
+                catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }
         return file;
     }
 
