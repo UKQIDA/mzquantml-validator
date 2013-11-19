@@ -3,20 +3,10 @@ package uk.ac.liv.mzquantml.validator;
 
 import java.io.*;
 import java.util.*;
-import java.util.logging.Logger;
-import static javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI;
-import javax.xml.bind.*;
-import javax.xml.validation.Schema;
-import javax.xml.validation.SchemaFactory;
 import org.apache.log4j.Level;
-import org.xml.sax.SAXException;
-import psidev.psi.tools.ontology_manager.impl.local.OntologyLoaderException;
-import psidev.psi.tools.validator.ValidatorException;
-import psidev.psi.tools.validator.ValidatorMessage;
 import uk.ac.liv.jmzqml.MzQuantMLElement;
 import uk.ac.liv.jmzqml.model.mzqml.*;
 import uk.ac.liv.jmzqml.xml.io.MzQuantMLUnmarshaller;
-import uk.ac.liv.mzquantml.validator.cvmapping.MzQuantMLCvValidator;
 import uk.ac.liv.mzquantml.validator.rules.general.*;
 import uk.ac.liv.mzquantml.validator.utils.AnalysisSummaryElement;
 import uk.ac.liv.mzquantml.validator.utils.AnalysisType;
@@ -29,167 +19,38 @@ import uk.ac.liv.mzquantml.validator.utils.Message;
  * @time 10:28:09 14-Mar-2012
  * @institution University of Liverpool
  */
-//TODO: 1. schema validation on/off switch
-//TODO: 2. if schema validation is off, catch JAXBException when unmarshalling fails
 //TODO: 3. capture numerator and determinator class 
 public class MzQuantMLValidator {
 
     private static AnalysisType at = new AnalysisType();
     private static EnumMap<AnalysisSummaryElement, Boolean> analysisSummaryMap;
     private static List<Message> msgs = new ArrayList<Message>();
-    private String fileName;
-    private boolean schemaValidating;
-    private String schemaFn;
+    private File mzqFile;
     private MzQuantMLUnmarshaller unmarshaller;
 
-    public MzQuantMLValidator(String fileName, boolean schemaValidating,
-                              String schemaFn) {
-        this.fileName = fileName;
-        this.schemaValidating = schemaValidating;
-        this.schemaFn = schemaFn;
-        this.unmarshaller = new MzQuantMLUnmarshaller(new File(this.fileName));
+    public MzQuantMLValidator(File mzq) {
+        this.mzqFile = mzq;
+        try {
+            this.unmarshaller = new MzQuantMLUnmarshaller(this.mzqFile);
+        }
+        catch (Exception e) {
+            throw new IllegalStateException(e.getMessage());
+        }
     }
 
     /**
      * @param args the command line arguments
      */
-    public List<Message> validate(String fileName, boolean schemaValidating,
-                                  String schemaFn)
+    public List<Message> validate()
             throws FileNotFoundException {
 
         msgs.clear();
-//        msgs.add(new Message("Starting validation process......", Level.INFO));
-//        msgs.add(new Message("Loading MzQuantML file......", Level.INFO));
-
-
-//        MzQuantMLUnmarshaller unmarshaller;
-//        if (schemaValidating) {
-//            unmarshaller = new MzQuantMLUnmarshaller(fileName, schemaValidating, new File(schemaFn));
-//        } else {
-//            File schema = new File(getClass().getClassLoader().getResource("mzQuantML_1_0_0-rc2.xsd").getFile());
-//            unmarshaller = new MzQuantMLUnmarshaller(fileName, true, schema);
-//        }
-
-        Unmarshaller unmarsh;
-        MzQuantML mzq = new MzQuantML();
-
-        /**
-         * ****************************************************************
-         * Schema validation happens before validating cv mapping and schema
-         * rule If MzQuantML file is not schema valid, it is unable to continue
-         * the validation process
-         * ******************************************************************
-         */
-        if (schemaValidating) {
-            try {
-                JAXBContext context = JAXBContext.newInstance(new Class[]{MzQuantML.class
-                        });
-                unmarsh = context.createUnmarshaller();
-                SchemaFactory sf = SchemaFactory.newInstance(W3C_XML_SCHEMA_NS_URI);
-                File schemaFile = new File(schemaFn);
-                Schema schema = sf.newSchema(schemaFile);
-                unmarsh.setSchema(schema);
-
-                ValidationEventHandler veh = new ValidationEventHandler() {
-
-                    @Override
-                    public boolean handleEvent(ValidationEvent event) {
-                        //ignore warnings
-                        if (event.getSeverity() != ValidationEvent.WARNING) {
-                            ValidationEventLocator vel = event.getLocator();
-//                            System.out.println("Line:Col[" + vel.getLineNumber()
-//                                    + ":" + vel.getColumnNumber()
-//                                    + "]:" + event.getMessage());
-                            msgs.add(new Message("Line:Col[" + vel.getLineNumber()
-                                    + ":" + vel.getColumnNumber()
-                                    + "]:" + event.getMessage()));
-                        }
-                        return true;
-                    }
-
-                };
-                unmarsh.setEventHandler(veh);
-                mzq = (MzQuantML) unmarsh.unmarshal(new FileReader(fileName));
-            }
-            catch (JAXBException ex) {
-                Logger.getLogger(MzQuantMLValidator.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-            }
-            catch (SAXException ex) {
-                ex.printStackTrace();
-            }
-        }
-        else {
-//            try {
-//                JAXBContext context = JAXBContext.newInstance(new Class[]{MzQuantML.class
-//                        });
-//                unmarsh = context.createUnmarshaller();
-//                SchemaFactory sf = SchemaFactory.newInstance(W3C_XML_SCHEMA_NS_URI);
-//                File schemaFile = new File(getClass().getClassLoader().getResource("mzQuantML_1_0_0.xsd").getFile());
-//                //File schemaFile = new File("mzQuantML_1_0_0-rc2.xsd");
-//                Schema schema = sf.newSchema(schemaFile);
-//                unmarsh.setSchema(schema);
-//
-//                ValidationEventHandler veh = new ValidationEventHandler() {
-//
-//                    @Override
-//                    public boolean handleEvent(ValidationEvent event) {
-//                        //ignore warnings
-//                        if (event.getSeverity() != ValidationEvent.WARNING) {
-//                            ValidationEventLocator vel = event.getLocator();
-////                            System.out.println("Line:Col[" + vel.getLineNumber()
-////                                    + ":" + vel.getColumnNumber()
-////                                    + "]:" + event.getMessage());
-//                            msgs.add(new Message("Line:Col[" + vel.getLineNumber()
-//                                    + ":" + vel.getColumnNumber()
-//                                    + "]:" + event.getMessage()));
-//                        }
-//                        return true;
-//                    }
-//
-//                };
-//                unmarsh.setEventHandler(veh);
-//                mzq = (MzQuantML) unmarsh.unmarshal(new FileReader(fileName));
-//            }
-//            catch (JAXBException ex) {
-//                Logger.getLogger(MzQuantMLValidator.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-//            }
-//            catch (SAXException ex) {
-//                ex.printStackTrace();
-//            }
-        }
-
-//        if (unmarshaller.getExceptionalMessages().isEmpty()) {
-
         /**
          * ********************************************************************
-         * If the MzQuantML file is schema invalid, the codes will break before
-         * this. If the MzQuantML file is schema valid, then the following codes
+         * Whether the file is schema valid or not, the following codes
          * will be executed.
          * *********************************************************************
          */
-
-        /*
-         * get all mzQuantML elements
-         */
-        // jmzquantml 1.0.0-rc3-1.0.5
-//        AnalysisSummary analysisSummary = mzq.getAnalysisSummary();
-//        AssayList assayList = mzq.getAssayList();
-//        AuditCollection auditCollection = mzq.getAuditCollection();
-//        List<BibliographicReference> bibliographicReferences = mzq.getBibliographicReference();
-//        Calendar creationDate = mzq.getCreationDate();
-//        CvList cvList = mzq.getCvList();
-//        DataProcessingList dataProcessingList = mzq.getDataProcessingList();
-//        List<FeatureList> featureLists = mzq.getFeatureList();
-//        InputFiles inputFiles = mzq.getInputFiles();
-//        List<PeptideConsensusList> peptideConsensusLists = mzq.getPeptideConsensusList();
-//        ProteinGroupList proteinGroupList = mzq.getProteinGroupList();
-//        ProteinList proteinList = mzq.getProteinList();
-//        Provider provider = mzq.getProvider();
-//        RatioList ratioList = mzq.getRatioList();
-//        SmallMoleculeList smallMoleculeList = mzq.getSmallMoleculeList();
-//        SoftwareList softwareList = mzq.getSoftwareList();
-//        StudyVariableList studyVariableList = mzq.getStudyVariableList();
-//        String version = mzq.getVersion();
         /**
          * ********************************
          * Start checking the schema rule These rules are manually written
@@ -382,6 +243,8 @@ public class MzQuantMLValidator {
          * ListsRule start here
          */
         if (inputFiles != null) {
+            peptideConsensusLists = unmarshaller.unmarshalCollectionFromXpath(MzQuantMLElement.PeptideConsensusList);
+            featureLists = unmarshaller.unmarshalCollectionFromXpath(MzQuantMLElement.FeatureList);
             ListsRule listsRule = new ListsRule(at, inputFiles, proteinGroupList, proteinList,
                                                 peptideConsensusLists, featureLists);
             listsRule.check();
@@ -401,49 +264,13 @@ public class MzQuantMLValidator {
             if (analysisSummary != null) {
                 getAnalysisSummaryMap(analysisSummary);
             }
+            peptideConsensusLists = unmarshaller.unmarshalCollectionFromXpath(MzQuantMLElement.PeptideConsensusList);
+            featureLists = unmarshaller.unmarshalCollectionFromXpath(MzQuantMLElement.FeatureList);
+
             QuantLayerRule quantLayerRule = new QuantLayerRule(analysisSummaryMap, proteinGroupList, proteinList, peptideConsensusLists, featureLists);
             quantLayerRule.check();
             msgs.addAll(quantLayerRule.getMsgs());
         }
-
-        /**
-         * **************************************************
-         *
-         * start validate Cv Mapping rule
-         *
-         * **************************************************
-         */
-        InputStream ontology = getOntologiesFileInputStream();
-        InputStream mappingRule = getGeneralMappingRuleInputStream();
-        MzQuantMLCvValidator cvValidator;
-        try {
-            cvValidator = new MzQuantMLCvValidator(ontology, mappingRule);
-            final Collection<ValidatorMessage> validationResult = cvValidator.startValidation(fileName);
-
-            for (ValidatorMessage vMsg : validationResult) {
-                // convert MessageLevel to log4j Level
-                Level lev = Level.toLevel(vMsg.getLevel().toString());
-                msgs.add(new Message(vMsg.getRule().toString() + vMsg.getMessage(), lev));
-            }
-        }
-        catch (ValidatorException ex) {
-            Logger.getLogger(MzQuantMLValidator.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        catch (OntologyLoaderException ex) {
-            Logger.getLogger(MzQuantMLValidator.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-//        } else {
-//            msgs.add(new Message(unmarshaller.getExceptionalMessages()));
-//            msgs.add(new Message("Semantic validation processing will not perform as this file is not schema valid!", Level.ERROR));
-//        }
-
-
-        /*
-         * final output
-         */
-        System.out.println("MzQuantML validation process is finished");
-        msgs.add(new Message("MzQuantML validation process is finished", Level.INFO));
-
         return msgs;
     }
 
@@ -624,14 +451,14 @@ public class MzQuantMLValidator {
             for (DataProcessing dataProcessing : dataProcessings) {
                 String targetClassId = dataProcessing.getId();
 
-                List<IdOnly> inputObjectRefs = dataProcessing.getInputObjects();
-                List<IdOnly> outputObjectRefs = dataProcessing.getOutputObjects();
+                List<String> inputStringRefs = dataProcessing.getInputObjectRefs();
+                List<String> outputStringRefs = dataProcessing.getOutputObjectRefs();
 
-                InOutputObjectRefsRule inputRule = new InOutputObjectRefsRule(inputObjectRefs, targetClassId);
+                InOutputObjectRefsRule inputRule = new InOutputObjectRefsRule(inputStringRefs, targetClassId, this.unmarshaller);
                 inputRule.check();
                 msgs.addAll(inputRule.getMsgs());
 
-                InOutputObjectRefsRule outputRule = new InOutputObjectRefsRule(outputObjectRefs, targetClassId);
+                InOutputObjectRefsRule outputRule = new InOutputObjectRefsRule(outputStringRefs, targetClassId, this.unmarshaller);
                 outputRule.check();
                 msgs.addAll(outputRule.getMsgs());
 
@@ -949,18 +776,28 @@ public class MzQuantMLValidator {
      */
     private void checkPeptideConsensusLists(
             Iterator<PeptideConsensusList> peptideConsensusListIter) {
-        if (peptideConsensusListIter != null) {
+        if (peptideConsensusListIter != null && peptideConsensusListIter.hasNext()) {
             /*
              * FinalResultRule start here
              */
-            FinalResultRule frr = new FinalResultRule(peptideConsensusListIter);
-            frr.check();
-            msgs.addAll(frr.getMsgs());
+            //FinalResultRule frr = new FinalResultRule(peptideConsensusListIter);
+            //frr.check();
+            //msgs.addAll(frr.getMsgs());
 
+            int count = 0;
             //for (PeptideConsensusList peptideConsensusList : peptideConsensusLists) {
             while (peptideConsensusListIter.hasNext()) {
                 PeptideConsensusList peptideConsensusList = peptideConsensusListIter.next();
+                if (peptideConsensusList.isFinalResult()) {
+                    count++;
+                }
                 checkPeptideConsensusList(peptideConsensusList);
+            }
+            if (count != 1) {
+                msgs.add(new Message("Exactly one PeptideConsensusList "
+                        + "MUST have isFinalResult=\"true\"\n", Level.INFO));
+                msgs.add(new Message(String.valueOf(count)
+                        + " PeptideConsensusList(s) have/has isFinalResult=\"true\"\n", Level.ERROR));
             }
         }
 
@@ -1383,32 +1220,6 @@ public class MzQuantMLValidator {
     }
 
     private void checkVersion(String version) {
-    }
-
-    /*
-     * protected methods
-     */
-    protected InputStream getOntologiesFileInputStream()
-            throws FileNotFoundException {
-
-        File file = new File(getClass().getClassLoader().getResource("ontologies.xml").getFile());
-        if (!file.exists()) {
-            ClassLoader cl = this.getClass().getClassLoader();
-            return cl.getResourceAsStream("ontologies.xml");
-        }
-        return new FileInputStream(file);
-    }
-
-    protected InputStream getGeneralMappingRuleInputStream()
-            throws FileNotFoundException {
-        String mappingRuleFile = getClass().getClassLoader().
-                getResource("mzQuantML-mapping_1.0.0.xml").getFile();
-        File file = new File(mappingRuleFile);
-        if (!file.exists()) {
-            ClassLoader cl = this.getClass().getClassLoader();
-            return cl.getResourceAsStream("mzQuantML-mapping_1.0.0.xml");
-        }
-        return new FileInputStream(file);
     }
 
     /*
