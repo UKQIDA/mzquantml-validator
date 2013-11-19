@@ -111,8 +111,25 @@ public class MzQuantMLCvValidator extends Validator {
 
         }
         catch (ValidatorException ve) {
-            logger.error("Exceptions during validation!", ve);
-            ve.printStackTrace();
+            ValidatorMessage veMsg = new ValidatorMessage("Exceptions during cv validation: " + ve.getMessage(), MessageLevel.FATAL);
+            List<ValidatorMessage> vMsgs = msgs.get("Exceptions");
+            if (vMsgs == null) {
+                vMsgs = new ArrayList<ValidatorMessage>();
+            }
+            vMsgs.add(veMsg);
+            msgs.put("Exceptions", vMsgs);
+
+//            logger.error("Exceptions during validation!", ve);
+//            ve.printStackTrace();
+        }
+        catch (Exception e) {
+            ValidatorMessage veMsg = new ValidatorMessage("Exceptions during cv validation: " + e.getMessage(), MessageLevel.FATAL);
+            List<ValidatorMessage> vMsgs = msgs.get("Exceptions");
+            if (vMsgs == null) {
+                vMsgs = new ArrayList<ValidatorMessage>();
+            }
+            vMsgs.add(veMsg);
+            msgs.put("Exceptions", vMsgs);
         }
 
         //check for terms that were not anticipated with the rules in the Cv mapping file
