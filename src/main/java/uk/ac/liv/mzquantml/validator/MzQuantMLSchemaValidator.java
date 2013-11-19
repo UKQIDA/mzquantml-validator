@@ -70,7 +70,6 @@ public class MzQuantMLSchemaValidator {
         mzqFile = mzq;
         msgs.clear();
         setSchema(sche);
-        msgs.add(new Message("\nSchema validation message(s): \n\n"));
         try {
             context = JAXBContext.newInstance(new Class[]{MzQuantML.class});
         }
