@@ -6,7 +6,6 @@
 package uk.ac.liv.mzquantml.validator;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -62,7 +61,10 @@ public class MzQuantMLSchemaValidator {
             context = JAXBContext.newInstance(new Class[]{MzQuantML.class});
         }
         catch (JAXBException ex) {
-            msgs.add(new Message("Exception in JAXBContext.newInstance: " + ex.getMessage() + "\n\n"));
+            msgs.add(new Message("Exception in JAXBContext.newInstance: " + ex.getMessage() + ".\n\n"));
+        }
+        catch (Exception ex1) {
+            msgs.add(new Message("Exceptions in MzQuantMLSchemaValidator(File mzq): " + ex1.getMessage() + ".\n"));
         }
     }
 
@@ -82,6 +84,9 @@ public class MzQuantMLSchemaValidator {
         catch (JAXBException ex) {
             msgs.add(new Message("Exception in JAXBContext.newInstance: " + ex.getMessage() + "\n\n"));
         }
+        catch (Exception ex1) {
+            msgs.add(new Message("Exceptions in MzQuantMLSchemaValidator(File mzq, File sche): " + ex1.getMessage() + ".\n"));
+        }
     }
 
     /**
@@ -100,7 +105,10 @@ public class MzQuantMLSchemaValidator {
             schema = sf.newSchema(schemaFile);
         }
         catch (SAXException ex) {
-            msgs.add(new Message("Exception in setSchema: " + ex.getMessage() + "\n\n"));
+            msgs.add(new Message("Exception in setSchema: " + ex.getMessage() + ".\n\n"));
+        }
+        catch (Exception ex1) {
+            msgs.add(new Message("Exceptions in setSchema: " + ex1.getMessage() + ".\n"));
         }
     }
 
@@ -130,7 +138,7 @@ public class MzQuantMLSchemaValidator {
             unmarsh.setEventHandler(veh);
             unmarsh.unmarshal(mzqFile);
         }
-        catch (JAXBException ex) {
+        catch (Exception ex) {
             msgs.add(new Message("Exception in context.createUnmarshaller(): " + ex.getMessage() + "\n\n"));
         }
     }
