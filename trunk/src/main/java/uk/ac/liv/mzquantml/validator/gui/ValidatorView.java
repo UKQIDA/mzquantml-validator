@@ -267,6 +267,10 @@ public class ValidatorView extends javax.swing.JFrame {
                 this.jtaValidationResults.append("Can't find mzQuantML-mapping_1.0.0.xml or ontologies.xml! \n\n");
                 this.update(this.getGraphics());
             }
+            catch (Exception e) {
+                this.jtaValidationResults.append("Exception in Cv mapping validation: " + e.getMessage() + "\n");
+                this.update(this.getGraphics());
+            }
 
 
             /*
@@ -278,11 +282,6 @@ public class ValidatorView extends javax.swing.JFrame {
             System.out.println("Running time (ms): " + String.valueOf(stopTime - startTime));
 
         }
-//            catch (Exception e) {
-//                this.jtaValidationResults.append(e.getMessage());
-//                this.update(this.getGraphics());
-//            }
-//        }
         // clean the unzipped file from temp
         if (mzqFn.endsWith(".gz")) {
             Gzipper.deleteFile(mzqFile);
@@ -447,7 +446,7 @@ public class ValidatorView extends javax.swing.JFrame {
             MzQuantMLValidator mzqValidator = new MzQuantMLValidator(mzqFile);
             List<Message> results = mzqValidator.validate();
             if (!results.isEmpty()) {
-                this.jtaValidationResults.append("\nSemantic validation message(s): \n\n");
+                this.jtaValidationResults.append("Semantic validation message(s): \n\n");
                 this.update(this.getGraphics());
             }
             for (Message m : results) {
@@ -460,8 +459,8 @@ public class ValidatorView extends javax.swing.JFrame {
             this.update(this.getGraphics());
         }
         catch (Exception e) {
-//            this.jtaValidationResults.append(e.getMessage());
-//            this.update(this.getGraphics());
+            this.jtaValidationResults.append(e.getMessage());
+            this.update(this.getGraphics());
         }
     }
 
@@ -490,12 +489,16 @@ public class ValidatorView extends javax.swing.JFrame {
                 this.update(this.getGraphics());
             }
         }
-        catch (ValidatorException ve) {
-            this.jtaValidationResults.append("\nValidationException in cvValidator: " + ve.getMessage());
+        catch (ValidatorException vex) {
+            this.jtaValidationResults.append("ValidationException in cvValidator: " + vex.getMessage() + "\n");
             this.update(this.getGraphics());
         }
-        catch (OntologyLoaderException ole) {
-            this.jtaValidationResults.append("\nOntologyLoaderException in cvValidator; " + ole.getMessage());
+        catch (OntologyLoaderException olex) {
+            this.jtaValidationResults.append("OntologyLoaderException in cvValidator; " + olex.getMessage() + "\n");
+            this.update(this.getGraphics());
+        }
+        catch (Exception ex) {
+            this.jtaValidationResults.append("Other exceptions in  doCvMappingValidation: " + ex.getMessage() + "\n");
             this.update(this.getGraphics());
         }
     }

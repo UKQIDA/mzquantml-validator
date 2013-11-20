@@ -119,8 +119,6 @@ public class MzQuantMLCvValidator extends Validator {
             vMsgs.add(veMsg);
             msgs.put("Exceptions", vMsgs);
 
-//            logger.error("Exceptions during validation!", ve);
-//            ve.printStackTrace();
         }
         catch (Exception e) {
             ValidatorMessage veMsg = new ValidatorMessage("Exceptions during cv validation: " + e.getMessage(), MessageLevel.FATAL);
