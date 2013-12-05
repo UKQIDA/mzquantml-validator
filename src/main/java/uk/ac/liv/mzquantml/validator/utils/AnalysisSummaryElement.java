@@ -34,9 +34,9 @@ public enum AnalysisSummaryElement {
     MS2Prot(AnalTp.MS2TagBased, ProteinList.class, "MS:1002026", "MS2 tag-based protein level quantitation"),
     MS2ProtG(AnalTp.MS2TagBased, ProteinGroupList.class, "MS:1002027", "MS2 tag-based proteingroup level quantitation"),
     SRMPep(AnalTp.SRM, PeptideConsensusList.class, "MS:1002282", "SRM peptide level quantitation"),
-    SRMProt(AnalTp.SRM, ProteinList.class, "MS:1002284", "SRM protein level quantitation"),
+    SRMProt(AnalTp.SRM, ProteinList.class, "MS:1002283", "SRM protein level quantitation"),
     SRMProtG(AnalTp.SRM, ProteinGroupList.class, "MS:1002284", "SRM proteingroup level quantitation"),
-    SRMFt(AnalTp.SRM, FeatureList.class, "MS:100281", "SRM feature level quantitation");
+    SRMFt(AnalTp.SRM, FeatureList.class, "MS:1002281", "SRM feature level quantitation");
     private AnalysisType.AnalTp at;
     private Class cls;
     private String accession;
