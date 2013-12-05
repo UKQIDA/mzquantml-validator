@@ -2,6 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
+
 package uk.ac.liv.mzquantml.validator.rules.general;
 
 import java.util.ArrayList;
@@ -17,7 +18,9 @@ import uk.ac.liv.mzquantml.validator.utils.Message;
 
 /**
  *
- * @author Da Qi @institute University of Liverpool @time 13-Nov-2012 15:07:07
+ * @author Da Qi
+ * @institute University of Liverpool
+ * @time 13-Nov-2012 15:07:07
  */
 public class AnalysisSummaryRule {
 
@@ -42,7 +45,9 @@ public class AnalysisSummaryRule {
 
         boolean ret = true;
         /**
-         * initialise @cvTermMap It records which valid cv terms are in
+         * initialise
+         *
+         * @cvTermMap It records which valid cv terms are in
          * AnalsisSummary by mapping accession to AnalysisSummaryElement
          */
         cvTermMap = new HashMap<String, AnalysisSummaryElement>();
@@ -54,8 +59,9 @@ public class AnalysisSummaryRule {
                     AnalysisSummaryElement a = cvTermMap.get(accession);
                     if (a == null) {
                         cvTermMap.put(accession, ase);
-                    } else {
-                        msgs.add(new Message("Duplicate cv term with accession: " + a.getAccession(), Level.ERROR));
+                    }
+                    else {
+                        msgs.add(new Message("Duplicate cv term with accession: " + a.getAccession() + ".\n", Level.ERROR));
                     }
                 }
             }
@@ -76,18 +82,19 @@ public class AnalysisSummaryRule {
      * private methods
      */
     private boolean missCvTerm(HashMap<String, AnalysisSummaryElement> cvTermMap,
-            AnalysisType at) {
+                               AnalysisType at) {
 
         boolean ret = false;
 
         for (AnalysisSummaryElement ase : AnalysisSummaryElement.valuesByType(at)) {
             String accession = ase.getAccession();
             if (cvTermMap.get(accession) == null) {
-                msgs.add(new Message("Missing cv term: " + ase.getAccession() + "(" + ase.getName() + ")" + " for " + at.getAnalysisType().getName(), Level.ERROR));
+                msgs.add(new Message("Missing cv term: " + ase.getAccession() + "(" + ase.getName() + ")" + " for " + at.getAnalysisType().getName() + ".\n", Level.ERROR));
                 ret = true;
             }
         }
 
         return ret;
     }
+
 }
