@@ -120,12 +120,12 @@ public class NumeratorDenominatorRule {
 
                 if (!numIsAssay && !numIsStudy) {
                     msgs.add(new Message("Numerator in Ratio \""
-                            + ratio.getId() + "\" are not either StudyVariable or Assay\n", Level.ERROR));
+                            + ratio.getId() + "\" are not either StudyVariable or Assay.\n", Level.ERROR));
                 }
 
                 if (!denIsAssay && !denIsStudy) {
                     msgs.add(new Message("Demoninator in Ratio \""
-                            + ratio.getId() + "\" are not either StudyVariable or Assay\n", Level.ERROR));
+                            + ratio.getId() + "\" are not either StudyVariable or Assay.\n", Level.ERROR));
                 }
 
                 if (numIsAssay && denIsStudy) {

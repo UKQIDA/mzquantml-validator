@@ -49,7 +49,7 @@ public class ListsRule {
      * public methods
      */
     public void check() {
-        if ((this.protLst != null) && (this.pepCnsLsts != null)) {
+        if ((this.protLst != null) && (this.pepCnsLsts.hasNext())) {
             // All proteins SHOULD have peptide_refs
             for (Protein protein : this.protLst.getProtein()) {
                 if (protein.getPeptideConsensusRefs() == null || protein.getPeptideConsensusRefs().isEmpty()) {
@@ -61,7 +61,7 @@ public class ListsRule {
             }
         }
 
-        if ((this.protGrpLst != null) || (this.protLst != null) || (this.pepCnsLsts != null)) {
+        if ((this.protGrpLst != null) || (this.protLst != null) || (this.pepCnsLsts.hasNext())) {
             if (this.infls.getSearchDatabase() == null || this.infls.getSearchDatabase().isEmpty()) {
                 msgs.add(new Message("If there is a ProteinGroupList, ProteinList or "
                         + "PeptideConsensusList, there SHOULD be SearchDatabase.\n", Level.INFO));
@@ -81,6 +81,9 @@ public class ListsRule {
         else if (this.at.getAnalysisType() == AnalTp.MS2TagBased) {
             checkMS2();
         }
+        else if (this.at.getAnalysisType() == AnalTp.SRM) {
+            checkSRM();
+        }
     }
 
     public List<Message> getMsgs() {
@@ -91,49 +94,46 @@ public class ListsRule {
      * private methods
      */
     private void checkSC() {
-        if ((this.protGrpLst == null) && (this.protLst == null) && (this.pepCnsLsts == null)) {
-            msgs.add(new Message("One of PeptideConsensusList, ProteinList, ProteinGroupList MUST be present", Level.INFO));
-            msgs.add(new Message("None of them exists in this file\n", Level.ERROR));
+        if ((this.protGrpLst == null) && (this.protLst == null) && (!this.pepCnsLsts.hasNext())) {
+            msgs.add(new Message("One of PeptideConsensusList, ProteinList, ProteinGroupList MUST be present.\n", Level.INFO));
+            msgs.add(new Message("None of them exists in this file.\n", Level.ERROR));
         }
 
-        if (this.ftLsts != null) {
-            //for (FeatureList featureList : ftLsts) {
-            while (ftLsts.hasNext()) {
-                FeatureList featureList = ftLsts.next();
-                if (!featureList.getFeatureQuantLayer().isEmpty()) {
-                    msgs.add(new Message("There SHOULD NOT be a FeatureQuantLayer", Level.INFO));
-                    msgs.add(new Message("FeatureQuantLayer found in FeatrueList "
-                            + featureList.getId() + "\n", Level.WARN));
-                }
+        while (ftLsts.hasNext()) {
+            FeatureList featureList = ftLsts.next();
+            if (!featureList.getFeatureQuantLayer().isEmpty()) {
+                msgs.add(new Message("There SHOULD NOT be a FeatureQuantLayer.\n", Level.INFO));
+                msgs.add(new Message("FeatureQuantLayer found in FeatrueList "
+                        + featureList.getId() + ".\n", Level.WARN));
             }
         }
     }
 
     private void checkLCMS() {
-        if ((this.protGrpLst == null) && (this.protLst == null) && (this.pepCnsLsts == null)) {
-            msgs.add(new Message("One of PeptideConsensusList, ProteinList, ProteinGroupList SHOULD be present", Level.INFO));
-            msgs.add(new Message("None of them exists in this file\n", Level.WARN));
+        if ((this.protGrpLst == null) && (this.protLst == null) && (!this.pepCnsLsts.hasNext())) {
+            msgs.add(new Message("One of PeptideConsensusList, ProteinList, ProteinGroupList SHOULD be present.\n", Level.INFO));
+            msgs.add(new Message("None of them exists in this file.\n", Level.WARN));
         }
     }
 
     private void checkMS1() {
-        if ((this.protGrpLst == null) && (this.protLst == null) && (this.pepCnsLsts == null)) {
-            msgs.add(new Message("One of PeptideConsensusList, ProteinList, ProteinGroupList MUST be present", Level.INFO));
-            msgs.add(new Message("None of them exists in this file\n", Level.ERROR));
+        if ((this.protGrpLst == null) && (this.protLst == null) && (!this.pepCnsLsts.hasNext())) {
+            msgs.add(new Message("One of PeptideConsensusList, ProteinList, ProteinGroupList MUST be present.\n", Level.INFO));
+            msgs.add(new Message("None of them exists in this file.\n", Level.ERROR));
         }
     }
 
     private void checkMS2() {
-        if (this.pepCnsLsts != null) {
+        if (this.pepCnsLsts.hasNext()) {
             checkFtLst();
         }
     }
 
     private void checkFtLst() {
-        if (this.ftLsts == null) {
+        if (!this.ftLsts.hasNext()) {
             msgs.add(new Message(("If PeptideConsensusList is present there MUST be a FeatureList present and "
-                    + "there MUST be a MS2AssayQuantLayer present"), Level.INFO));
-            msgs.add(new Message("There is no FeatureList\n", Level.ERROR));
+                    + "there MUST be a MS2AssayQuantLayer present.\n"), Level.INFO));
+            msgs.add(new Message("There is no FeatureList.\n", Level.ERROR));
         }
         else {
             //for (FeatureList ftLst : this.ftLsts) {
@@ -141,10 +141,17 @@ public class ListsRule {
                 FeatureList ftLst = ftLsts.next();
                 if (ftLst.getMS2AssayQuantLayer() == null) {
                     msgs.add(new Message(("If PeptideConsensusList is present there MUST be a FeatureList present and "
-                            + "there MUST be a MS2AssayQuantLayer present"), Level.INFO));
-                    msgs.add(new Message("There is a FeatureList but no MS2AssayQuantLayer\n", Level.ERROR));
+                            + "there MUST be a MS2AssayQuantLayer present.\n"), Level.INFO));
+                    msgs.add(new Message("There is a FeatureList but no MS2AssayQuantLayer.\n", Level.ERROR));
                 }
             }
+        }
+    }
+
+    private void checkSRM() {
+        if (!this.ftLsts.hasNext()) {
+            msgs.add(new Message("There MUST be at least one FeatureList.\n", Level.INFO));
+            msgs.add(new Message("No FeatureList can be found in this file.\n", Level.ERROR));
         }
     }
 

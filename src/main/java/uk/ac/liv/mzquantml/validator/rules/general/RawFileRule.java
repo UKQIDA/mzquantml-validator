@@ -56,15 +56,15 @@ public class RawFileRule {
 
     private void checkLCMS() {
         if (infls.getRawFilesGroup() == null) {
-            msgs.add(new Message("InputFiles MUST contain raw files", Level.INFO));
-            msgs.add(new Message("InputFiles do not contain raw files\n", Level.ERROR));
+            msgs.add(new Message("InputFiles MUST contain raw files.\n", Level.INFO));
+            msgs.add(new Message("InputFiles do not contain raw files.\n", Level.ERROR));
         }
     }
 
     private void checkMS2() {
         if (infls.getRawFilesGroup() == null) {
-            msgs.add(new Message("InputFiles MUST contain raw files", Level.INFO));
-            msgs.add(new Message("InputFiles do not contain raw files\n", Level.ERROR));
+            msgs.add(new Message("InputFiles MUST contain raw files.\n", Level.INFO));
+            msgs.add(new Message("InputFiles do not contain raw files.\n", Level.ERROR));
         }
     }
 }

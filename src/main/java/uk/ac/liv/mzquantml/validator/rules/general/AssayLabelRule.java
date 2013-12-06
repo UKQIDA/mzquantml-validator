@@ -72,23 +72,23 @@ public class AssayLabelRule {
 
                     if (modParamList.size() == 1 && !modParamList.get(0).getCvParam().getName().toLowerCase().equals("unlabeled sample")) {
                         msgs.add(new Message("There MUST NOT be any Label in "
-                                + "AssayList or only \"unlabeled sample\" label (spectral counting)", Level.INFO));
-                        msgs.add(new Message("The label is not \"unlabeled sample\"\n", Level.ERROR));
+                                + "AssayList or only \"unlabeled sample\" label (spectral counting).\n", Level.INFO));
+                        msgs.add(new Message("The label is not \"unlabeled sample\".\n", Level.ERROR));
                     }
                     if (modParamList.size() > 1) {
                         msgs.add(new Message("There MUST NOT be any Label in "
-                                + "AssayList or only \"unlabeled sample\" label (spectral counting)", Level.INFO));
+                                + "AssayList or only \"unlabeled sample\" label (spectral counting).\n", Level.INFO));
                         msgs.add(new Message("There MUST NOT be any modification label "
-                                + "(except unlabeled sample) in AssayList\n", Level.ERROR));
+                                + "(except unlabeled sample) in AssayList.\n", Level.ERROR));
                     }
                 }
             }
 
             if ((assay.getIdentificationFileRefs() == null) && (assay.getRawFilesGroupRef() == null)) {
                 msgs.add(new Message("There MUST be at least one of rawFilesGroup_Ref or "
-                        + "identificationFile_Refs in Assay", Level.INFO));
+                        + "identificationFile_Refs in Assay.\n", Level.INFO));
                 msgs.add(new Message("None of these exsits in Assay "
-                        + assay.getId() + "\n", Level.ERROR));
+                        + assay.getId() + ".\n", Level.ERROR));
             }
         }
     }
@@ -102,14 +102,14 @@ public class AssayLabelRule {
 
                     if (modParamList.size() == 1 && !modParamList.get(0).getCvParam().getName().toLowerCase().equals("unlabeled sample")) {
                         msgs.add(new Message("There MUST NOT be any Label in "
-                                + "AssayList or only \"unlabeled sample\" label (LC-MS label-free)", Level.INFO));
-                        msgs.add(new Message("The label is not \"unlabeled sample\"\n", Level.ERROR));
+                                + "AssayList or only \"unlabeled sample\" label (LC-MS label-free).\n", Level.INFO));
+                        msgs.add(new Message("The label is not \"unlabeled sample\".\n", Level.ERROR));
                     }
                     if (modParamList.size() > 1) {
                         msgs.add(new Message("There MUST NOT be any Label in "
-                                + "AssayList or only \"unlabeled sample\" label (LC-MS label-free)", Level.INFO));
+                                + "AssayList or only \"unlabeled sample\" label (LC-MS label-free).\n", Level.INFO));
                         msgs.add(new Message("There MUST NOT be any modification label "
-                                + "(except unlabeled sample) in AssayList\n", Level.ERROR));
+                                + "(except unlabeled sample) in AssayList.\n", Level.ERROR));
                     }
                 }
             }
@@ -149,9 +149,9 @@ public class AssayLabelRule {
             ArrayList<Assay> assays = rawfilegrouprefAssayMap.get(ref);
             if (assays.size() < 2) {
                 msgs.add(new Message("The file MUST contain two or more "
-                        + "assays references to the same rawFileGroup", Level.INFO));
+                        + "assays references to the same rawFileGroup.\n", Level.INFO));
                 msgs.add(new Message("Only one assay reference to the rawFileGroup ("
-                        + ref + ")\n", Level.ERROR));
+                        + ref + ").\n", Level.ERROR));
             }
         }
 
@@ -163,9 +163,9 @@ public class AssayLabelRule {
             if (assays.size() > 1) {
                 if (!haveAssayLabel(assays)) {
                     msgs.add(new Message("At least one of the grouped assays that "
-                            + "reference to a common rawFileGroup MUST hae the \"Label\" element", Level.INFO));
+                            + "reference to a common rawFileGroup MUST hae the \"Label\" element.\n", Level.INFO));
                     msgs.add(new Message("Assays with a common rawFileGroupRef ("
-                            + ref + ") do not have \"Lable\" element\n", Level.ERROR));
+                            + ref + ") do not have \"Lable\" element.\n", Level.ERROR));
                 }
             }
         }
