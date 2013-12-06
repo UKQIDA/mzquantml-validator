@@ -97,7 +97,7 @@ public class InOutputObjectRefsRule {
                 catch (Exception ex4) {
                     System.out.println("Is not FeatureList");
                     msgs.add(new Message("InputObject_refs and OutputOjbect_refs in DataProcessing MUST "
-                            + "reference RawFilesGroup, FeatureList, PeptideConsensusList, ProteinList, ProteinGroupList or QuantLayers.", Level.INFO));
+                            + "reference RawFilesGroup, FeatureList, PeptideConsensusList, ProteinList, ProteinGroupList or QuantLayers.\n", Level.INFO));
                     msgs.add(new Message("\"" + ref + "\" in \"" + this.targetClassId + "\" is not expected.\n", Level.ERROR));
                 }
 

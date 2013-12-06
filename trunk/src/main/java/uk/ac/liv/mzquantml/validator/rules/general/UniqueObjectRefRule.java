@@ -2,6 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
+
 package uk.ac.liv.mzquantml.validator.rules.general;
 
 import java.util.ArrayList;
@@ -34,7 +35,7 @@ public class UniqueObjectRefRule {
             for (Row row : rowList) {
                 if (!objectRefSet.add(row.getObjectRef())) {  //need adaptor
                     Message msg = new Message(("Duplicate object_ref: " + row.getObjectRef().toString())
-                            + "\n", Level.ERROR);
+                            + ".\n", Level.ERROR);
                     messages.add(msg);
                 }
             }
@@ -48,7 +49,7 @@ public class UniqueObjectRefRule {
             for (Row row : rowList) {
                 if (!objectRefSet.add(row.getObjectRef())) {  //need adaptor
                     Message msg = new Message(("Duplicate object_ref: " + row.getObjectRef().toString()
-                            + "\n"), Level.ERROR);
+                            + ".\n"), Level.ERROR);
                     messages.add(msg);
                 }
             }
@@ -59,9 +60,4 @@ public class UniqueObjectRefRule {
         return messages;
     }
 
-    public void printMessage() {
-        for (Message m : messages) {
-            System.out.println(m + "\n");
-        }
-    }
 }
