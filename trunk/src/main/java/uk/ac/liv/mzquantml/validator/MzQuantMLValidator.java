@@ -516,13 +516,13 @@ public class MzQuantMLValidator {
 
                 String id = featureList.getId();
 
-                List<QuantLayer> ms2AssayQuantLayers = featureList.getMS2AssayQuantLayer();
+                List<QuantLayer<IdOnly>> ms2AssayQuantLayers = featureList.getMS2AssayQuantLayer();
                 checkQuantLayers(ms2AssayQuantLayers);
 
                 RatioQuantLayer ms2RatioQuantLayer = featureList.getMS2RatioQuantLayer();
                 checkRatioQuantLayer(ms2RatioQuantLayer);
 
-                List<QuantLayer> ms2StudyVariableQuantLayers = featureList.getMS2StudyVariableQuantLayer();
+                List<QuantLayer<IdOnly>> ms2StudyVariableQuantLayers = featureList.getMS2StudyVariableQuantLayer();
                 checkQuantLayers(ms2StudyVariableQuantLayers);
 
                 String targetClassId = id;
@@ -608,7 +608,7 @@ public class MzQuantMLValidator {
         if (proteinRefs != null) {
             for (ProteinRef objectRef : proteinRefs) {
                 String protRef = objectRef.getProteinRef();
-                msgs.addAll(checkObjectRef(tarClsId, protRef, uk.ac.liv.jmzqml.model.mzqml.IdentificationFile.class, this.unmarshaller));
+                msgs.addAll(checkObjectRef(tarClsId, protRef, uk.ac.liv.jmzqml.model.mzqml.Protein.class, this.unmarshaller));
             }
         }
     }
@@ -709,13 +709,13 @@ public class MzQuantMLValidator {
     private void checkPeptideConsensusList(
             PeptideConsensusList peptideConsensusList) {
         if (peptideConsensusList != null) {
-            List<QuantLayer> assayQuantLayers = peptideConsensusList.getAssayQuantLayer();
+            List<QuantLayer<IdOnly>> assayQuantLayers = peptideConsensusList.getAssayQuantLayer();
             List<GlobalQuantLayer> globalQuantLayers = peptideConsensusList.getGlobalQuantLayer();
             String id = peptideConsensusList.getId();
             List<AbstractParam> paramGroups = peptideConsensusList.getParamGroup();
             List<PeptideConsensus> peptideConsensuses = peptideConsensusList.getPeptideConsensus();
             RatioQuantLayer ratioQuantLayer = peptideConsensusList.getRatioQuantLayer();
-            List<QuantLayer> studyVariableQuantLayers = peptideConsensusList.getStudyVariableQuantLayer();
+            List<QuantLayer<IdOnly>> studyVariableQuantLayers = peptideConsensusList.getStudyVariableQuantLayer();
 
             checkQuantLayers(assayQuantLayers);
             checkGlobalQuantLayers(globalQuantLayers);
@@ -888,13 +888,13 @@ public class MzQuantMLValidator {
 
     private void checkProteinGroupList(ProteinGroupList proteinGroupList) {
         if (proteinGroupList != null) {
-            List<QuantLayer> assayQuantLayers = proteinGroupList.getAssayQuantLayer();
+            List<QuantLayer<IdOnly>> assayQuantLayers = proteinGroupList.getAssayQuantLayer();
             List<GlobalQuantLayer> globalQuantLayers = proteinGroupList.getGlobalQuantLayer();
             String id = proteinGroupList.getId();
             List<AbstractParam> paramGroups = proteinGroupList.getParamGroup();
             List<ProteinGroup> proteinGroups = proteinGroupList.getProteinGroup();
             RatioQuantLayer ratioQuantLayer = proteinGroupList.getRatioQuantLayer();
-            List<QuantLayer> studyVariableQuantLayers = proteinGroupList.getStudyVariableQuantLayer();
+            List<QuantLayer<IdOnly>> studyVariableQuantLayers = proteinGroupList.getStudyVariableQuantLayer();
 
             checkQuantLayers(assayQuantLayers);
             checkGlobalQuantLayers(globalQuantLayers);
@@ -919,13 +919,13 @@ public class MzQuantMLValidator {
      */
     private void checkProteinList(ProteinList proteinList) {
         if (proteinList != null) {
-            List<QuantLayer> assayQuantLayers = proteinList.getAssayQuantLayer();
+            List<QuantLayer<IdOnly>> assayQuantLayers = proteinList.getAssayQuantLayer();
             List<GlobalQuantLayer> globalQuantLayers = proteinList.getGlobalQuantLayer();
             String id = proteinList.getId();
             List<AbstractParam> paramGroups = proteinList.getParamGroup();
             List<Protein> proteins = proteinList.getProtein();
             RatioQuantLayer ratioQuantLayer = proteinList.getRatioQuantLayer();
-            List<QuantLayer> studyVariableQuantLayers = proteinList.getStudyVariableQuantLayer();
+            List<QuantLayer<IdOnly>> studyVariableQuantLayers = proteinList.getStudyVariableQuantLayer();
 
             checkQuantLayers(assayQuantLayers);
             checkGlobalQuantLayers(globalQuantLayers);
@@ -956,7 +956,7 @@ public class MzQuantMLValidator {
         String name = provider.getName();
     }
 
-    private void checkQuantLayers(List<QuantLayer> quantLayers) {
+    private void checkQuantLayers(List<QuantLayer<IdOnly>> quantLayers) {
         if (quantLayers != null) {
             for (QuantLayer quantLayer : quantLayers) {
 
@@ -1146,13 +1146,13 @@ public class MzQuantMLValidator {
 
     private void checkSmallMoleculeList(
             SmallMoleculeList smallMoleculeList) {
-        List<QuantLayer> assayQuantLayers = smallMoleculeList.getAssayQuantLayer();
+        List<QuantLayer<IdOnly>> assayQuantLayers = smallMoleculeList.getAssayQuantLayer();
         List<GlobalQuantLayer> globalQuantLayers = smallMoleculeList.getGlobalQuantLayer();
         String id = smallMoleculeList.getId();
         List<AbstractParam> paramGroups = smallMoleculeList.getParamGroup();
         RatioQuantLayer ratioQuantLayer = smallMoleculeList.getRatioQuantLayer();
         List<SmallMolecule> smallMolecules = smallMoleculeList.getSmallMolecule();
-        List<QuantLayer> studyVariableQuantLayers = smallMoleculeList.getStudyVariableQuantLayer();
+        List<QuantLayer<IdOnly>> studyVariableQuantLayers = smallMoleculeList.getStudyVariableQuantLayer();
 
         checkQuantLayers(assayQuantLayers);
         checkGlobalQuantLayers(globalQuantLayers);

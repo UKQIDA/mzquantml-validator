@@ -29,7 +29,7 @@ public class FeatureRule {
     // isolation window upper offset
     final CvParam isolWndUppOfs = new CvParam();
     // product retention time
-    final CvParam prodRT = new CvParam();
+    final CvParam localRT = new CvParam();
     // product charge
     final CvParam prodChr = new CvParam();
     AnalysisType at;
@@ -47,9 +47,9 @@ public class FeatureRule {
         this.isolWndLowOfs.setAccession("MS:1000828");
         this.isolWndUppOfs.setName("isolation window upper offset");
         this.isolWndUppOfs.setAccession("MS:1000829");
-        this.prodRT.setName("product retention time");
+        this.localRT.setName("local retention time");
         //Todo: add cv term
-        this.prodRT.setAccession("MS:100XXXX");
+        this.localRT.setAccession("MS:1000895");
         this.prodChr.setName("charge state");
         this.prodChr.setAccession("MS:1000041");
     }
@@ -94,7 +94,7 @@ public class FeatureRule {
             else if (cp.getName().equals(this.isolWndUppOfs.getName())) {
                 hasIsoUpp = true;
             }
-            else if (cp.getName().equals(this.prodRT.getName())) {
+            else if (cp.getName().equals(this.localRT.getName())) {
                 hasProRT = true;
             }
             else if (cp.getName().equals(this.prodChr.getName())) {
@@ -118,7 +118,7 @@ public class FeatureRule {
 
         if (!hasProRT) {
             msgs.add(new Message("None of the given CvTerms were found at '/MzQuantML/FeatureList/Feature/cvParam/@accession' because no values were found:\n"
-                    + "\t-The sole term " + this.prodRT.getAccession() + " (" + this.prodRT.getName() + ") or any of its children. "
+                    + "\t-The sole term " + this.localRT.getAccession() + " (" + this.localRT.getName() + ") or any of its children. "
                     + "A single instance of this term can be specified. The matching value has to be the name of the term, not its identifier.\n", Level.WARN));
         }
 
