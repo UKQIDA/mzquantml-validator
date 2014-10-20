@@ -106,7 +106,7 @@ public class ValidatorView extends javax.swing.JFrame {
         jtaValidationResults = new javax.swing.JTextArea();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("MzQuantML file validator -- v 1.0");
+        setTitle("MzQuantML file validator -- v 1.0 (build 1.0.1)");
         setMinimumSize(new java.awt.Dimension(661, 416));
         setResizable(false);
 
@@ -217,8 +217,8 @@ public class ValidatorView extends javax.swing.JFrame {
                 .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        java.awt.Dimension screenSize = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
-        setBounds((screenSize.width-721)/2, (screenSize.height-486)/2, 721, 486);
+        setSize(new java.awt.Dimension(721, 486));
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void jbValidateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbValidateActionPerformed
