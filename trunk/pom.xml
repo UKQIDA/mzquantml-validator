@@ -58,9 +58,14 @@
                             <goal>single</goal>
                         </goals>
                         <configuration>
-                            <descriptors>
-                                <descriptor>src/main/assembly/assembly.xml</descriptor>
-                            </descriptors>                       
+                            <descriptorRefs>
+                                <descriptorRef>jar-with-dependencies</descriptorRef>
+                            </descriptorRefs>  
+                            <archive>
+                                <manifest>
+                                    <mainClass>uk.ac.liv.mzquantml.validator.gui.ValidatorView</mainClass>
+                                </manifest>
+                            </archive>                     
                             <!--
                             <archive>
                                 <addMavenDescriptor>true</addMavenDescriptor>                               
@@ -106,7 +111,7 @@
                     <target>1.7</target>
                 </configuration>
             </plugin>
-            
+            <!--
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
@@ -127,6 +132,7 @@
                     </execution>
                 </executions>
             </plugin>
+            -->
             
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
