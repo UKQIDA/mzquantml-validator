@@ -452,7 +452,7 @@ public class MzQuantMLCvValidator extends Validator {
             }
 
             // check ProteinGroupAssayQuantLayer_rule
-            List<QuantLayer> pgAssayQuantLayers = pgList.getAssayQuantLayer();
+            List<QuantLayer<IdOnly>> pgAssayQuantLayers = pgList.getAssayQuantLayer();
             if (pgAssayQuantLayers != null) {
                 for (QuantLayer pgAQL : pgAssayQuantLayers) {
                     CvParamRef cvParamRef = pgAQL.getDataType();
@@ -462,7 +462,7 @@ public class MzQuantMLCvValidator extends Validator {
             }
 
             // check ProteinGroupStudyVariableQuantLayer_rule
-            List<QuantLayer> pgStudyVariableQuantLayers = pgList.getStudyVariableQuantLayer();
+            List<QuantLayer<IdOnly>> pgStudyVariableQuantLayers = pgList.getStudyVariableQuantLayer();
             if (pgStudyVariableQuantLayers != null) {
                 for (QuantLayer pgSVQL : pgStudyVariableQuantLayers) {
                     CvParamRef cvParamRef = pgSVQL.getDataType();
@@ -513,7 +513,7 @@ public class MzQuantMLCvValidator extends Validator {
             }
 
             // check ProteinAssayQuantLayer_rule
-            List<QuantLayer> protAssayQuantLayers = protList.getAssayQuantLayer();
+            List<QuantLayer<IdOnly>> protAssayQuantLayers = protList.getAssayQuantLayer();
             if (protAssayQuantLayers != null) {
                 for (QuantLayer protAQL : protAssayQuantLayers) {
                     CvParamRef cvParamRef = protAQL.getDataType();
@@ -523,7 +523,7 @@ public class MzQuantMLCvValidator extends Validator {
             }
 
             // check ProteinStudyVariableQuantLayer_rule
-            List<QuantLayer> protStudyVariableQuantLayers = protList.getStudyVariableQuantLayer();
+            List<QuantLayer<IdOnly>> protStudyVariableQuantLayers = protList.getStudyVariableQuantLayer();
             if (protStudyVariableQuantLayers != null) {
                 for (QuantLayer protSVQL : protStudyVariableQuantLayers) {
                     CvParamRef cvParamRef = protSVQL.getDataType();
@@ -578,7 +578,7 @@ public class MzQuantMLCvValidator extends Validator {
                     }
 
                     // check PeptideConsensusAssayQuantLayer_rule
-                    List<QuantLayer> pepAssayQuantLayers = pepList.getAssayQuantLayer();
+                    List<QuantLayer<IdOnly>> pepAssayQuantLayers = pepList.getAssayQuantLayer();
                     if (pepAssayQuantLayers != null) {
                         for (QuantLayer pepAQL : pepAssayQuantLayers) {
                             CvParamRef cvParamRef = pepAQL.getDataType();
@@ -588,7 +588,7 @@ public class MzQuantMLCvValidator extends Validator {
                     }
 
                     // check PeptideConsensusStudyVariableQuantLayer_rule
-                    List<QuantLayer> pepStudyVariableQuantLayers = pepList.getStudyVariableQuantLayer();
+                    List<QuantLayer<IdOnly>> pepStudyVariableQuantLayers = pepList.getStudyVariableQuantLayer();
                     if (pepStudyVariableQuantLayers != null) {
                         for (QuantLayer pepSVQL : pepStudyVariableQuantLayers) {
                             CvParamRef cvParamRef = pepSVQL.getDataType();
@@ -659,7 +659,7 @@ public class MzQuantMLCvValidator extends Validator {
             }
 
             // check SmallMoleculeAssayQuantLayer_rule
-            List<QuantLayer> smAssayQuantLayers = smList.getAssayQuantLayer();
+            List<QuantLayer<IdOnly>> smAssayQuantLayers = smList.getAssayQuantLayer();
             if (smAssayQuantLayers != null) {
                 for (QuantLayer smAQL : smAssayQuantLayers) {
                     CvParamRef cvParamRef = smAQL.getDataType();
@@ -669,7 +669,7 @@ public class MzQuantMLCvValidator extends Validator {
             }
 
             // check SmallMoleculeStudyVariableQuantLayer_rule
-            List<QuantLayer> smStudyVariableQuantLayers = smList.getStudyVariableQuantLayer();
+            List<QuantLayer<IdOnly>> smStudyVariableQuantLayers = smList.getStudyVariableQuantLayer();
             if (smStudyVariableQuantLayers != null) {
                 for (QuantLayer smSVQL : smStudyVariableQuantLayers) {
                     CvParamRef cvParamRef = smSVQL.getDataType();
@@ -724,7 +724,7 @@ public class MzQuantMLCvValidator extends Validator {
                     }
 
                     // check FeatureListMS2AssayQuantLayer_rule
-                    List<QuantLayer> ftAssayQuantLayers = ftList.getMS2AssayQuantLayer();
+                    List<QuantLayer<IdOnly>> ftAssayQuantLayers = ftList.getMS2AssayQuantLayer();
                     if (ftAssayQuantLayers != null) {
                         for (QuantLayer ftAQL : ftAssayQuantLayers) {
                             CvParamRef cvParamRef = ftAQL.getDataType();
@@ -734,7 +734,7 @@ public class MzQuantMLCvValidator extends Validator {
                     }
 
                     // check FeatureListMS2StudyVariableQuantLayer_rule
-                    List<QuantLayer> ftStudyVariableQuantLayers = ftList.getMS2StudyVariableQuantLayer();
+                    List<QuantLayer<IdOnly>> ftStudyVariableQuantLayers = ftList.getMS2StudyVariableQuantLayer();
                     if (ftStudyVariableQuantLayers != null) {
                         for (QuantLayer ftSVQL : ftStudyVariableQuantLayers) {
                             CvParamRef cvParamRef = ftSVQL.getDataType();
