@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 
 /*
  * ValidatorView.java
@@ -230,7 +226,6 @@ public class ValidatorView extends javax.swing.JFrame {
         this.update(this.getGraphics());
 
         // Start validate.
-
         String mzqFn = this.jtfFileName.getText();
 
         if (mzqFn.isEmpty()) {

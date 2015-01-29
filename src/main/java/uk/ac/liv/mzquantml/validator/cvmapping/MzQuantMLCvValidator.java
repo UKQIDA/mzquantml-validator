@@ -24,7 +24,7 @@ import uk.ac.liv.jmzqml.xml.io.MzQuantMLUnmarshaller;
 public class MzQuantMLCvValidator extends Validator {
 
     private static final Logger logger = Logger.getLogger(MzQuantMLCvValidator.class);
-    private MessageLevel msgL = MessageLevel.WARN;
+    private MessageLevel msgL = MessageLevel.ERROR;
     //private MessageLevel msgL = MessageLevel.INFO;
     private HashMap<String, List<ValidatorMessage>> msgs = null;
     private MzQuantMLUnmarshaller unmarshaller;
