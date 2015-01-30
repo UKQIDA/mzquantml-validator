@@ -271,7 +271,7 @@ public class ValidatorView extends javax.swing.JFrame {
             /*
              * final output
              */
-            this.jtaValidationResults.append("\n\nMzQuantML validation process is finished.\n");
+            this.jtaValidationResults.append("\nMzQuantML validation process is finished.The file is valid unless there is error message displaying above.\n");
             this.update(this.getGraphics());
             long stopTime = System.currentTimeMillis();
             System.out.println("Running time (ms): " + String.valueOf(stopTime - startTime));
@@ -440,13 +440,16 @@ public class ValidatorView extends javax.swing.JFrame {
         try {
             MzQuantMLValidator mzqValidator = new MzQuantMLValidator(mzqFile);
             List<Message> results = mzqValidator.validate();
-            if (!results.isEmpty()) {
+            if (!results.isEmpty() && messagesContain(results, Level.ERROR)) {
                 this.jtaValidationResults.append("Semantic validation message(s): \n\n");
                 this.update(this.getGraphics());
             }
             for (Message m : results) {
-                this.jtaValidationResults.append(m.getLevel().toString() + ": " + m.getMessage());
-                this.update(this.getGraphics());
+                // control the semantic message level to display
+                if (m.getLevel().isGreaterOrEqual(Level.ERROR)) {
+                    this.jtaValidationResults.append(m.getLevel().toString() + ": " + m.getMessage());
+                    this.update(this.getGraphics());
+                }
             }
         }
         catch (FileNotFoundException ex) {
@@ -569,6 +572,24 @@ public class ValidatorView extends javax.swing.JFrame {
             return cl.getResourceAsStream("mzQuantML-mapping_1.0.0.xml");
         }
         return new FileInputStream(file);
+    }
+
+    /**
+     * Check if the list of message contains message with minimum level Lvl
+     *
+     * @param msgList The list of Message
+     * @param lev     The minimum of message level
+     *
+     * @return true if the list contains message with minimum level
+     */
+    private boolean messagesContain(List<Message> msgList, Level lev) {
+
+        for (Message msg : msgList) {
+            if (msg.getLevel().isGreaterOrEqual(lev)) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }
