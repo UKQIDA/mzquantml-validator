@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 
 package uk.ac.liv.mzquantml.validator.cvmapping;
 
@@ -97,13 +93,10 @@ public class MzQuantMLCvValidator extends Validator {
             }
             System.out.println("number of valid rules: " + this.getCvRuleManager().getCvRules().size());
 
-
             // ****************************
             // CHECK MANDATORY ELEMENTS
             // ****************************
             //checkMandatoryElements();
-
-
             // Cv mapping rules.
             //if (this.mzq != null) {
             applyCvMappingRules();
@@ -290,7 +283,6 @@ public class MzQuantMLCvValidator extends Validator {
             }
         }
 
-
         if (inputFiles.getSearchDatabase() != null) {
             List<SearchDatabase> searchDBs = inputFiles.getSearchDatabase();
             for (SearchDatabase sDB : searchDBs) {
@@ -317,7 +309,6 @@ public class MzQuantMLCvValidator extends Validator {
                 }
             }
         }
-
 
         //AssayList assayList = this.mzq.getAssayList(); //jmzquantml 1.0.0-rc3-1.0.5
         AssayList assayList = unmarshaller.unmarshal(MzQuantMLElement.AssayList);
@@ -363,7 +354,6 @@ public class MzQuantMLCvValidator extends Validator {
 //            cvMappingResult = this.checkCvMapping(analysisSummary, "/MzQuantML/AnalysisSummary");
 //            addMessages(cvMappingResult, this.msgL);
 //        }
-
         /**
          * *************************
          *
@@ -753,7 +743,6 @@ public class MzQuantMLCvValidator extends Validator {
          *
          * ********************************
          */
-
         // check Software_rule_1 and Software_rule_2
         //SoftwareList softwareList = this.mzq.getSoftwareList(); //jmzquantml 1.0.0-rc3-1.0.5
         SoftwareList softwareList = unmarshaller.unmarshal(MzQuantMLElement.SoftwareList);
@@ -774,7 +763,6 @@ public class MzQuantMLCvValidator extends Validator {
          *
          * *****************************
          */
-
         // check DataProcessing_rule
         //DataProcessingList dpList = this.mzq.getDataProcessingList(); //jmzquantml 1.0.0-rc3-1.0.5
         DataProcessingList dpList = unmarshaller.unmarshal(MzQuantMLElement.DataProcessingList);

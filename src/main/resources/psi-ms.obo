@@ -16620,3 +16620,10 @@ def: "The ProLuCID result 'DeltaCn'." [PSI:PI]
 xref: value-type:xsd\:double "The allowed value-type for this CV term."
 is_a: MS:1001143 ! search engine specific score for PSMs
 is_a: MS:1001153 ! search engine specific score
+
+[Term]
+id: MS:1002536
+name: Skyline mzQuantML converter 
+def: "A software package to convert Skyline report to mzQuantML. http://code.google.com/p/srm-mzquantml-convertor/" [PSI:PI]
+is_a: MS:1001139 ! quantitation software name
+is_a: MS:1001456 ! analysis software
