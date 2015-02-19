@@ -102,7 +102,7 @@ public class ValidatorView extends javax.swing.JFrame {
         jtaValidationResults = new javax.swing.JTextArea();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("MzQuantML file validator -- v 1.0 (build 1.0.1)");
+        setTitle("MzQuantML file validator -- v 1.0 (build 1.0.2.20150219)");
         setMinimumSize(new java.awt.Dimension(661, 416));
         setResizable(false);
 
@@ -182,8 +182,8 @@ public class ValidatorView extends javax.swing.JFrame {
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Validation Results"));
 
-        jtaValidationResults.setColumns(20);
         jtaValidationResults.setEditable(false);
+        jtaValidationResults.setColumns(20);
         jtaValidationResults.setRows(5);
         jScrollPane1.setViewportView(jtaValidationResults);
 
