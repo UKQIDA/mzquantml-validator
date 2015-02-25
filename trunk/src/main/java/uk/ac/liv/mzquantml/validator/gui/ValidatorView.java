@@ -102,7 +102,7 @@ public class ValidatorView extends javax.swing.JFrame {
         jtaValidationResults = new javax.swing.JTextArea();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("MzQuantML file validator -- v 1.0 (build 1.0.2.20150219)");
+        setTitle("MzQuantML file validator -- v 1.0 (build 1.0.2.20150225)");
         setMinimumSize(new java.awt.Dimension(661, 416));
         setResizable(false);
 
