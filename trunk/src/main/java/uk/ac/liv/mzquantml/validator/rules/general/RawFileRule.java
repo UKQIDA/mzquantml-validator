@@ -1,7 +1,4 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package uk.ac.liv.mzquantml.validator.rules.general;
 
 import java.util.ArrayList;
@@ -9,7 +6,6 @@ import java.util.List;
 import org.apache.log4j.Level;
 import uk.ac.liv.jmzqml.model.mzqml.InputFiles;
 import uk.ac.liv.mzquantml.validator.utils.AnalysisType;
-import uk.ac.liv.mzquantml.validator.utils.AnalysisType.AnalTp;
 import uk.ac.liv.mzquantml.validator.utils.Message;
 
 /**
@@ -20,19 +16,20 @@ import uk.ac.liv.mzquantml.validator.utils.Message;
  */
 public class RawFileRule {
 
-    AnalysisType at;
+    List<AnalysisType> atList;
     InputFiles infls;
-    List<Message> msgs = new ArrayList<Message>();
+    List<Message> msgs = new ArrayList<>();
 
     /*
      * constructor
      */
     public RawFileRule() {
-        this.at = null;
+        this.atList = new ArrayList<>();
     }
 
-    public RawFileRule(AnalysisType analysisType, InputFiles inputFiles) {
-        this.at = analysisType;
+    public RawFileRule(List<AnalysisType> analysisTypeList,
+                       InputFiles inputFiles) {
+        this.atList = analysisTypeList;
         this.infls = inputFiles;
     }
 
@@ -40,10 +37,13 @@ public class RawFileRule {
      * public methods
      */
     public void check() {
-        if (this.at.getAnalysisType() == AnalTp.LabelFree) {
-            checkLCMS();
-        } else if (this.at.getAnalysisType() == AnalTp.MS2TagBased) {
-            checkMS2();
+        for (AnalysisType at : atList) {
+            if (at == AnalysisType.LabelFree) {
+                checkLCMS();
+            }
+            else if (at == AnalysisType.MS2TagBased) {
+                checkMS2();
+            }
         }
     }
 
@@ -67,4 +67,5 @@ public class RawFileRule {
             msgs.add(new Message("InputFiles do not contain raw files.\n", Level.ERROR));
         }
     }
+
 }

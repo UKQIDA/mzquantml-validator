@@ -10,7 +10,6 @@ import uk.ac.liv.jmzqml.xml.io.MzQuantMLUnmarshaller;
 import uk.ac.liv.mzquantml.validator.rules.general.*;
 import uk.ac.liv.mzquantml.validator.utils.AnalysisSummaryElement;
 import uk.ac.liv.mzquantml.validator.utils.AnalysisType;
-import uk.ac.liv.mzquantml.validator.utils.AnalysisType.AnalTp;
 import uk.ac.liv.mzquantml.validator.utils.Message;
 
 /**
@@ -22,9 +21,10 @@ import uk.ac.liv.mzquantml.validator.utils.Message;
 //TODO: 3. capture numerator and determinator class 
 public class MzQuantMLValidator {
 
-    private static AnalysisType at = new AnalysisType();
+    private static List<AnalysisType> atList;
+    //private static AnalysisType at;
     private static EnumMap<AnalysisSummaryElement, Boolean> analysisSummaryMap;
-    private static List<Message> msgs = new ArrayList<Message>();
+    private static List<Message> msgs = new ArrayList<>();
     private File mzqFile;
     private MzQuantMLUnmarshaller unmarshaller;
 
@@ -39,7 +39,8 @@ public class MzQuantMLValidator {
     }
 
     /**
-     * @param args the command line arguments
+     * @return
+     * @throws java.io.FileNotFoundException
      */
     public List<Message> validate()
             throws FileNotFoundException {
@@ -66,36 +67,23 @@ public class MzQuantMLValidator {
          */
         AnalysisSummary analysisSummary = unmarshaller.unmarshal(MzQuantMLElement.AnalysisSummary);
         if (analysisSummary != null) {
-            at = new AnalysisType(analysisSummary);
-            if (at.getAnalysisType() != AnalTp.InvalidAnalysisType) {
-                /**
-                 * check AnalsisSummaryRule first
-                 * check() return a boolean value
-                 * return ture when there is no CV term is missing
-                 * return false when one or more CV terms are missing
-                 */
-                AnalysisSummaryRule asr = new AnalysisSummaryRule(analysisSummary);
-                if (asr.check()) {
-                    checkAnalysisSummary(analysisSummary);
-                }
 
-                msgs.addAll(asr.getMsgs());
-            }
             /**
-             * If the mzq file doesn't contain valid CV term for
-             * AnalysisSummary, validator will not continue to check the rest
-             * CV terms or user terms.
+             * check AnalsisSummaryRule first
+             * check() return a boolean value
+             * return ture when there is no CV term is missing
+             * return false when one or more CV terms are missing
              */
-            else {
-                msgs.add(new Message("Missing cv term accession for specific technique in AnalysisSummary. "
-                        + "Hence validator can not identify the technique used in this file. "
-                        + "A valid mzq file MUST contain one of the following cv terms:\n"
-                        + "\"" + AnalTp.LabelFree.toString() + "\"\n"
-                        + "\"" + AnalTp.MS1LabelBased.toString() + "\"\n"
-                        + "\"" + AnalTp.MS2TagBased.toString() + "\"\n"
-                        + "\"" + AnalTp.SpectralCounting.toString() + "\"\n"
-                        + "\"" + AnalTp.SRM.toString() + "\"\n", Level.ERROR));
+            AnalysisSummaryRule asr = new AnalysisSummaryRule(analysisSummary);
+
+            if (asr.check()) {
+                checkAnalysisSummary(analysisSummary);
             }
+
+            atList = asr.getAtList();        
+
+            msgs.addAll(asr.getMsgs());
+
         }
         else {
             // message there is no AnalysisSummary which is not acceptable
@@ -108,7 +96,6 @@ public class MzQuantMLValidator {
         else {
             // message there is no AssayList which is not acceptable
         }
-
 
         AuditCollection auditCollection = unmarshaller.unmarshal(MzQuantMLElement.AuditCollection);
         if (auditCollection != null) {
@@ -126,14 +113,12 @@ public class MzQuantMLValidator {
             // message
         }
 
-
 //        if (creationDate != null) {
 //            checkCreationDate(creationDate);
 //        }
 //        else {
 //            // message
 //        }
-
         CvList cvList = unmarshaller.unmarshal(MzQuantMLElement.CvList);
         if (cvList != null) {
             checkCvList(cvList);
@@ -173,7 +158,6 @@ public class MzQuantMLValidator {
         else {
             // some message
         }
-
 
         ProteinGroupList proteinGroupList = unmarshaller.unmarshal(MzQuantMLElement.ProteinGroupList);
         if (proteinGroupList != null) {
@@ -245,7 +229,7 @@ public class MzQuantMLValidator {
         if (inputFiles != null) {
             peptideConsensusLists = unmarshaller.unmarshalCollectionFromXpath(MzQuantMLElement.PeptideConsensusList);
             featureLists = unmarshaller.unmarshalCollectionFromXpath(MzQuantMLElement.FeatureList);
-            ListsRule listsRule = new ListsRule(at, inputFiles, proteinGroupList, proteinList,
+            ListsRule listsRule = new ListsRule(atList, inputFiles, proteinGroupList, proteinList,
                                                 peptideConsensusLists, featureLists);
             listsRule.check();
             msgs.addAll(listsRule.getMsgs());
@@ -254,8 +238,7 @@ public class MzQuantMLValidator {
         /*
          * QuantLayerRule start here
          */
-
-        if (at.getAnalysisType() != AnalTp.InvalidAnalysisType) {
+        if (!atList.isEmpty()) {
             /**
              * If the mzq file doesn't contain valid cv term for
              * AnalysisSummary, validator will not continue to validate
@@ -316,7 +299,7 @@ public class MzQuantMLValidator {
         checkAssays(assays);
 
         //AssayLabelRule start here
-        AssayLabelRule alr = new AssayLabelRule(at, assayList);
+        AssayLabelRule alr = new AssayLabelRule(atList, assayList);
         alr.check();
         msgs.addAll(alr.getMsgs());
     }
@@ -543,7 +526,7 @@ public class MzQuantMLValidator {
                  * FeatureRule
                  */
 
-                FeatureRule ftRule = new FeatureRule(at, feature);
+                FeatureRule ftRule = new FeatureRule(atList, feature);
                 ftRule.check();
                 addLevelMessage(ftRule.getMsgs(), Level.WARN);
 
@@ -617,7 +600,7 @@ public class MzQuantMLValidator {
         /*
          * RawFileRule start here
          */
-        RawFileRule rfl = new RawFileRule(at, inputFiles);
+        RawFileRule rfl = new RawFileRule(atList, inputFiles);
         rfl.check();
         msgs.addAll(rfl.getMsgs());
 
@@ -663,14 +646,12 @@ public class MzQuantMLValidator {
         }
 
 //      There is no FeatureRefs under Modification in new schema  ///
-
 //        List<Object> ftRefs = modification.getFeatureRefs();
 //        if (!ftRefs.isEmpty()) {
 //            for (Object ref : ftRefs) {
 //                msgs.addAll(checkObjectRef(tarClsId, ref, uk.ac.liv.jmzqml.model.mzqml.Feature.class));
 //            }
 //        }
-
     }
 
     private <T> ArrayList<Message> checkObjectRef(String tarClsId,
@@ -1088,7 +1069,6 @@ public class MzQuantMLValidator {
 //                if (databaseName.getCvParam() != null) {
 //                    checkCvParam(targetClassId, databaseName.getCvParam());
 //                }
-
                 FileFormat format = searchDatabase.getFileFormat();
                 checkFileFormat(targetClassId, format);
 
@@ -1226,7 +1206,7 @@ public class MzQuantMLValidator {
      * private methods
      */
     private void getAnalysisSummaryMap(AnalysisSummary analysisSummary) {
-        analysisSummaryMap = new EnumMap<AnalysisSummaryElement, Boolean>(AnalysisSummaryElement.class);
+        analysisSummaryMap = new EnumMap<>(AnalysisSummaryElement.class);
 
         List<AbstractParam> paramGroups = analysisSummary.getParamGroup();
         for (AbstractParam param : paramGroups) {
@@ -1234,7 +1214,7 @@ public class MzQuantMLValidator {
                 CvParam cv = (CvParam) param;
                 String name = cv.getName();
                 String value = cv.getValue();
-                AnalysisSummaryElement key = AnalysisSummaryElement.getType(name);
+                AnalysisSummaryElement key = AnalysisSummaryElement.getASEbyName(name);
                 if (key != null) {
                     analysisSummaryMap.put(key, Boolean.valueOf(value));
                 }

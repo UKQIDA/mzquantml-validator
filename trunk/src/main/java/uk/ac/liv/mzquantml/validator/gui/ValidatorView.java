@@ -102,7 +102,7 @@ public class ValidatorView extends javax.swing.JFrame {
         jtaValidationResults = new javax.swing.JTextArea();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("MzQuantML file validator -- v 1.0 (build 1.0.2.20150302)");
+        setTitle("MzQuantML file validator -- v 1.0 (build 1.0.2.20150319)");
         setMinimumSize(new java.awt.Dimension(661, 416));
 
         jPanel1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
@@ -211,6 +211,8 @@ public class ValidatorView extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
+
+        getAccessibleContext().setAccessibleName("MzQuantML file validator -- v 1.0 (build 1.0.2.20150319)");
 
         setSize(new java.awt.Dimension(721, 486));
         setLocationRelativeTo(null);

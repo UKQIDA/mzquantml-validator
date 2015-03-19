@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 
 package uk.ac.liv.mzquantml.validator.rules.general;
 
@@ -15,7 +11,7 @@ import uk.ac.liv.jmzqml.model.mzqml.PeptideConsensusList;
 import uk.ac.liv.jmzqml.model.mzqml.ProteinGroupList;
 import uk.ac.liv.jmzqml.model.mzqml.ProteinList;
 import uk.ac.liv.mzquantml.validator.utils.AnalysisSummaryElement;
-import uk.ac.liv.mzquantml.validator.utils.AnalysisType.AnalTp;
+import uk.ac.liv.mzquantml.validator.utils.AnalysisType;
 import uk.ac.liv.mzquantml.validator.utils.Message;
 
 /**
@@ -58,12 +54,12 @@ public class QuantLayerRule {
      */
     public void check() {
         for (AnalysisSummaryElement ase : this.anlSumMap.keySet()) {
-            if (ase.getAnalysisType() == AnalTp.LabelFree
-                    || ase.getAnalysisType() == AnalTp.MS1LabelBased
-                    || ase.getAnalysisType() == AnalTp.SpectralCounting) {
+            if (ase.getAnalysisType() == AnalysisType.LabelFree
+                    || ase.getAnalysisType() == AnalysisType.MS1LabelBased
+                    || ase.getAnalysisType() == AnalysisType.SpectralCounting) {
                 checkNonMS2(ase, anlSumMap.get(ase));
             }
-            else if (ase.getAnalysisType() == AnalTp.MS2TagBased) {
+            else if (ase.getAnalysisType() == AnalysisType.MS2TagBased) {
                 checkMS2(ase, anlSumMap.get(ase));
             }
         }
@@ -180,7 +176,7 @@ public class QuantLayerRule {
                                 + "\"" + ftLst.getId() + "\".\n", Level.ERROR));
                     }
                     if (isMS2QLExist(ftLst)) {
-                        msgs.add(new Message("There MUST not be any MS2QuantLayers for " + ase.getAnalysisType().getName()+".\n", Level.INFO));
+                        msgs.add(new Message("There MUST not be any MS2QuantLayers for " + ase.getAnalysisType().getName() + ".\n", Level.INFO));
                         msgs.add(new Message("There is at least one MS2QuantLayer exist in FeatureList "
                                 + "\"" + ftLst.getId() + "\".\n", Level.ERROR));
                     }
