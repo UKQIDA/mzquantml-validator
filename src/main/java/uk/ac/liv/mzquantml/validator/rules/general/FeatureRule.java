@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 
 package uk.ac.liv.mzquantml.validator.rules.general;
 
@@ -11,7 +7,6 @@ import org.apache.log4j.Level;
 import uk.ac.liv.jmzqml.model.mzqml.CvParam;
 import uk.ac.liv.jmzqml.model.mzqml.Feature;
 import uk.ac.liv.mzquantml.validator.utils.AnalysisType;
-import uk.ac.liv.mzquantml.validator.utils.AnalysisType.AnalTp;
 import uk.ac.liv.mzquantml.validator.utils.Message;
 
 /**
@@ -32,15 +27,15 @@ public class FeatureRule {
     final CvParam localRT = new CvParam();
     // product charge
     final CvParam prodChr = new CvParam();
-    AnalysisType at;
+    List<AnalysisType> atList;
     Feature feature;
-    List<Message> msgs = new ArrayList<Message>();
+    List<Message> msgs = new ArrayList<>();
 
     /*
      * constructor
      */
     public FeatureRule() {
-        this.at = null;
+        this.atList = new ArrayList<>();
         this.isolWndTrgMz.setName("isolation window target m/z");
         this.isolWndTrgMz.setAccession("MS:1000827");
         this.isolWndLowOfs.setName("isolation window lower offset");
@@ -54,9 +49,9 @@ public class FeatureRule {
         this.prodChr.setAccession("MS:1000041");
     }
 
-    public FeatureRule(AnalysisType analysisType, Feature ft) {
+    public FeatureRule(List<AnalysisType> analysisTypeList, Feature ft) {
         this();
-        this.at = analysisType;
+        this.atList = analysisTypeList;
         this.feature = ft;
     }
 
@@ -64,7 +59,7 @@ public class FeatureRule {
      * public methods
      */
     public void check() {
-        if (this.at.getAnalysisType() == AnalTp.SRM) {
+        if (this.atList.contains(AnalysisType.SRM)) {
             checkCv();
         }
     }

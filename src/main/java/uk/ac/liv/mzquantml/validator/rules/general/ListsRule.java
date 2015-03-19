@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 
 package uk.ac.liv.mzquantml.validator.rules.general;
 
@@ -11,7 +7,6 @@ import java.util.List;
 import org.apache.log4j.Level;
 import uk.ac.liv.jmzqml.model.mzqml.*;
 import uk.ac.liv.mzquantml.validator.utils.AnalysisType;
-import uk.ac.liv.mzquantml.validator.utils.AnalysisType.AnalTp;
 import uk.ac.liv.mzquantml.validator.utils.Message;
 
 /**
@@ -22,22 +17,22 @@ import uk.ac.liv.mzquantml.validator.utils.Message;
  */
 public class ListsRule {
 
-    AnalysisType at;
+    List<AnalysisType> atList;
     InputFiles infls;
     ProteinGroupList protGrpLst;
     ProteinList protLst;
     Iterator<PeptideConsensusList> pepCnsLsts;
     Iterator<FeatureList> ftLsts;
-    List<Message> msgs = new ArrayList<Message>();
+    List<Message> msgs = new ArrayList<>();
 
     /*
      * constructor
      */
-    public ListsRule(AnalysisType analysisType, InputFiles inputFiles,
+    public ListsRule(List<AnalysisType> analysisTypeList, InputFiles inputFiles,
                      ProteinGroupList proteinGroupList, ProteinList proteinList,
                      Iterator<PeptideConsensusList> peptideConsensusLists,
                      Iterator<FeatureList> featureLists) {
-        this.at = analysisType;
+        this.atList = analysisTypeList;
         this.infls = inputFiles;
         this.protGrpLst = proteinGroupList;
         this.protLst = proteinList;
@@ -69,20 +64,22 @@ public class ListsRule {
             }
         }
 
-        if (this.at.getAnalysisType() == AnalTp.SpectralCounting) {
-            checkSC();
-        }
-        else if (this.at.getAnalysisType() == AnalTp.LabelFree) {
-            checkLCMS();
-        }
-        else if (this.at.getAnalysisType() == AnalTp.MS1LabelBased) {
-            checkMS1();
-        }
-        else if (this.at.getAnalysisType() == AnalTp.MS2TagBased) {
-            checkMS2();
-        }
-        else if (this.at.getAnalysisType() == AnalTp.SRM) {
-            checkSRM();
+        for (AnalysisType at : atList) {
+            if (at == AnalysisType.SpectralCounting) {
+                checkSC();
+            }
+            else if (at == AnalysisType.LabelFree) {
+                checkLCMS();
+            }
+            else if (at == AnalysisType.MS1LabelBased) {
+                checkMS1();
+            }
+            else if (at == AnalysisType.MS2TagBased) {
+                checkMS2();
+            }
+            else if (at == AnalysisType.SRM) {
+                checkSRM();
+            }
         }
     }
 

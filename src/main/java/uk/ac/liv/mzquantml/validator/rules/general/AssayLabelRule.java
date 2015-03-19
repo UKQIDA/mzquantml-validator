@@ -1,19 +1,16 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package uk.ac.liv.mzquantml.validator.rules.general;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import uk.ac.liv.jmzqml.model.mzqml.Assay;
 import uk.ac.liv.jmzqml.model.mzqml.AssayList;
 import uk.ac.liv.jmzqml.model.mzqml.ModParam;
 import uk.ac.liv.mzquantml.validator.utils.AnalysisType;
-import uk.ac.liv.mzquantml.validator.utils.AnalysisType.AnalTp;
 import uk.ac.liv.mzquantml.validator.utils.Message;
 
 /**
@@ -25,19 +22,20 @@ import uk.ac.liv.mzquantml.validator.utils.Message;
 public class AssayLabelRule {
 
     private static final Logger logger = Logger.getLogger(AssayLabelRule.class);
-    AnalysisType at;
+    List<AnalysisType> atList;
     AssayList assyLst;
-    List<Message> msgs = new ArrayList<Message>();
+    List<Message> msgs = new ArrayList<>();
 
     /*
      * constructor
      */
     public AssayLabelRule() {
-        this.at = null;
+        this.atList = new ArrayList<>();
     }
 
-    public AssayLabelRule(AnalysisType analysisType, AssayList assayList) {
-        this.at = analysisType;
+    public AssayLabelRule(List<AnalysisType> analysisTypeList,
+                          AssayList assayList) {
+        this.atList = analysisTypeList;
         this.assyLst = assayList;
     }
 
@@ -45,14 +43,19 @@ public class AssayLabelRule {
      * public methods
      */
     public void check() {
-        if (this.at.getAnalysisType() == AnalTp.SpectralCounting) {
-            checkSC();
-        } else if (this.at.getAnalysisType() == AnalTp.LabelFree) {
-            checkLCMS();
-        } else if (this.at.getAnalysisType() == AnalTp.MS1LabelBased) {
-            checkMS1();
-        } else if (this.at.getAnalysisType() == AnalTp.MS2TagBased) {
-            checkMS2();
+        for (AnalysisType at : atList) {
+            if (at == AnalysisType.SpectralCounting) {
+                checkSC();
+            }
+            else if (at == AnalysisType.LabelFree) {
+                checkLCMS();
+            }
+            else if (at == AnalysisType.MS1LabelBased) {
+                checkMS1();
+            }
+            else if (at == AnalysisType.MS2TagBased) {
+                checkMS2();
+            }
         }
     }
 
@@ -118,18 +121,18 @@ public class AssayLabelRule {
 
     private void checkMS1() {
         //build the reference map from RawFileGroup to Assay
-        HashMap<String, ArrayList<Assay>> rawfilegrouprefAssayMap =
-                getRawfilegroupRefAssayMap(this.assyLst.getAssay());
+        Map<String, List<Assay>> rawfilegrouprefAssayMap
+                = getRawfilegroupRefAssayMap(this.assyLst.getAssay());
         checkRawfilegrouprefAssayMap(rawfilegrouprefAssayMap);
     }
 
-    private HashMap<String, ArrayList<Assay>> getRawfilegroupRefAssayMap(
+    private Map<String, List<Assay>> getRawfilegroupRefAssayMap(
             List<Assay> assays) {
-        HashMap<String, ArrayList<Assay>> rawfilegroupRefAssayMap =
-                new HashMap<String, ArrayList<Assay>>();
+        Map<String, List<Assay>> rawfilegroupRefAssayMap
+                = new HashMap<String, List<Assay>>();
         for (Assay assay : assays) {
             String rawfilegroupRef = assay.getRawFilesGroupRef();
-            ArrayList<Assay> manyAssay = rawfilegroupRefAssayMap.get(rawfilegroupRef);
+            List<Assay> manyAssay = rawfilegroupRefAssayMap.get(rawfilegroupRef);
             if (manyAssay == null) {
                 manyAssay = new ArrayList<Assay>();
                 rawfilegroupRefAssayMap.put(rawfilegroupRef, manyAssay);
@@ -140,13 +143,13 @@ public class AssayLabelRule {
     }
 
     private void checkRawfilegrouprefAssayMap(
-            HashMap<String, ArrayList<Assay>> rawfilegrouprefAssayMap) {
+            Map<String, List<Assay>> rawfilegrouprefAssayMap) {
 
         // check MS1 label base rule MUST No. 3:
         // The file MUST contain two or more assays references to the same rawFileGroup
         for (String ref : rawfilegrouprefAssayMap.keySet()) {
             //RawFilesGroup rawFileGroup = (RawFilesGroup) ref;
-            ArrayList<Assay> assays = rawfilegrouprefAssayMap.get(ref);
+            List<Assay> assays = rawfilegrouprefAssayMap.get(ref);
             if (assays.size() < 2) {
                 msgs.add(new Message("The file MUST contain two or more "
                         + "assays references to the same rawFileGroup.\n", Level.INFO));
@@ -159,7 +162,7 @@ public class AssayLabelRule {
         // At least one of the grouped assays that reference to a common rawFileGroup MUST have the "Label" element
         for (String ref : rawfilegrouprefAssayMap.keySet()) {
             //RawFilesGroup rawFileGroup = (RawFilesGroup) ref;
-            ArrayList<Assay> assays = rawfilegrouprefAssayMap.get(ref);
+            List<Assay> assays = rawfilegrouprefAssayMap.get(ref);
             if (assays.size() > 1) {
                 if (!haveAssayLabel(assays)) {
                     msgs.add(new Message("At least one of the grouped assays that "
@@ -171,7 +174,7 @@ public class AssayLabelRule {
         }
     }
 
-    private boolean haveAssayLabel(ArrayList<Assay> assays) {
+    private boolean haveAssayLabel(List<Assay> assays) {
         boolean b = true;
         for (Assay assay : assays) {
             if (assay.getLabel() == null) {
@@ -184,4 +187,5 @@ public class AssayLabelRule {
 
     private void checkMS2() {
     }
+
 }
